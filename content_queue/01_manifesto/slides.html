@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F6F3EC;
+      --surface: #EDE8DD;
+      --ink: #1E1E1E;
+      --muted: #6B675F;
+      --accent: #3E4E3C; /* Swap to #9A523B for Terracotta */
+      --border: rgba(30, 30, 30, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #111; display: flex; flex-direction: column; gap: 40px; align-items: center; padding: 40px; }
+
+    .slide {
+      width: 1080px;
+      height: 1350px;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meta-bar, .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .meta-bar { text-transform: uppercase; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .footer-bar { padding-top: 24px; border-top: 1px solid var(--border); }
+
+    .serif { font-family: 'Instrument Serif', serif; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; }
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 8px 18px;
+      border-radius: 999px;
+      margin-bottom: 36px;
+      text-transform: uppercase;
+    }
+
+    /* COVER LAYOUT */
+    .cover-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .cover-title { font-size: 110px; margin-bottom: 36px; }
+    .cover-title em { font-style: italic; color: var(--accent); }
+    .cover-sub { font-size: 30px; line-height: 1.55; color: var(--muted); max-width: 800px; }
+
+    /* EDITORIAL NOTES LAYOUT */
+    .note-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 40px; }
+    .note-heading { font-size: 74px; }
+    .note-list { display: flex; flex-direction: column; gap: 26px; }
+    .note-item {
+      background: var(--surface);
+      padding: 34px 38px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .note-item-num { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--accent); margin-bottom: 10px; }
+    .note-item h3 { font-size: 30px; font-weight: 600; margin-bottom: 8px; }
+    .note-item p { font-size: 25px; line-height: 1.5; color: var(--muted); }
+
+    /* MOCKUP SHOWCASE LAYOUT */
+    .mockup-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 36px; }
+    .mockup-caption { font-size: 56px; }
+    .browser-frame {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 24px 60px rgba(30, 30, 30, 0.08);
+    }
+    .browser-top { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 0 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(30,30,30,0.2); }
+    .url-pill {
+      margin-left: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: var(--muted);
+      background: var(--bg);
+      padding: 6px 18px;
+      border-radius: 999px;
+    }
+    .browser-screen {
+      width: 100%;
+      height: 640px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .browser-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+
+    /* CLOSING / CTA LAYOUT */
+    .cta-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+    .cta-title { font-size: 92px; }
+    .cta-sub { font-size: 30px; line-height: 1.55; color: var(--muted); max-width: 760px; }
+    .cta-pill {
+      margin-top: 16px;
+      align-self: flex-start;
+      background: var(--ink);
+      color: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      padding: 18px 34px;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide" data-name="01_cover">
+    <div class="meta-bar">
+      <span>GW &amp; ALAN</span>
+      <span>ISSUE 01 — MANIFESTO</span>
+    </div>
+    <div class="cover-body">
+      <div><span class="tag">SALAM KENAL</span></div>
+      <h1 class="serif cover-title">Website bisnis gak seharusnya bikin orang <em>capek baca.</em></h1>
+      <p class="cover-sub">Kenalin: gw sama Alan. Kita bangun website yang tenang, cepat, dan jelas—biar pelanggan lo gak keburu tutup tab.</p>
+    </div>
+    <div class="footer-bar">
+      <span>@goandalan</span>
+      <span>01 / 04</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: NOTES -->
+  <section class="slide" data-name="02_why">
+    <div class="meta-bar">
+      <span>KENAPA KITA BIKIN INI</span>
+      <span>ISSUE 01</span>
+    </div>
+    <div class="note-body">
+      <h2 class="serif note-heading">Terlalu banyak bisnis keren yang webnya berantakan.</h2>
+      <div class="note-list">
+        <div class="note-item">
+          <div class="note-item-num">01 / REALITA</div>
+          <h3>Instagram rapi, pas klik link bio malah pusing</h3>
+          <p>Loading lama, teks numpuk, tombol order atau WhatsApp ngumpet entah di mana.</p>
+        </div>
+        <div class="note-item">
+          <div class="note-item-num">02 / CARA KITA</div>
+          <h3>Rapi tanpa rasa template agensi kaku</h3>
+          <p>Kita potong hal yang gak perlu, fokus ke informasi yang beneran dicari pelanggan di layar HP.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span>@goandalan</span>
+      <span>02 / 04</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: MEET THE TEAM -->
+  <section class="slide" data-name="03_team">
+    <div class="meta-bar">
+      <span>SIAPA DI BALIK LAYAR</span>
+      <span>ISSUE 01</span>
+    </div>
+    <div class="note-body">
+      <h2 class="serif note-heading">Dua kepala. Satu orang beneran, satu fiktif.</h2>
+      <div class="note-list">
+        <div class="note-item">
+          <div class="note-item-num">GW — HUMAN</div>
+          <h3>Yang ngobrol sama lo &amp; jaga rasa</h3>
+          <p>Ngurus arah visual, nerjemahin kebutuhan bisnis tanpa bahasa teknis yang ribet, dan jadi rem kalau Alan mulai berlebihan.</p>
+        </div>
+        <div class="note-item">
+          <div class="note-item-num">ALAN — FIKTIF</div>
+          <h3>Polisi detail yang gak pernah tidur</h3>
+          <p>Gak minta gaji, alergi menu PDF 15MB, dan bakal protes kalau jarak tombol geser 2px.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span>@goandalan</span>
+      <span>03 / 04</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: SOFT CTA -->
+  <section class="slide" data-name="04_closing">
+    <div class="meta-bar">
+      <span>GW &amp; ALAN</span>
+      <span>ISSUE 01</span>
+    </div>
+    <div class="cta-body">
+      <h2 class="serif cta-title">Mikir bareng Alan.<br>Orangnya fiktif, hasilnya real.</h2>
+      <p class="cta-sub">Di sini kita bakal share studi kasus kecil, rombakan desain, dan catatan ringan soal bikin website yang enak dipakai.</p>
+      <div class="cta-pill">dm aja kalau mau ngobrol →</div>
+    </div>
+    <div class="footer-bar">
+      <span>@goandalan</span>
+      <span>04 / 04</span>
+    </div>
+  </section>
+
+</body>
+</html>

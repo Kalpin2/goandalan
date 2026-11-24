@@ -1,0 +1,573 @@
+{
+  "schema_version": "3.1",
+  "project": {
+    "brand_name": "Seduh Pagi Coffee Roastery",
+    "industry": "Coffee Roastery",
+    "city": "Jakarta Selatan",
+    "domain": "seduh-pagi-coffee-roastery.id",
+    "project_status": "WEBSITE CONCEPT",
+    "is_full_demo": false,
+    "issue_num": 69,
+    "handle": "@goandalan",
+    "caption_voice": "casual_gw",
+    "slide_sequence": "custom",
+    "allow_sales_cta": false
+  },
+  "creative_direction": {
+    "style_key": "organic_warm",
+    "primary_style": "Organic / Natural / Warm",
+    "secondary_style": "Editorial & Magazine",
+    "storytelling_key": "origin_to_experience",
+    "storytelling_method": "Origin to Experience",
+    "storytelling_arc": "Karakter brand -> konsep digital -> website reveal -> fitur pendukung pengalaman.",
+    "palette": {
+      "bg": "#FAF6EC",
+      "surface": "#FFFFFF",
+      "ink": "#1F2A24",
+      "muted": "#56635B",
+      "accent": "#2E5E3E",
+      "accent_2": "#C46A3B",
+      "badge_bg": "rgba(111, 163, 91, 0.20)",
+      "badge_ink": "#2E5E3E",
+      "border": "rgba(31, 42, 36, 0.12)"
+    },
+    "fonts": {
+      "fonts_url": "https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap",
+      "font_display": "'Zilla Slab', Georgia, serif",
+      "font_body": "'Plus Jakarta Sans', system-ui, sans-serif",
+      "font_mono": "'Barlow Condensed', 'Oswald', Impact, sans-serif",
+      "custom_font_file": ""
+    },
+    "geometry": {
+      "radius": "16px",
+      "border_width": "1px",
+      "shadow": "0 12px 32px rgba(31,42,36,0.08)",
+      "top_stripe": false,
+      "uppercase_display": false,
+      "dark": false,
+      "brutalist": false,
+      "grid_bg": false
+    },
+    "compositions": {
+      "slide_1": "editorial_typography_overlay",
+      "slide_2": "photo_interface",
+      "slide_3": "overlapping_devices",
+      "slide_4": "annotated_interface"
+    },
+    "closing_label": "Website Concept",
+    "direction_summary": "Palet earthy hangat, tipografi Fraunces yang organik, dan ruang bernapas lega untuk menghadirkan rasa hospitality sejak layar pertama.",
+    "reference_image": "",
+    "reference_palette_applied": false,
+    "typography_direction": {
+      "profile_key": "coffee_roastery",
+      "matched_profile": true,
+      "business_industry": "Coffee Roastery",
+      "audience": "Calon pelanggan coffee roastery yang mengakses via Instagram mobile",
+      "brand_personality": [
+        "Artisanal",
+        "Sensory",
+        "Warm",
+        "Tactile",
+        "Unrushed"
+      ],
+      "primary_art_direction": "Neo-Vintage / Heritage Revival",
+      "primary_art_direction_key": "neo_vintage_heritage",
+      "secondary_influence": "Art Magazine",
+      "secondary_influence_key": "art_magazine",
+      "typeface_categories": {
+        "display": "Slab Serif",
+        "supporting": "Humanist Sans",
+        "metadata": "Condensed Sans"
+      },
+      "typeface_keys": {
+        "display": "slab_serif",
+        "supporting": "humanist_sans",
+        "metadata": "condensed_sans"
+      },
+      "typographic_treatments": [
+        "oversized_display",
+        "overprint_color_blocking",
+        "split_word_treatment",
+        "image_text_integration"
+      ],
+      "composition_behavior": [
+        "monumental_headline",
+        "asymmetric_editorial",
+        "screenshot_led",
+        "caption_led"
+      ],
+      "graphic_language": [
+        "full-bleed terracotta & deep forest color blocking",
+        "monumental split-word poster typography interacting with real roast photography",
+        "editorial hairlines and issue stamp without boxy card clutter"
+      ],
+      "palette_direction": "Deep roast espresso (#1B1411) + warm crema linen (#F7F0E4) + terracotta crema (#C8552E) + roasted botanical green (#274B36) — intentionally breaking away from generic beige-only cafe templates.",
+      "texture_direction": "Subtle uncoated roastery bag paper grain on poster slides; razor-sharp clean surfaces around actual screenshots.",
+      "screenshot_role": "Teased as an integrated cutout window on Slide 1-2, then commanding the full canvas unobstructed on Slides 3-4.",
+      "content_emphasis": [
+        "Sensory coffee bar atmosphere",
+        "Curated beans & daily pour menu",
+        "Brew hours & direct WA order flow"
+      ],
+      "readability_risks": [
+        "Keep split/oversized Slab Serif limited to 2-5 poster words so mobile readers parse instantly.",
+        "Preserve >= 4.5:1 WCAG contrast on terracotta/espresso color blocks."
+      ],
+      "reasons_for_selection": [
+        "Slab Serif (Zilla Slab) carries roastery craft solidity without falling into generic serif-italic luxury clichés.",
+        "Neo-Vintage Heritage Revival paired with Art Magazine color blocking gives Slide 1-2 unmistakable poster punch before revealing the calm warm website on Slides 3-4."
+      ],
+      "poster_palette": {
+        "poster_bg": "#C8552E",
+        "poster_ink": "#FFF7EC",
+        "poster_accent": "#1B1411",
+        "poster_secondary_bg": "#1B1411",
+        "poster_secondary_ink": "#F7F0E4",
+        "poster_highlight": "#E8B96B"
+      },
+      "fonts": {
+        "fonts_url": "https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap",
+        "font_display": "'Zilla Slab', Georgia, serif",
+        "font_body": "'Plus Jakarta Sans', system-ui, sans-serif",
+        "font_mono": "'Barlow Condensed', 'Oswald', Impact, sans-serif",
+        "font_pair_label": "Zilla Slab (Slab Serif) + Plus Jakarta Sans (Humanist Sans)",
+        "metadata_font_label": "Barlow Condensed (Condensed Sans)"
+      },
+      "gap_signal": {
+        "detected": true,
+        "gap_topic": "Indonesian Nusantara coffee roastery sign-painting & woodblock poster lettering",
+        "candidate": {
+          "id": "nusantara-kopitiam-stencil",
+          "name": "Nusantara Kopitiam Stencil & Woodblock Display",
+          "layer": "art_direction",
+          "description": "High-contrast Indonesian artisan signage aesthetic combining condensed woodblock display numerals, warm enamel color blocks, and crisp bilingual roast origin tags.",
+          "visual_traits": [
+            "bold enamel color-blocking",
+            "high-contrast condensed woodblock numerals",
+            "asymmetric roastery sack stamp alignment",
+            "zero generic beige card frames"
+          ],
+          "emotional_voice": [
+            "authentic",
+            "local-craft",
+            "sensory",
+            "tactile"
+          ],
+          "works_for": [
+            "Indonesian coffee roasteries",
+            "artisan bakeries",
+            "local heritage culinary brands"
+          ],
+          "caution": [
+            "Avoid distressing body copy or menu prices",
+            "Do not imitate colonial clichés"
+          ],
+          "distinct_from": "Neo-Vintage / Heritage Revival — specifically encodes Indonesian kopitiam enamel signage and Nusantara roast origin labeling rather than Western retro motifs.",
+          "pairs_with": [
+            "slab_serif",
+            "condensed_sans",
+            "overprint_color_blocking",
+            "monumental_headline"
+          ],
+          "language_notes": "Tested with Indonesian words (Seduhan, Sangrai, Gula Aren) and Rupiah numerals (Rp 28.000); full Latin diacritic support.",
+          "source": "Indonesian specialty coffee packaging & traditional enamel signage craft observations (principles extracted, no work copied).",
+          "confidence": "medium"
+        }
+      },
+      "gap_cycle_result": null
+    },
+    "niche_blueprint": {
+      "niche_key": "coffee_roastery",
+      "niche_label": "Coffee Shop & Specialty Roastery",
+      "primary_business_goal": "Hadirkan atmosfer ruang seduh, kurasi beans & menu dengan fotografi tajam, serta jam seduh + lokasi + pre-order WA tanpa ribet.",
+      "website_section_architecture": [
+        {
+          "id": "atmosphere_hero",
+          "purpose": "Atmosfer ruang seduh & fotografi full-bleed slow bar"
+        },
+        {
+          "id": "curated_menu",
+          "purpose": "Kurasi beans mingguan & menu minuman dengan foto editorial + harga jernih tanpa kartu kaku"
+        },
+        {
+          "id": "space_ritual",
+          "purpose": "Cerita ruang & ritual sangrai (suasana WFC, roast profile, manual brew)"
+        },
+        {
+          "id": "hours_location_wa",
+          "purpose": "Jam seduh harian, alamat + peta lokasi, FAQ ringkas, dan jalur pre-order WA"
+        }
+      ],
+      "photo_set": {
+        "hero": "assets/demos/coffee_hero.png",
+        "secondary": "assets/demos/coffee_beans.png",
+        "accent": "assets/demos/coffee_matcha.png"
+      },
+      "registry_audit": {
+        "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
+        "registry_exists": true,
+        "skillspector_ready": true,
+        "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
+        "covered_domains": [
+          "anti-slop-web-design",
+          "editorial-typography",
+          "hospitality-photography"
+        ],
+        "missing_domains": [],
+        "needs_scout": false
+      }
+    },
+    "font_pair_label": "Zilla Slab (Slab Serif) + Plus Jakarta Sans (Humanist Sans)"
+  },
+  "typography_direction": {
+    "profile_key": "coffee_roastery",
+    "matched_profile": true,
+    "business_industry": "Coffee Roastery",
+    "audience": "Calon pelanggan coffee roastery yang mengakses via Instagram mobile",
+    "brand_personality": [
+      "Artisanal",
+      "Sensory",
+      "Warm",
+      "Tactile",
+      "Unrushed"
+    ],
+    "primary_art_direction": "Neo-Vintage / Heritage Revival",
+    "primary_art_direction_key": "neo_vintage_heritage",
+    "secondary_influence": "Art Magazine",
+    "secondary_influence_key": "art_magazine",
+    "typeface_categories": {
+      "display": "Slab Serif",
+      "supporting": "Humanist Sans",
+      "metadata": "Condensed Sans"
+    },
+    "typeface_keys": {
+      "display": "slab_serif",
+      "supporting": "humanist_sans",
+      "metadata": "condensed_sans"
+    },
+    "typographic_treatments": [
+      "oversized_display",
+      "overprint_color_blocking",
+      "split_word_treatment",
+      "image_text_integration"
+    ],
+    "composition_behavior": [
+      "monumental_headline",
+      "asymmetric_editorial",
+      "screenshot_led",
+      "caption_led"
+    ],
+    "graphic_language": [
+      "full-bleed terracotta & deep forest color blocking",
+      "monumental split-word poster typography interacting with real roast photography",
+      "editorial hairlines and issue stamp without boxy card clutter"
+    ],
+    "palette_direction": "Deep roast espresso (#1B1411) + warm crema linen (#F7F0E4) + terracotta crema (#C8552E) + roasted botanical green (#274B36) — intentionally breaking away from generic beige-only cafe templates.",
+    "texture_direction": "Subtle uncoated roastery bag paper grain on poster slides; razor-sharp clean surfaces around actual screenshots.",
+    "screenshot_role": "Teased as an integrated cutout window on Slide 1-2, then commanding the full canvas unobstructed on Slides 3-4.",
+    "content_emphasis": [
+      "Sensory coffee bar atmosphere",
+      "Curated beans & daily pour menu",
+      "Brew hours & direct WA order flow"
+    ],
+    "readability_risks": [
+      "Keep split/oversized Slab Serif limited to 2-5 poster words so mobile readers parse instantly.",
+      "Preserve >= 4.5:1 WCAG contrast on terracotta/espresso color blocks."
+    ],
+    "reasons_for_selection": [
+      "Slab Serif (Zilla Slab) carries roastery craft solidity without falling into generic serif-italic luxury clichés.",
+      "Neo-Vintage Heritage Revival paired with Art Magazine color blocking gives Slide 1-2 unmistakable poster punch before revealing the calm warm website on Slides 3-4."
+    ],
+    "poster_palette": {
+      "poster_bg": "#C8552E",
+      "poster_ink": "#FFF7EC",
+      "poster_accent": "#1B1411",
+      "poster_secondary_bg": "#1B1411",
+      "poster_secondary_ink": "#F7F0E4",
+      "poster_highlight": "#E8B96B"
+    },
+    "fonts": {
+      "fonts_url": "https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap",
+      "font_display": "'Zilla Slab', Georgia, serif",
+      "font_body": "'Plus Jakarta Sans', system-ui, sans-serif",
+      "font_mono": "'Barlow Condensed', 'Oswald', Impact, sans-serif",
+      "font_pair_label": "Zilla Slab (Slab Serif) + Plus Jakarta Sans (Humanist Sans)",
+      "metadata_font_label": "Barlow Condensed (Condensed Sans)"
+    },
+    "gap_signal": {
+      "detected": true,
+      "gap_topic": "Indonesian Nusantara coffee roastery sign-painting & woodblock poster lettering",
+      "candidate": {
+        "id": "nusantara-kopitiam-stencil",
+        "name": "Nusantara Kopitiam Stencil & Woodblock Display",
+        "layer": "art_direction",
+        "description": "High-contrast Indonesian artisan signage aesthetic combining condensed woodblock display numerals, warm enamel color blocks, and crisp bilingual roast origin tags.",
+        "visual_traits": [
+          "bold enamel color-blocking",
+          "high-contrast condensed woodblock numerals",
+          "asymmetric roastery sack stamp alignment",
+          "zero generic beige card frames"
+        ],
+        "emotional_voice": [
+          "authentic",
+          "local-craft",
+          "sensory",
+          "tactile"
+        ],
+        "works_for": [
+          "Indonesian coffee roasteries",
+          "artisan bakeries",
+          "local heritage culinary brands"
+        ],
+        "caution": [
+          "Avoid distressing body copy or menu prices",
+          "Do not imitate colonial clichés"
+        ],
+        "distinct_from": "Neo-Vintage / Heritage Revival — specifically encodes Indonesian kopitiam enamel signage and Nusantara roast origin labeling rather than Western retro motifs.",
+        "pairs_with": [
+          "slab_serif",
+          "condensed_sans",
+          "overprint_color_blocking",
+          "monumental_headline"
+        ],
+        "language_notes": "Tested with Indonesian words (Seduhan, Sangrai, Gula Aren) and Rupiah numerals (Rp 28.000); full Latin diacritic support.",
+        "source": "Indonesian specialty coffee packaging & traditional enamel signage craft observations (principles extracted, no work copied).",
+        "confidence": "medium"
+      }
+    },
+    "gap_cycle_result": null
+  },
+  "niche_blueprint": {
+    "niche_key": "coffee_roastery",
+    "niche_label": "Coffee Shop & Specialty Roastery",
+    "primary_business_goal": "Hadirkan atmosfer ruang seduh, kurasi beans & menu dengan fotografi tajam, serta jam seduh + lokasi + pre-order WA tanpa ribet.",
+    "website_section_architecture": [
+      {
+        "id": "atmosphere_hero",
+        "purpose": "Atmosfer ruang seduh & fotografi full-bleed slow bar"
+      },
+      {
+        "id": "curated_menu",
+        "purpose": "Kurasi beans mingguan & menu minuman dengan foto editorial + harga jernih tanpa kartu kaku"
+      },
+      {
+        "id": "space_ritual",
+        "purpose": "Cerita ruang & ritual sangrai (suasana WFC, roast profile, manual brew)"
+      },
+      {
+        "id": "hours_location_wa",
+        "purpose": "Jam seduh harian, alamat + peta lokasi, FAQ ringkas, dan jalur pre-order WA"
+      }
+    ],
+    "photo_set": {
+      "hero": "assets/demos/coffee_hero.png",
+      "secondary": "assets/demos/coffee_beans.png",
+      "accent": "assets/demos/coffee_matcha.png"
+    },
+    "registry_audit": {
+      "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
+      "registry_exists": true,
+      "skillspector_ready": true,
+      "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
+      "covered_domains": [
+        "anti-slop-web-design",
+        "editorial-typography",
+        "hospitality-photography"
+      ],
+      "missing_domains": [],
+      "needs_scout": false
+    }
+  },
+  "assets": {
+    "desktop_screenshot": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\desktop.png",
+    "mobile_screenshot": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\mobile.png",
+    "desktop_detail": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\detail_desktop.png",
+    "mobile_detail": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\detail_mobile.png",
+    "hero_photo": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\media\\hero.png",
+    "secondary_photo": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\media\\secondary.png",
+    "accent_photo": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\media\\accent.png"
+  },
+  "headline_alternatives": [
+    {
+      "hook_html": "Ruang digital sehangat seduhan <em>Seduh Pagi Coffee Roastery.</em>",
+      "sub": "Menu harian, jam buka, dan jalur pesan cepat disusun dalam satu tampilan tenang."
+    },
+    {
+      "hook_html": "Cerita kopi <em>Seduh Pagi Coffee Roastery</em>, kini dalam satu halaman bersih.",
+      "sub": "Dari pilihan seduhan sampai lokasi kedai, semuanya langsung terbaca di layar HP."
+    },
+    {
+      "hook_html": "Pengalaman berkunjung ke <em>Seduh Pagi Coffee Roastery</em> dimulai dari layar pertama.",
+      "sub": "Konsep web mobile-first yang membawa suasana kedai ke genggaman pelanggan."
+    }
+  ],
+  "slides": [
+    {
+      "n": 1,
+      "name": "01_cover",
+      "kind": "poster",
+      "role": "Graphic Campaign Poster",
+      "composition": "monumental_headline",
+      "kicker": "WEBSITE CONCEPT · Coffee Roastery",
+      "poster_display_top": "SEDUH",
+      "poster_display_bottom": "DIGITAL.",
+      "poster_stamp": "SLOW BAR WEB",
+      "headline_html": "Ruang digital sehangat seduhan <em>Seduh Pagi Coffee Roastery.</em>",
+      "subhead": "Menu harian, jam buka, dan jalur pesan cepat disusun dalam satu tampilan tenang.",
+      "visual": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\media\\hero.png",
+      "visual_preview": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\desktop.png"
+    },
+    {
+      "n": 2,
+      "name": "02_context",
+      "kind": "story",
+      "role": "Website Experience Story",
+      "composition": "asymmetric_editorial",
+      "kicker": "ATMOSFER & MENU · SEDUH PAGI COFFEE ROASTERY",
+      "poster_statement": "BUKAN MENU PDF BURAM.",
+      "headline_html": "Hangatnya ruang seduh <em>Seduh Pagi Coffee Roastery</em>, kini terasa sejak layar pertama.",
+      "subhead": "Halaman dirancang melayani tujuan utama kedai: suasana ruang, kurasi beans (Es Kopi Susu Gula Aren, Single Origin V60), jam seduh, dan jalur Pesan via WhatsApp.",
+      "story_highlights": [
+        [
+          "01",
+          "Atmosfer ruang nyata",
+          "Fotografi slow bar yang membawa kehangatan kedai sebelum tamu datang."
+        ],
+        [
+          "02",
+          "Menu & harga terbaca",
+          "3 sajian pilihan tampil bersih tanpa perlu zoom file PDF."
+        ],
+        [
+          "03",
+          "Pre-order & arah lokasi",
+          "Jam buka harian, alamat, dan tombol 'Pesan via WhatsApp' siap satu sentuhan."
+        ]
+      ],
+      "journey_steps": [
+        {
+          "num": "01 / TUJUAN WEB",
+          "title": "Atmosfer + kurasi seduhan",
+          "desc": "Hadirkan atmosfer ruang seduh, kurasi beans & menu dengan fotografi tajam, serta jam seduh + lokasi + pre-order WA tanpa ribet."
+        },
+        {
+          "num": "02 / ISI NYATA",
+          "title": "Beans, menu & jam seduh",
+          "desc": "3 layanan/menu langsung terbaca rapi tanpa perlu membuka dokumen tambahan."
+        },
+        {
+          "num": "03 / AKSI CEPAT",
+          "title": "Jalur 'Pesan via WhatsApp'",
+          "desc": "Langsung terbaca di layar HP tanpa perlu cari link berbelit."
+        }
+      ],
+      "visual": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\media\\secondary.png",
+      "visual_mobile": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\mobile.png"
+    },
+    {
+      "n": 3,
+      "name": "03_reveal",
+      "kind": "reveal",
+      "role": "Actual Website — Desktop & Mobile",
+      "composition": "screenshot_led",
+      "kicker": "ACTUAL INTERFACE · seduh-pagi-coffee-roastery.id",
+      "headline_html": "Desktop &amp; mobile untuk Seduh Pagi Coffee Roastery.",
+      "subhead": "Neo-Vintage / Heritage Revival · WEBSITE CONCEPT",
+      "visual_desktop": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\desktop.png",
+      "visual_mobile": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\mobile.png",
+      "visual_detail": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\detail_desktop.png"
+    },
+    {
+      "n": 4,
+      "name": "04_details",
+      "kind": "details",
+      "role": "Inside Section Walkthrough",
+      "composition": "caption_led",
+      "kicker": "INSIDE THE EXPERIENCE",
+      "headline_html": "Dari kurasi menu sampai jam seduh.",
+      "closing_label": "Website Concept",
+      "walkthrough_points": [
+        {
+          "num": "01 / KATALOG",
+          "title": "3 item tampil langsung",
+          "desc": "Termasuk Es Kopi Susu Gula Aren, Single Origin V60 dengan detail yang langsung terbaca tanpa zoom."
+        },
+        {
+          "num": "02 / INFO INTI",
+          "title": "Kartu ringkas satu pandang",
+          "desc": "Menampilkan Jam Operasional, Lokasi secara terstruktur di sisi hero."
+        },
+        {
+          "num": "03 / AKSI LANGSUNG",
+          "title": "Tombol 'Pesan via WhatsApp'",
+          "desc": "Diposisikan konsisten agar pengunjung langsung melihat langkah berikutnya."
+        }
+      ],
+      "visual_desktop_detail": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\detail_desktop.png",
+      "visual_mobile_detail": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\detail_mobile.png"
+    }
+  ],
+  "caption": "eksplorasi konsep website buat Seduh Pagi Coffee Roastery (coffee roastery).\n\nkali ini gw bawa pendekatan visual organic / natural / warm supaya karakter websitenya beneran nyambung sama identitas tempatnya—bukan sekadar pakai satu template untuk semua bisnis. semua 3 item utama, jam operasional, sampai jalur akses cepat langsung kelihatan rapi di layar HP tanpa perlu zoom.\n\ndraft awal tadi sebenarnya udah cukup bersih, tapi Alan tetap ngotot ngerapihin proporsi jarak di layar mobile sampai tiap bagian terasa pas dilihat.\n\ngeser sampai slide terakhir buat lihat detail tampilannya di desktop dan HP. menurut lo arah visualnya udah cocok sama karakter Seduh Pagi Coffee Roastery?\n\n#websiteshowcase #webdesignindonesia #uidesign #goandalan\n",
+  "facts": {
+    "brand_header": "Seduh Pagi Coffee Roastery",
+    "headline": "Seduhan tenang, biji segar dari sangrai pekan ini.",
+    "sub": "Ruang mampir untuk kerja fokus, ngobrol pelan, atau ambil es kopi susu sebelum mulai hari—menu harian, notes rasa, dan jam seduh langsung jernih di HP.",
+    "cta_label": "Pesan via WhatsApp",
+    "secondary_label": "Lihat Kurasi Menu →",
+    "nav_links": [
+      "Menu & Layanan",
+      "Suasana",
+      "Lokasi"
+    ],
+    "items": [
+      {
+        "name": "Es Kopi Susu Gula Aren",
+        "price": "Rp 28.000",
+        "tag": "SIGNATURE"
+      },
+      {
+        "name": "Single Origin V60",
+        "price": "Rp 36.000",
+        "tag": "SIGNATURE"
+      },
+      {
+        "name": "Ceremonial Uji Matcha",
+        "price": "Rp 38.000",
+        "tag": "SIGNATURE"
+      }
+    ],
+    "info_rows": [
+      {
+        "label": "JAM OPERASIONAL",
+        "value": "Setiap hari · 07.30 – 21.30 WIB"
+      },
+      {
+        "label": "LOKASI",
+        "value": "Jl. Cipete Raya No. 28, Jakarta Selatan"
+      }
+    ],
+    "faq_count": 0,
+    "story_point_count": 0,
+    "has_layanan_section": false,
+    "broken_site_images": 0,
+    "project_status": "WEBSITE CONCEPT",
+    "is_full_demo": false,
+    "mobile_header_audit": {
+      "ok": true,
+      "truncated": false,
+      "overflowX": 0,
+      "pageOverflowX": 0,
+      "brandText": "Seduh Pagi Coffee Roastery",
+      "brandWidth": 279,
+      "brandHeight": 19
+    }
+  },
+  "brief_config": {
+    "content_format": "carousel",
+    "art_direction_preset": "warm_organic_hospitality",
+    "sequence_type": "auto",
+    "voice_id": "auto",
+    "hook_pattern_id": "auto",
+    "creative_note": ""
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "slug": "pangkas-teduh-barbershop",
+  "brand_name": "Pangkas Teduh Barbershop",
+  "project_status": "WEBSITE CONCEPT",
+  "demo_style": "figcraft_sharp_grid",
+  "carousel_style": "swiss_minimal",
+  "slide_sequence": "custom",
+  "caption_voice": "casual_gw",
+  "style_label": "Minimal / Swiss Grid",
+  "primary_style": "Minimal / Swiss Grid",
+  "secondary_style": "Technical / Architectural",
+  "storytelling_method": "Walkthrough / User Journey",
+  "palette": {
+    "bg": "#F6F4EE",
+    "surface": "#ECE9E0",
+    "ink": "#121417",
+    "muted": "#4C5159",
+    "accent": "#C93E23",
+    "accent_2": "#121417",
+    "badge_bg": "#ECE9E0",
+    "badge_ink": "#121417",
+    "border": "rgba(18, 20, 23, 0.18)"
+  },
+  "typography": "Anton (Condensed Grotesk Poster) + Space Grotesk (Geometric Sans)",
+  "typography_direction": {
+    "profile_key": "barbershop_grooming",
+    "matched_profile": true,
+    "business_industry": "Barbershop",
+    "audience": "Calon pelanggan barbershop yang mengakses via Instagram mobile",
+    "brand_personality": [
+      "Sharp",
+      "Disciplined",
+      "Architectural",
+      "Confident",
+      "Craft-First"
+    ],
+    "primary_art_direction": "Constructivism",
+    "primary_art_direction_key": "constructivism",
+    "secondary_influence": "Swiss / International Typographic Style",
+    "secondary_influence_key": "swiss_international",
+    "typeface_categories": {
+      "display": "Condensed Grotesk Poster",
+      "supporting": "Geometric Sans",
+      "metadata": "Monospaced"
+    },
+    "typeface_keys": {
+      "display": "impact_condensed",
+      "supporting": "geometric_sans",
+      "metadata": "monospaced"
+    },
+    "typographic_treatments": [
+      "oversized_display",
+      "extreme_scale_contrast",
+      "outline_type",
+      "rotated_typography"
+    ],
+    "composition_behavior": [
+      "diagonal_momentum",
+      "split_canvas",
+      "screenshot_led",
+      "modular_grid"
+    ],
+    "graphic_language": [
+      "high-contrast cobalt/acid-signal or charcoal/vermilion graphic blocking",
+      "monumental condensed display paired with stroke-only ghost outline layer",
+      "precision barber-pole diagonal tension without tacky clip-art"
+    ],
+    "palette_direction": "Architectural obsidian (#121316) + crisp bone chalk (#F4F2EC) + signal vermilion (#D94226) + brushed steel (#8E96A0) — sharp grooming authority with zero generic boxed templates.",
+    "texture_direction": "Clean matte architectural poster finish; crisp 1px structural rules.",
+    "screenshot_role": "Framed inside graphic cutout energy on Slides 1-2; crisp device-free + overlapping reveal on Slides 3-4.",
+    "content_emphasis": [
+      "Haircut style craft gallery",
+      "Clean borderless service & tariff list",
+      "Instant WhatsApp slot booking"
+    ],
+    "readability_risks": [
+      "Keep rotated/outline lettering strictly decorative/headline-only; never rotate service names or prices.",
+      "Ensure brand names like 'Pangkas Teduh Barbershop' scale responsively at 390px without truncation."
+    ],
+    "reasons_for_selection": [
+      "Constructivism + Swiss International style mirrors the razor-sharp geometry of precision haircuts.",
+      "Condensed Grotesk Poster (Anton / Barlow Condensed) creates immediate scroll-stopping poster impact distinct from serif hospitality brands."
+    ],
+    "poster_palette": {
+      "poster_bg": "#121316",
+      "poster_ink": "#F4F2EC",
+      "poster_accent": "#D94226",
+      "poster_secondary_bg": "#D94226",
+      "poster_secondary_ink": "#121316",
+      "poster_highlight": "#E6D28B"
+    },
+    "fonts": {
+      "fonts_url": "https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+      "font_display": "'Anton', 'Barlow Condensed', sans-serif",
+      "font_body": "'Space Grotesk', 'DM Sans', sans-serif",
+      "font_mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+      "font_pair_label": "Anton (Condensed Grotesk Poster) + Space Grotesk (Geometric Sans)",
+      "metadata_font_label": "IBM Plex Mono (Monospaced)"
+    },
+    "gap_signal": {
+      "detected": false
+    },
+    "gap_cycle_result": null
+  },
+  "niche_blueprint": {
+    "niche_key": "barbershop_grooming",
+    "niche_label": "Barbershop & Men's Grooming",
+    "primary_business_goal": "Tampilkan presisi galeri gaya potongan, daftar layanan & tarif bersih tanpa kotak berat, dan alur booking slot WhatsApp tanpa antre.",
+    "website_section_architecture": [
+      {
+        "id": "craft_hero",
+        "purpose": "Hero arsitektural ruang pangkas dengan fotografi kursi & alat grooming"
+      },
+      {
+        "id": "style_gallery",
+        "purpose": "Galeri visual hasil potongan & detail craft barber"
+      },
+      {
+        "id": "tariff_sheet",
+        "purpose": "Daftar layanan & tarif bergaya editorial menu sheet (garis tipis, nol kotak berat)"
+      },
+      {
+        "id": "booking_slot_wa",
+        "purpose": "Alur 3 langkah booking slot, jam operasional, lokasi, FAQ & tombol WA langsung"
+      }
+    ],
+    "photo_set": {
+      "hero": "assets/demos/barber_hero.png",
+      "secondary": "assets/demos/barber_craft.png",
+      "accent": "assets/demos/barber_tools.png"
+    },
+    "registry_audit": {
+      "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
+      "registry_exists": true,
+      "skillspector_ready": true,
+      "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
+      "covered_domains": [
+        "anti-slop-web-design",
+        "swiss-constructivist-typography",
+        "grooming-editorial"
+      ],
+      "missing_domains": [],
+      "needs_scout": false
+    }
+  },
+  "compositions": [
+    "diagonal_momentum",
+    "split_canvas",
+    "screenshot_led",
+    "modular_grid"
+  ],
+  "closing_label": "Website Concept",
+  "contact_sheet": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\contact_sheet.png",
+  "cover_grid": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\cover_grid.png",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "learning_log": {
+    "recorded": true,
+    "path": "D:\\goandalan\\skills\\instagram-creative-agent\\references\\learning_log.md",
+    "gap_detected": false,
+    "gap_signal": {
+      "detected": false
+    }
+  },
+  "learning_cycle": null,
+  "slides": [
+    {
+      "n": 1,
+      "name": "01_cover.png",
+      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\01_cover.png",
+      "width": 2160,
+      "height": 2700,
+      "size_bytes": 1641383
+    },
+    {
+      "n": 2,
+      "name": "02_context.png",
+      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\02_context.png",
+      "width": 2160,
+      "height": 2700,
+      "size_bytes": 737690
+    },
+    {
+      "n": 3,
+      "name": "03_reveal.png",
+      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\03_reveal.png",
+      "width": 2160,
+      "height": 2700,
+      "size_bytes": 1164166
+    },
+    {
+      "n": 4,
+      "name": "04_details.png",
+      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\04_details.png",
+      "width": 2160,
+      "height": 2700,
+      "size_bytes": 1124530
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "content_format": "reels",
+  "brand_name": "Rangka Baja Workshop",
+  "industry": "Bengkel Motor Custom & Garage",
+  "city": "Surabaya",
+  "domain": "rangka-baja-workshop.id",
+  "sequence_type": "scroll_reveal_showcase",
+  "art_direction_preset": "auto",
+  "carousel_style": "bold_brutalist",
+  "primary_style": "Bold Typography / Brutalist",
+  "voice_id": "V1",
+  "caption_voice": "casual_gw",
+  "hook_pattern_id": "HOOK-D1",
+  "creative_note": "",
+  "motion_profile": {
+    "scroll": "in_out_quart",
+    "text": "out_back",
+    "stagger": 0.05,
+    "text_dur": 0.4,
+    "fade_s": 0.12,
+    "wipe_s": 0.36,
+    "hold_frac": 0.3,
+    "shift_px": 64,
+    "intensity": "high",
+    "name": "snappy"
+  },
+  "video": {
+    "encoded_mp4": true,
+    "path": "D:\\goandalan\\site\\demos\\besi-tua-custom-garage\\reels\\reels.mp4",
+    "size_bytes": 1623460,
+    "duration_sec": 11.87,
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "codec": "h264/yuv420p+aac",
+    "audio_mode": "voiceover_and_music",
+    "has_audio": true,
+    "silent_audio_track": false,
+    "voiceover_voice": "id-ID-ArdiNeural",
+    "voiceover_tempo": 1.0,
+    "audio_note": ""
+  },
+  "capture": {
+    "source_kind": "file",
+    "desktop_png": "reels_desktop.png",
+    "mobile_tall_png": "reels_mobile_tall.png",
+    "mobile_hero_png": "reels_mobile_hero.png",
+    "viewport": [
+      390,
+      844
+    ],
+    "dpr": 2.0,
+    "cta": {
+      "label": "Konsultasi Build via WA",
+      "kind": "button",
+      "bbox_vp": {
+        "x": 20,
+        "y": 413.15625,
+        "w": 203.9375,
+        "h": 48.390625
+      },
+      "plain": "reels_cta_plain.png",
+      "highlight": "reels_cta_highlight.png"
+    },
+    "tabs": null,
+    "section_tops": [
+      65
+    ],
+    "image_report": {
+      "height": 1321,
+      "images": 1,
+      "broken": 0
+    },
+    "page_height_css": 1321,
+    "tall_scale": "device"
+  },
+  "cover": "D:\\goandalan\\site\\demos\\besi-tua-custom-garage\\reels\\cover_reels.png",
+  "beat_script": [
+    {
+      "beat": 1,
+      "time_range": "0.0s – 2.8s",
+      "title": "Hook tipografi kinetik",
+      "visual": "Poster tipografi + intip desktop; kata hook turun bergiliran.",
+      "on_screen_text": "Satu keputusan tipografi di video ini yang bikin tampilan bengkel motor custom & garage jauh lebih",
+      "transition": "Masuk: Cut langsung"
+    },
+    {
+      "beat": 2,
+      "time_range": "2.8s – 4.5s",
+      "title": "Reveal hero website",
+      "visual": "Hero website demo asli di dalam bezel HP dengan push-in halus.",
+      "on_screen_text": "Hero yang langsung jelas.",
+      "transition": "Masuk: Crossfade 0.12s"
+    },
+    {
+      "beat": 3,
+      "time_range": "4.5s – 8.2s",
+      "title": "Scroll mobile terkontrol",
+      "visual": "Scroll asli 390×844 dengan easing dan jeda di section penting.",
+      "on_screen_text": "Scroll mulus, info terbaca.",
+      "transition": "Masuk: Crossfade 0.12s"
+    },
+    {
+      "beat": 4,
+      "time_range": "8.2s – 10.3s",
+      "title": "Demo fitur / tombol kontak",
+      "visual": "Tombol kontak/booking asli pada halaman demo disorot dan ditekan.",
+      "on_screen_text": "Tombol kontak, nyata.",
+      "transition": "Masuk: Crossfade 0.12s"
+    },
+    {
+      "beat": 5,
+      "time_range": "10.3s – 11.9s",
+      "title": "Penutup showcase",
+      "visual": "Nama brand fiktif + tag Website Concept (tanpa CTA iklan jasa).",
+      "on_screen_text": "Rangka Baja Workshop",
+      "transition": "Masuk: Crossfade 0.12s"
+    }
+  ],
+  "on_screen_texts": [
+    "Satu keputusan tipografi di video ini yang bikin tampilan bengkel motor custom & garage jauh lebih",
+    "Hero yang langsung jelas.",
+    "Scroll mulus, info terbaca.",
+    "Tombol kontak, nyata.",
+    "Rangka Baja Workshop",
+    "Eksplorasi tampilan mobile Rangka Baja Workshop (bengkel motor custom & garage) dengan arah Bold Typography / Brutalist."
+  ],
+  "safe_zone": {
+    "left": 64,
+    "right": 960,
+    "top": 290,
+    "bottom": 1580
+  }
+}

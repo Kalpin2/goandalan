@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gw sama alan (@goandalan) — Selected Work</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F6F3EC;
+      --surface: #EDE8DD;
+      --surface-hover: #E5DFD2;
+      --ink: #1C1917;
+      --muted: #625E56;
+      --accent: #284B36;
+      --accent-hover: #1e3b2b;
+      --border: rgba(28, 25, 23, 0.14);
+      --card-bg: rgba(255, 255, 255, 0.45);
+      --card-border: rgba(28, 25, 23, 0.12);
+      --badge-bg: rgba(40, 75, 54, 0.08);
+      --badge-ink: #284B36;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121110;
+        --surface: #1B1A18;
+        --surface-hover: #242220;
+        --ink: #F4EFE6;
+        --muted: #A39D93;
+        --accent: #86B093;
+        --accent-hover: #A7C4A0;
+        --border: rgba(244, 239, 230, 0.14);
+        --card-bg: rgba(27, 26, 24, 0.5);
+        --card-border: rgba(244, 239, 230, 0.12);
+        --badge-bg: rgba(134, 176, 147, 0.12);
+        --badge-ink: #A7C4A0;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 20px 72px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero { padding: 44px 0 32px; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.02em; line-height: 1.04; }
+    .hero h1 { font-size: clamp(38px, 7vw, 68px); margin-bottom: 14px; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p { font-size: 16px; color: var(--muted); max-width: 580px; }
+    .mono { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .mono-badge { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+    .mono-style { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--muted); }
+    .list { border-top: 1.5px solid var(--ink); margin-top: 8px; }
+    .demo-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 28px 20px;
+      margin: 0 -20px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s ease, transform 0.15s ease;
+      border-radius: 8px;
+    }
+    .demo-row:hover {
+      background: var(--surface);
+    }
+    .row-meta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .demo-row h2 { font-size: clamp(28px, 4.5vw, 40px); color: var(--ink); line-height: 1.15; }
+    .demo-row p.desc { font-size: 15px; color: var(--muted); max-width: 660px; line-height: 1.55; }
+    .row-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+    .row-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      color: var(--badge-ink);
+    }
+    .row-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .demo-row:hover .row-link { color: var(--accent-hover); transform: translateX(2px); }
+    .empty-box { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .cta-box {
+      margin-top: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <span>GW &amp; ALAN</span>
+      <span>@goandalan · SELECTED WORK</span>
+    </div>
+
+    <header class="hero">
+      <h1 class="serif">Mikir bareng <em>Alan.</em><br>Orangnya fiktif, hasilnya real.</h1>
+      <p>Kumpulan preview &amp; studi kasus website bisnis lokal dengan karakter visual unik per brand.</p>
+    </header>
+
+    <main class="list">
+      
+            <a class="demo-row" href="./demos/seduh-pagi-coffee-roastery/index.html">
+              <div class="row-meta">
+                <span class="mono-badge">01 / Coffee Roastery</span>
+                <span class="mono-style">Warm Organic Hospitality</span>
+              </div>
+              <h2 class="serif">Seduh Pagi Coffee Roastery</h2>
+              <p class="desc">Belum punya website resmi—pengunjung dari IG masih harus scroll highlight buat cari menu dan jam buka.</p>
+              <div class="row-footer">
+                <span class="row-pill">Mobile 390px Verified</span>
+                <span class="row-link">buka live preview →</span>
+              </div>
+            </a>
+            
+    </main>
+
+    <footer class="cta-box">
+      <div>
+        <div class="mono">SELECTED WEBSITE CONCEPTS</div>
+        <p style="color: var(--muted); font-size: 14px; margin-top: 4px;">arsip preview konsep website lokal · @goandalan</p>
+      </div>
+      <a class="cta-btn" href="https://instagram.com/goandalan" target="_blank" rel="noopener noreferrer">@goandalan →</a>
+    </footer>
+  </div>
+</body>
+</html>

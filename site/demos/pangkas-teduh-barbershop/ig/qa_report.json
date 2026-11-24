@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "score": 100,
+  "passed_checks": 8,
+  "total_checks": 8,
+  "checks": [
+    {
+      "name": "composition_variety",
+      "passed": true,
+      "detail": "4/4 unique compositions (diagonal_momentum, split_canvas, screenshot_led, modular_grid)"
+    },
+    {
+      "name": "wcag_contrast",
+      "passed": true,
+      "detail": "ink/bg=16.78:1, ink/surface=15.2:1 (target >=4.5:1)"
+    },
+    {
+      "name": "output_pngs_4x5",
+      "passed": true,
+      "detail": "01_cover.png=2160x2700, 02_context.png=2160x2700, 03_reveal.png=2160x2700, 04_details.png=2160x2700"
+    },
+    {
+      "name": "contact_sheet_2x2",
+      "passed": true,
+      "detail": "contact_sheet.png present"
+    },
+    {
+      "name": "dom_layout_and_legibility",
+      "passed": true,
+      "detail": "S01:ovY=0,minFont=32px | S02:ovY=0,minFont=32px | S03:ovY=0,minFont=32px | S04:ovY=0,minFont=32px"
+    },
+    {
+      "name": "typography_anti_patterns",
+      "passed": true,
+      "detail": "0 anti-patterns triggered",
+      "triggered": []
+    },
+    {
+      "name": "typography_system",
+      "passed": true,
+      "detail": "roles=Condensed Grotesk Poster/Geometric Sans/Monospaced | minBody=32px (>=32px) | scaleRatio=4.62x | antiPatterns=0"
+    },
+    {
+      "name": "showcase_guardrails",
+      "passed": true,
+      "detail": "sales_cta_free=True, caption_voice=casual_gw (ok=True), alan_mentions=1"
+    }
+  ],
+  "warnings": [],
+  "revisions": []
+}

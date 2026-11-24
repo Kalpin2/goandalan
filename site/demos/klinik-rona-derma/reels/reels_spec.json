@@ -1,0 +1,134 @@
+{
+  "content_format": "reels",
+  "brand_name": "Seri Skin Sanctuary",
+  "industry": "Klinik Estetika & Perawatan Kulit",
+  "city": "Jakarta Selatan",
+  "domain": "seri-skin-sanctuary.id",
+  "sequence_type": "kinetic_editorial",
+  "art_direction_preset": "auto",
+  "carousel_style": "cinematic_premium",
+  "primary_style": "Cinematic / Premium Campaign",
+  "voice_id": "V2",
+  "caption_voice": "formal_editorial",
+  "hook_pattern_id": "HOOK-B1",
+  "creative_note": "",
+  "motion_profile": {
+    "scroll": "in_out_sine",
+    "text": "out_quart",
+    "stagger": 0.11,
+    "text_dur": 0.72,
+    "fade_s": 0.4,
+    "wipe_s": 0.55,
+    "hold_frac": 0.22,
+    "shift_px": 40,
+    "intensity": "low",
+    "name": "refined"
+  },
+  "video": {
+    "encoded_mp4": true,
+    "path": "D:\\goandalan\\site\\demos\\klinik-rona-derma\\reels\\reels.mp4",
+    "size_bytes": 1306724,
+    "duration_sec": 10.03,
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "codec": "h264/yuv420p+aac",
+    "audio_mode": "music_only",
+    "has_audio": true,
+    "silent_audio_track": false,
+    "voiceover_voice": "",
+    "voiceover_tempo": 1.0,
+    "audio_note": ""
+  },
+  "capture": {
+    "source_kind": "file",
+    "desktop_png": "reels_desktop.png",
+    "mobile_tall_png": "reels_mobile_tall.png",
+    "mobile_hero_png": "reels_mobile_hero.png",
+    "viewport": [
+      390,
+      844
+    ],
+    "dpr": 2.0,
+    "cta": {
+      "label": "Jadwalkan Konsultasi",
+      "kind": "button",
+      "bbox_vp": {
+        "x": 20,
+        "y": 361.6875,
+        "w": 190.6875,
+        "h": 48.390625
+      },
+      "plain": "reels_cta_plain.png",
+      "highlight": "reels_cta_highlight.png"
+    },
+    "tabs": null,
+    "section_tops": [
+      65
+    ],
+    "image_report": {
+      "height": 1221,
+      "images": 1,
+      "broken": 0
+    },
+    "page_height_css": 1221,
+    "tall_scale": "device"
+  },
+  "cover": "D:\\goandalan\\site\\demos\\klinik-rona-derma\\reels\\cover_reels.png",
+  "beat_script": [
+    {
+      "beat": 1,
+      "time_range": "0.0s – 2.0s",
+      "title": "Pembuka tipografi besar",
+      "visual": "Kata-kata hook turun bergiliran (waterfall) di atas poster tipografi.",
+      "on_screen_text": "Tiga detik pertama di layar HP menentukan: lanjut membaca atau langsung menutup tab.",
+      "transition": "Masuk: Cut langsung"
+    },
+    {
+      "beat": 2,
+      "time_range": "2.0s – 4.1s",
+      "title": "Satu wawasan desain",
+      "visual": "Satu keputusan desain utama ditulis sebagai pernyataan raksasa.",
+      "on_screen_text": "Tipografi besar, info terpenting duluan.",
+      "transition": "Masuk: Crossfade 0.40s"
+    },
+    {
+      "beat": 3,
+      "time_range": "4.1s – 6.5s",
+      "title": "Detail antarmuka nyata",
+      "visual": "3 potongan nyata dari halaman demo masuk bergiliran (modular grid).",
+      "on_screen_text": "Detail antarmuka nyata.",
+      "transition": "Masuk: Crossfade 0.40s"
+    },
+    {
+      "beat": 4,
+      "time_range": "6.5s – 8.5s",
+      "title": "Ritme gerak",
+      "visual": "Scroll bergaya slow-fast-slow dengan jeda di tiap section.",
+      "on_screen_text": "Satu ide per layar.",
+      "transition": "Masuk: Crossfade 0.40s"
+    },
+    {
+      "beat": 5,
+      "time_range": "8.5s – 10.0s",
+      "title": "Pernyataan penutup",
+      "visual": "Kalimat penutup kinetik + tag Website Concept.",
+      "on_screen_text": "Rapi di layar kecil, jelas di mata.",
+      "transition": "Masuk: Crossfade 0.40s"
+    }
+  ],
+  "on_screen_texts": [
+    "Tiga detik pertama di layar HP menentukan: lanjut membaca atau langsung menutup tab.",
+    "Tipografi besar, info terpenting duluan.",
+    "Detail antarmuka nyata.",
+    "Satu ide per layar.",
+    "Rapi di layar kecil, jelas di mata.",
+    "Eksplorasi tampilan mobile Seri Skin Sanctuary (klinik estetika & perawatan kulit) dengan arah Cinematic / Premium Campaign."
+  ],
+  "safe_zone": {
+    "left": 64,
+    "right": 960,
+    "top": 290,
+    "bottom": 1580
+  }
+}

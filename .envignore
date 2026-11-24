@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+leads.db
+leads.db-shm
+leads.db-wal
+*.pem
+*.key

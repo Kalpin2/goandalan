@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F6F4EE; --surface: #ECE9E0; --ink: #121417;
+      --muted: #4C5159; --accent: #C93E23; --border: rgba(18, 20, 23, 0.18);
+      --font-display: 'Anton', 'Barlow Condensed', sans-serif; --font-body: 'Space Grotesk', 'DM Sans', sans-serif; --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #111; display: flex; justify-content: center; padding: 24px; }
+    .preview-canvas {
+      width: 1440px; height: 1080px; background: var(--bg); color: var(--ink);
+      padding: 58px 70px; display: flex; flex-direction: column; justify-content: space-between;
+      font-family: var(--font-body); position: relative; overflow: hidden;
+    }
+    .top-bar { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+    .top-title { font-family: var(--font-display); font-size: 44px; font-weight: 700; letter-spacing: -0.02em; }
+    .top-title em { font-style: italic; color: var(--accent); }
+    .top-meta { font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .stage { position: relative; flex: 1; display: flex; align-items: center; margin: 24px 0; }
+    .browser-frame {
+      width: 1040px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 0px; padding: 15px;
+      box-shadow: none;
+    }
+    .browser-top { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
+    .dot { width: 10px; height: 10px; border-radius: 0; background: var(--border); }
+    .url-pill { margin-left: 10px; font-family: var(--font-mono); font-size: 14px; color: var(--muted); background: var(--bg); padding: 4px 14px; border-radius: 0px; border: 1px solid var(--border); }
+    .browser-screen { width: 100%; height: 632px; background: var(--bg); border-radius: 0px; overflow: hidden; border: 1px solid var(--border); }
+    .browser-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .phone-frame {
+      position: absolute; right: 0; bottom: 8px; width: 326px; background: #141413;
+      border-radius: 10px; padding: 12px;
+      box-shadow: 0 32px 72px rgba(0,0,0,0.28);
+    }
+    .phone-screen { width: 100%; height: 652px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+    .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .bottom-bar { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 15px; color: var(--muted); }
+    .style-pill { background: var(--surface); border: 1px solid var(--border); color: var(--ink); padding: 6px 14px; border-radius: 0px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <section class="preview-canvas" id="preview">
+    <div class="top-bar">
+      <div class="top-title">Konsep halaman <em>Pangkas Teduh Barbershop</em></div>
+      <div class="top-meta">DESKTOP + MOBILE · Barbershop</div>
+    </div>
+    <div class="stage">
+      <div class="browser-frame">
+        <div class="browser-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url-pill">pangkas-teduh-barbershop.id</span></div>
+        <div class="browser-screen"><img src="ig/desktop.png" alt="Desktop Concept" /></div>
+      </div>
+      <div class="phone-frame">
+        <div class="phone-screen"><img src="ig/mobile.png" alt="Mobile Concept" /></div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <span>website concept · @goandalan</span>
+      <span class="style-pill">Minimal / Swiss Grid</span>
+    </div>
+  </section>
+</body>
+</html>

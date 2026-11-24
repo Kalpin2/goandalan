@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F6F3EC;
+      --surface: #EDE8DD;
+      --ink: #1E1E1E;
+      --muted: #6B675F;
+      --accent: #3E4E3C; /* Swap to #9A523B for Terracotta */
+      --border: rgba(30, 30, 30, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #111; display: flex; flex-direction: column; gap: 40px; align-items: center; padding: 40px; }
+
+    /* 9:16 STORY & HIGHLIGHT CANVAS */
+    .slide {
+      width: 1080px;
+      height: 1920px;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 120px 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* MINIMALIST HIGHLIGHT COVER VARIANT */
+    .slide.highlight-cover {
+      background: var(--surface);
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 84px;
+    }
+
+    .highlight-label {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: 136px;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 720px;
+    }
+
+    .serif { font-family: 'Instrument Serif', serif; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; }
+    .mono { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <!-- HIGHLIGHT COVER 1: SELECTED WORK -->
+  <section class="slide highlight-cover" data-name="01_cover_selected_work">
+    <h1 class="highlight-label">Selected<br>Work</h1>
+  </section>
+
+  <!-- HIGHLIGHT COVER 2: PROCESS -->
+  <section class="slide highlight-cover" data-name="02_cover_process">
+    <h1 class="highlight-label">Process</h1>
+  </section>
+
+  <!-- HIGHLIGHT COVER 3: NOTES -->
+  <section class="slide highlight-cover" data-name="03_cover_notes">
+    <h1 class="highlight-label">Notes</h1>
+  </section>
+
+  <!-- HIGHLIGHT COVER 4: WHO'S ALAN? -->
+  <section class="slide highlight-cover" data-name="04_cover_whos_alan">
+    <h1 class="highlight-label">Who's<br>Alan?</h1>
+  </section>
+
+</body>
+</html>

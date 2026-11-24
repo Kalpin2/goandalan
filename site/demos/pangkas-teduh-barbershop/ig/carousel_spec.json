@@ -1,0 +1,497 @@
+{
+  "schema_version": "3.1",
+  "project": {
+    "brand_name": "Pangkas Teduh Barbershop",
+    "industry": "Barbershop",
+    "city": "Bandung",
+    "domain": "pangkas-teduh-barbershop.id",
+    "project_status": "WEBSITE CONCEPT",
+    "is_full_demo": false,
+    "issue_num": 70,
+    "handle": "@goandalan",
+    "caption_voice": "casual_gw",
+    "slide_sequence": "custom",
+    "allow_sales_cta": false
+  },
+  "creative_direction": {
+    "style_key": "swiss_minimal",
+    "primary_style": "Minimal / Swiss Grid",
+    "secondary_style": "Technical / Architectural",
+    "storytelling_key": "user_journey",
+    "storytelling_method": "Walkthrough / User Journey",
+    "storytelling_arc": "Kebutuhan pengunjung -> langkah pertama -> eksplorasi -> jalur aksi akhir.",
+    "palette": {
+      "bg": "#F6F4EE",
+      "surface": "#ECE9E0",
+      "ink": "#121417",
+      "muted": "#4C5159",
+      "accent": "#C93E23",
+      "accent_2": "#121417",
+      "badge_bg": "#ECE9E0",
+      "badge_ink": "#121417",
+      "border": "rgba(18, 20, 23, 0.18)"
+    },
+    "fonts": {
+      "fonts_url": "https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+      "font_display": "'Anton', 'Barlow Condensed', sans-serif",
+      "font_body": "'Space Grotesk', 'DM Sans', sans-serif",
+      "font_mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+      "custom_font_file": ""
+    },
+    "geometry": {
+      "radius": "0px",
+      "border_width": "1px",
+      "shadow": "none",
+      "top_stripe": true,
+      "uppercase_display": false,
+      "dark": false,
+      "brutalist": false,
+      "grid_bg": false
+    },
+    "compositions": {
+      "slide_1": "split_composition",
+      "slide_2": "journey_strip",
+      "slide_3": "device_free_screenshot",
+      "slide_4": "grid_showcase"
+    },
+    "closing_label": "Website Concept",
+    "direction_summary": "Grid arsitektural bersudut tajam 0px, garis struktural 1px tanpa shadow, dan aksen kontras tinggi agar info layanan terpindai dalam sekejap.",
+    "reference_image": "",
+    "reference_palette_applied": false,
+    "typography_direction": {
+      "profile_key": "barbershop_grooming",
+      "matched_profile": true,
+      "business_industry": "Barbershop",
+      "audience": "Calon pelanggan barbershop yang mengakses via Instagram mobile",
+      "brand_personality": [
+        "Sharp",
+        "Disciplined",
+        "Architectural",
+        "Confident",
+        "Craft-First"
+      ],
+      "primary_art_direction": "Constructivism",
+      "primary_art_direction_key": "constructivism",
+      "secondary_influence": "Swiss / International Typographic Style",
+      "secondary_influence_key": "swiss_international",
+      "typeface_categories": {
+        "display": "Condensed Grotesk Poster",
+        "supporting": "Geometric Sans",
+        "metadata": "Monospaced"
+      },
+      "typeface_keys": {
+        "display": "impact_condensed",
+        "supporting": "geometric_sans",
+        "metadata": "monospaced"
+      },
+      "typographic_treatments": [
+        "oversized_display",
+        "extreme_scale_contrast",
+        "outline_type",
+        "rotated_typography"
+      ],
+      "composition_behavior": [
+        "diagonal_momentum",
+        "split_canvas",
+        "screenshot_led",
+        "modular_grid"
+      ],
+      "graphic_language": [
+        "high-contrast cobalt/acid-signal or charcoal/vermilion graphic blocking",
+        "monumental condensed display paired with stroke-only ghost outline layer",
+        "precision barber-pole diagonal tension without tacky clip-art"
+      ],
+      "palette_direction": "Architectural obsidian (#121316) + crisp bone chalk (#F4F2EC) + signal vermilion (#D94226) + brushed steel (#8E96A0) — sharp grooming authority with zero generic boxed templates.",
+      "texture_direction": "Clean matte architectural poster finish; crisp 1px structural rules.",
+      "screenshot_role": "Framed inside graphic cutout energy on Slides 1-2; crisp device-free + overlapping reveal on Slides 3-4.",
+      "content_emphasis": [
+        "Haircut style craft gallery",
+        "Clean borderless service & tariff list",
+        "Instant WhatsApp slot booking"
+      ],
+      "readability_risks": [
+        "Keep rotated/outline lettering strictly decorative/headline-only; never rotate service names or prices.",
+        "Ensure brand names like 'Pangkas Teduh Barbershop' scale responsively at 390px without truncation."
+      ],
+      "reasons_for_selection": [
+        "Constructivism + Swiss International style mirrors the razor-sharp geometry of precision haircuts.",
+        "Condensed Grotesk Poster (Anton / Barlow Condensed) creates immediate scroll-stopping poster impact distinct from serif hospitality brands."
+      ],
+      "poster_palette": {
+        "poster_bg": "#121316",
+        "poster_ink": "#F4F2EC",
+        "poster_accent": "#D94226",
+        "poster_secondary_bg": "#D94226",
+        "poster_secondary_ink": "#121316",
+        "poster_highlight": "#E6D28B"
+      },
+      "fonts": {
+        "fonts_url": "https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+        "font_display": "'Anton', 'Barlow Condensed', sans-serif",
+        "font_body": "'Space Grotesk', 'DM Sans', sans-serif",
+        "font_mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+        "font_pair_label": "Anton (Condensed Grotesk Poster) + Space Grotesk (Geometric Sans)",
+        "metadata_font_label": "IBM Plex Mono (Monospaced)"
+      },
+      "gap_signal": {
+        "detected": false
+      },
+      "gap_cycle_result": null
+    },
+    "niche_blueprint": {
+      "niche_key": "barbershop_grooming",
+      "niche_label": "Barbershop & Men's Grooming",
+      "primary_business_goal": "Tampilkan presisi galeri gaya potongan, daftar layanan & tarif bersih tanpa kotak berat, dan alur booking slot WhatsApp tanpa antre.",
+      "website_section_architecture": [
+        {
+          "id": "craft_hero",
+          "purpose": "Hero arsitektural ruang pangkas dengan fotografi kursi & alat grooming"
+        },
+        {
+          "id": "style_gallery",
+          "purpose": "Galeri visual hasil potongan & detail craft barber"
+        },
+        {
+          "id": "tariff_sheet",
+          "purpose": "Daftar layanan & tarif bergaya editorial menu sheet (garis tipis, nol kotak berat)"
+        },
+        {
+          "id": "booking_slot_wa",
+          "purpose": "Alur 3 langkah booking slot, jam operasional, lokasi, FAQ & tombol WA langsung"
+        }
+      ],
+      "photo_set": {
+        "hero": "assets/demos/barber_hero.png",
+        "secondary": "assets/demos/barber_craft.png",
+        "accent": "assets/demos/barber_tools.png"
+      },
+      "registry_audit": {
+        "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
+        "registry_exists": true,
+        "skillspector_ready": true,
+        "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
+        "covered_domains": [
+          "anti-slop-web-design",
+          "swiss-constructivist-typography",
+          "grooming-editorial"
+        ],
+        "missing_domains": [],
+        "needs_scout": false
+      }
+    },
+    "font_pair_label": "Anton (Condensed Grotesk Poster) + Space Grotesk (Geometric Sans)"
+  },
+  "typography_direction": {
+    "profile_key": "barbershop_grooming",
+    "matched_profile": true,
+    "business_industry": "Barbershop",
+    "audience": "Calon pelanggan barbershop yang mengakses via Instagram mobile",
+    "brand_personality": [
+      "Sharp",
+      "Disciplined",
+      "Architectural",
+      "Confident",
+      "Craft-First"
+    ],
+    "primary_art_direction": "Constructivism",
+    "primary_art_direction_key": "constructivism",
+    "secondary_influence": "Swiss / International Typographic Style",
+    "secondary_influence_key": "swiss_international",
+    "typeface_categories": {
+      "display": "Condensed Grotesk Poster",
+      "supporting": "Geometric Sans",
+      "metadata": "Monospaced"
+    },
+    "typeface_keys": {
+      "display": "impact_condensed",
+      "supporting": "geometric_sans",
+      "metadata": "monospaced"
+    },
+    "typographic_treatments": [
+      "oversized_display",
+      "extreme_scale_contrast",
+      "outline_type",
+      "rotated_typography"
+    ],
+    "composition_behavior": [
+      "diagonal_momentum",
+      "split_canvas",
+      "screenshot_led",
+      "modular_grid"
+    ],
+    "graphic_language": [
+      "high-contrast cobalt/acid-signal or charcoal/vermilion graphic blocking",
+      "monumental condensed display paired with stroke-only ghost outline layer",
+      "precision barber-pole diagonal tension without tacky clip-art"
+    ],
+    "palette_direction": "Architectural obsidian (#121316) + crisp bone chalk (#F4F2EC) + signal vermilion (#D94226) + brushed steel (#8E96A0) — sharp grooming authority with zero generic boxed templates.",
+    "texture_direction": "Clean matte architectural poster finish; crisp 1px structural rules.",
+    "screenshot_role": "Framed inside graphic cutout energy on Slides 1-2; crisp device-free + overlapping reveal on Slides 3-4.",
+    "content_emphasis": [
+      "Haircut style craft gallery",
+      "Clean borderless service & tariff list",
+      "Instant WhatsApp slot booking"
+    ],
+    "readability_risks": [
+      "Keep rotated/outline lettering strictly decorative/headline-only; never rotate service names or prices.",
+      "Ensure brand names like 'Pangkas Teduh Barbershop' scale responsively at 390px without truncation."
+    ],
+    "reasons_for_selection": [
+      "Constructivism + Swiss International style mirrors the razor-sharp geometry of precision haircuts.",
+      "Condensed Grotesk Poster (Anton / Barlow Condensed) creates immediate scroll-stopping poster impact distinct from serif hospitality brands."
+    ],
+    "poster_palette": {
+      "poster_bg": "#121316",
+      "poster_ink": "#F4F2EC",
+      "poster_accent": "#D94226",
+      "poster_secondary_bg": "#D94226",
+      "poster_secondary_ink": "#121316",
+      "poster_highlight": "#E6D28B"
+    },
+    "fonts": {
+      "fonts_url": "https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+      "font_display": "'Anton', 'Barlow Condensed', sans-serif",
+      "font_body": "'Space Grotesk', 'DM Sans', sans-serif",
+      "font_mono": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+      "font_pair_label": "Anton (Condensed Grotesk Poster) + Space Grotesk (Geometric Sans)",
+      "metadata_font_label": "IBM Plex Mono (Monospaced)"
+    },
+    "gap_signal": {
+      "detected": false
+    },
+    "gap_cycle_result": null
+  },
+  "niche_blueprint": {
+    "niche_key": "barbershop_grooming",
+    "niche_label": "Barbershop & Men's Grooming",
+    "primary_business_goal": "Tampilkan presisi galeri gaya potongan, daftar layanan & tarif bersih tanpa kotak berat, dan alur booking slot WhatsApp tanpa antre.",
+    "website_section_architecture": [
+      {
+        "id": "craft_hero",
+        "purpose": "Hero arsitektural ruang pangkas dengan fotografi kursi & alat grooming"
+      },
+      {
+        "id": "style_gallery",
+        "purpose": "Galeri visual hasil potongan & detail craft barber"
+      },
+      {
+        "id": "tariff_sheet",
+        "purpose": "Daftar layanan & tarif bergaya editorial menu sheet (garis tipis, nol kotak berat)"
+      },
+      {
+        "id": "booking_slot_wa",
+        "purpose": "Alur 3 langkah booking slot, jam operasional, lokasi, FAQ & tombol WA langsung"
+      }
+    ],
+    "photo_set": {
+      "hero": "assets/demos/barber_hero.png",
+      "secondary": "assets/demos/barber_craft.png",
+      "accent": "assets/demos/barber_tools.png"
+    },
+    "registry_audit": {
+      "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
+      "registry_exists": true,
+      "skillspector_ready": true,
+      "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
+      "covered_domains": [
+        "anti-slop-web-design",
+        "swiss-constructivist-typography",
+        "grooming-editorial"
+      ],
+      "missing_domains": [],
+      "needs_scout": false
+    }
+  },
+  "assets": {
+    "desktop_screenshot": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\desktop.png",
+    "mobile_screenshot": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\mobile.png",
+    "desktop_detail": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\detail_desktop.png",
+    "mobile_detail": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\detail_mobile.png",
+    "hero_photo": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\media\\hero.png",
+    "secondary_photo": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\media\\secondary.png",
+    "accent_photo": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\media\\accent.png"
+  },
+  "headline_alternatives": [
+    {
+      "hook_html": "Dari potong rapi ke alur booking <em>Pangkas Teduh Barbershop.</em>",
+      "sub": "Tarif layanan, jam operasional, dan tombol reservasi langsung terbaca di layar HP."
+    },
+    {
+      "hook_html": "Tampilan setajam hasil potongan <em>Pangkas Teduh Barbershop.</em>",
+      "sub": "Layanan grooming, jadwal buka, dan akses booking tersusun rapi tanpa langkah berbelit."
+    },
+    {
+      "hook_html": "Cara lebih ringkas mengenal layanan <em>Pangkas Teduh Barbershop.</em>",
+      "sub": "Struktur presisi untuk cek paket perawatan dan amankan slot kunjungan."
+    }
+  ],
+  "slides": [
+    {
+      "n": 1,
+      "name": "01_cover",
+      "kind": "poster",
+      "role": "Graphic Campaign Poster",
+      "composition": "diagonal_momentum",
+      "kicker": "WEBSITE CONCEPT · Barbershop",
+      "poster_display_top": "POTONG",
+      "poster_display_bottom": "PRESISI.",
+      "poster_stamp": "GROOMING WEB",
+      "headline_html": "Dari potong rapi ke alur booking <em>Pangkas Teduh Barbershop.</em>",
+      "subhead": "Tarif layanan, jam operasional, dan tombol reservasi langsung terbaca di layar HP.",
+      "visual": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\media\\hero.png",
+      "visual_preview": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\desktop.png"
+    },
+    {
+      "n": 2,
+      "name": "02_context",
+      "kind": "story",
+      "role": "Website Experience Story",
+      "composition": "split_canvas",
+      "kicker": "GALERI & SLOT BOOKING · PANGKAS TEDUH BARBERSHOP",
+      "poster_statement": "TANPA ANTRE. TANPA TEBAK.",
+      "headline_html": "Ketajaman craft <em>Pangkas Teduh Barbershop</em> diterjemahkan ke struktur web yang tegas.",
+      "subhead": "Dibangun untuk goal barbershop: galeri craft potongan, daftar layanan & tarif bersih tanpa kotak berat, dan jalur cepat 'Booking Slot via WA'.",
+      "story_highlights": [
+        [
+          "01",
+          "Galeri potongan & alat",
+          "Visual craft nyata yang membangun rasa yakin sebelum duduk di kursi."
+        ],
+        [
+          "02",
+          "Lembar tarif editorial",
+          "3 layanan tersusun dalam garis tipis yang langsung terpindai di HP."
+        ],
+        [
+          "03",
+          "Alur booking WA cepat",
+          "Jadwal buka jelas dan tombol 'Booking Slot via WA' mengunci slot tanpa antre."
+        ]
+      ],
+      "journey_steps": [
+        {
+          "num": "01 / TUJUAN WEB",
+          "title": "Galeri craft + booking slot",
+          "desc": "Tampilkan presisi galeri gaya potongan, daftar layanan & tarif bersih tanpa kotak berat, dan alur booking slot WhatsApp tanpa antre."
+        },
+        {
+          "num": "02 / ISI NYATA",
+          "title": "Tarif bersih tanpa kotak berat",
+          "desc": "3 layanan/menu langsung terbaca rapi tanpa perlu membuka dokumen tambahan."
+        },
+        {
+          "num": "03 / AKSI CEPAT",
+          "title": "Jalur 'Booking Slot via WA'",
+          "desc": "Langsung terbaca di layar HP tanpa perlu cari link berbelit."
+        }
+      ],
+      "visual": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\media\\secondary.png",
+      "visual_mobile": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\mobile.png"
+    },
+    {
+      "n": 3,
+      "name": "03_reveal",
+      "kind": "reveal",
+      "role": "Actual Website — Desktop & Mobile",
+      "composition": "screenshot_led",
+      "kicker": "ACTUAL INTERFACE · pangkas-teduh-barbershop.id",
+      "headline_html": "Desktop &amp; mobile untuk Pangkas Teduh Barbershop.",
+      "subhead": "Constructivism · WEBSITE CONCEPT",
+      "visual_desktop": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\desktop.png",
+      "visual_mobile": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\mobile.png",
+      "visual_detail": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\detail_desktop.png"
+    },
+    {
+      "n": 4,
+      "name": "04_details",
+      "kind": "details",
+      "role": "Inside Section Walkthrough",
+      "composition": "modular_grid",
+      "kicker": "INSIDE THE EXPERIENCE",
+      "headline_html": "Tarif bersih & jalur booking slot.",
+      "closing_label": "Website Concept",
+      "walkthrough_points": [
+        {
+          "num": "01 / KATALOG",
+          "title": "3 item tampil langsung",
+          "desc": "Termasuk Precision Haircut + Wash, Beard Trim & Hot Towel dengan detail yang langsung terbaca tanpa zoom."
+        },
+        {
+          "num": "02 / INFO INTI",
+          "title": "Kartu ringkas satu pandang",
+          "desc": "Menampilkan Jam Operasional, Lokasi secara terstruktur di sisi hero."
+        },
+        {
+          "num": "03 / AKSI LANGSUNG",
+          "title": "Tombol 'Booking Slot via WA'",
+          "desc": "Diposisikan konsisten agar pengunjung langsung melihat langkah berikutnya."
+        }
+      ],
+      "visual_desktop_detail": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\detail_desktop.png",
+      "visual_mobile_detail": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\detail_mobile.png"
+    }
+  ],
+  "caption": "eksplorasi konsep website buat Pangkas Teduh Barbershop (barbershop).\n\nkali ini gw bawa pendekatan visual minimal / swiss grid supaya karakter websitenya beneran nyambung sama identitas tempatnya—bukan sekadar pakai satu template untuk semua bisnis. semua 3 item utama, jam operasional, sampai jalur akses cepat langsung kelihatan rapi di layar HP tanpa perlu zoom.\n\ndraft awal tadi sebenarnya udah cukup bersih, tapi Alan tetap ngotot ngerapihin proporsi jarak di layar mobile sampai tiap bagian terasa pas dilihat.\n\ngeser sampai slide terakhir buat lihat detail tampilannya di desktop dan HP. menurut lo arah visualnya udah cocok sama karakter Pangkas Teduh Barbershop?\n\n#websiteshowcase #webdesignindonesia #uidesign #goandalan\n",
+  "facts": {
+    "brand_header": "PANGKAS TEDUH BARBERSHOP",
+    "headline": "POTONGAN RAPI YANG TETAP ENAK DILIHAT DUA MINGGU SETELAHNYA.",
+    "sub": "Konsultasi singkat sebelum gunting dimulai—galeri gaya potongan jelas, daftar tarif bersih tanpa ribet, dan slot booking WhatsApp tanpa antre.",
+    "cta_label": "Booking Slot via WA",
+    "secondary_label": "Lihat Layanan & Tarif →",
+    "nav_links": [
+      "Menu & Layanan",
+      "Suasana",
+      "Lokasi"
+    ],
+    "items": [
+      {
+        "name": "Precision Haircut + Wash",
+        "price": "Rp 75.000",
+        "tag": "SIGNATURE"
+      },
+      {
+        "name": "Beard Trim & Hot Towel",
+        "price": "Rp 45.000",
+        "tag": "SIGNATURE"
+      },
+      {
+        "name": "Full Grooming Package",
+        "price": "Rp 110.000",
+        "tag": "SIGNATURE"
+      }
+    ],
+    "info_rows": [
+      {
+        "label": "JAM OPERASIONAL",
+        "value": "Selasa – Minggu · 10.00 – 21.00 WIB"
+      },
+      {
+        "label": "LOKASI",
+        "value": "Jl. Progo No. 14, Citarum, Bandung"
+      }
+    ],
+    "faq_count": 0,
+    "story_point_count": 0,
+    "has_layanan_section": false,
+    "broken_site_images": 0,
+    "project_status": "WEBSITE CONCEPT",
+    "is_full_demo": false,
+    "mobile_header_audit": {
+      "ok": true,
+      "truncated": false,
+      "overflowX": 0,
+      "pageOverflowX": 0,
+      "brandText": "PANGKAS TEDUH BARBERSHOP",
+      "brandWidth": 248,
+      "brandHeight": 19
+    }
+  },
+  "brief_config": {
+    "content_format": "carousel",
+    "art_direction_preset": "figcraft_sharp_grid",
+    "sequence_type": "auto",
+    "voice_id": "auto",
+    "hook_pattern_id": "auto",
+    "creative_note": ""
+  }
+}

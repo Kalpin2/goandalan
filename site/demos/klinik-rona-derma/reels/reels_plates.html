@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" /><style>
+    :root {
+      --bg:#0F0F0E; --surface:#1A1917; --ink:#F3EFE6; --muted:#A69F92;
+      --accent:#C8A96E; --accent-2:#E5CFA3; --border:rgba(243, 239, 230, 0.15);
+      --p1-bg:#121110; --p1-ink:#F3EFE6;
+      --p2-bg:#1B1917; --p2-ink:#F3EFE6; --p-hi:#D9BA82;
+      --font-display:'Cormorant Garamond', Georgia, serif; --font-body:'Plus Jakarta Sans', system-ui, sans-serif; --font-mono:'IBM Plex Mono', 'JetBrains Mono', monospace;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:#000; display:flex; flex-direction:column; gap:24px; }
+    .plate { width:1080px; height:1920px; position:relative; overflow:hidden; font-family:var(--font-body);
+      display:flex; flex-direction:column; justify-content:space-between;
+      padding:290px 120px 340px 64px; }
+    .bar { display:flex; justify-content:space-between; align-items:center; gap:24px; font-family:var(--font-mono);
+      font-size:32px; line-height:1.1; letter-spacing:0.03em; text-transform:uppercase; opacity:.9; white-space:nowrap; }
+    .bar span { overflow:hidden; text-overflow:ellipsis; }
+    .bar .bl { max-width:68%; } .bar .br { max-width:38%; text-align:right; }
+    .bar.top { padding-bottom:18px; border-bottom:1.5px solid currentColor; }
+    .bar.bot { padding-top:18px; border-top:1.5px solid currentColor; }
+    .mid { display:flex; flex-direction:column; }
+    .p-hook { background:var(--p1-bg); color:var(--p1-ink); }
+    .kicker { font-family:var(--font-mono); font-size:32px; letter-spacing:.06em; text-transform:uppercase;
+      color:var(--p-hi); margin-bottom:26px; }
+    .hook-title { font-family:var(--font-display); font-weight:700; line-height:1.0; letter-spacing:-0.02em; }
+    .hook-title .w { display:inline-block; }
+    .hook-sub { margin-top:30px; font-size:36px; line-height:1.34; opacity:.92; max-width:860px;
+      display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .hook-peek { margin-top:44px; border-radius:22px; overflow:hidden; height:360px; background:var(--bg);
+      border:2px solid color-mix(in srgb, var(--p1-ink) 26%, transparent); box-shadow:0 36px 80px rgba(0,0,0,.38); }
+    .hook-peek img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+    .outro-tag { align-self:flex-start; padding:12px 24px; border:2px solid var(--p-hi); border-radius:999px; margin-bottom:34px;
+      font-family:var(--font-mono); font-size:32px; letter-spacing:.04em; color:var(--p-hi); text-transform:uppercase; }
+    .p-phone { background:var(--p2-bg); color:var(--p2-ink); justify-content:flex-start; }
+    .p-phone .bar.bot { margin-top:auto; }
+    .phone-title { margin-top:30px; font-family:var(--font-display); font-size:56px; font-weight:700; line-height:1.1; white-space:nowrap; }
+    .phone-frame { position:absolute; left:216px; top:480px; width:592px; height:1000px;
+      border-radius:52px; background:#141416; padding:16px;
+      border:3px solid color-mix(in srgb, var(--p2-ink) 26%, transparent); box-shadow:0 44px 96px rgba(0,0,0,.48); }
+    .phone-slot { width:560px; height:968px; border-radius:38px; background:#09090b; overflow:hidden; }
+    .p-before { background:#1c1c1f; color:#EDEDED; justify-content:flex-start; }
+    .p-before .bar.bot { margin-top:auto; }
+    .illus { width:100%; height:100%; background:#d8d8d8; padding:14px; display:flex; flex-direction:column; gap:12px; font-family:Arial,sans-serif; }
+    .i-nav { display:flex; gap:6px; } .i-nav i { flex:1; height:26px; background:#9a9a9a; }
+    .i-banner { height:210px; background:#b5b5b5; display:flex; gap:8px; padding:8px; } .i-banner b { flex:1; background:#a0a0a0; }
+    .i-btns { display:flex; gap:6px; } .i-btns span { flex:1; background:#777; color:#ddd; font-size:20px; text-align:center; padding:8px 2px; }
+    .i-lines { display:flex; flex-direction:column; gap:7px; } .i-lines u { height:12px; background:#a9a9a9; display:block; width:100%; }
+    .i-lines u:nth-child(3n) { width:72%; } .i-lines u:nth-child(4n) { width:88%; }
+    .p-reveal { background:var(--bg); color:var(--ink); justify-content:flex-start; }
+    .p-reveal .bar.bot { margin-top:auto; }
+    .det-head { margin-top:30px; font-family:var(--font-display); font-size:60px; font-weight:700; line-height:1.1; }
+    .det-grid { margin-top:30px; display:grid; grid-template-columns:440px 440px; grid-template-rows:380px 380px; gap:16px; }
+    .tile { position:relative; border-radius:24px; overflow:hidden; border:2px solid var(--border); background-repeat:no-repeat; background-color:var(--surface);
+      box-shadow:0 22px 48px rgba(0,0,0,.18); }
+    .tile.t0 { grid-row:1 / span 2; }
+    .tile em { position:absolute; left:14px; bottom:14px; font-style:normal; font-family:var(--font-mono); font-size:32px;
+      background:var(--ink); color:var(--bg); padding:6px 14px; border-radius:999px; }
+    body.hide-rv .rv { visibility:hidden; }
+    body.layer-mode, body.layer-mode .plate { background:transparent !important; }
+    body.layer-mode .plate * { visibility:hidden !important; }
+    body.layer-mode .rv, body.layer-mode .rv * { visibility:visible !important; }
+    </style></head><body>
+  <section id="plate-hook" class="plate p-hook">
+    <div class="bar top"><span class="bl">Seri Skin Sanctuary</span><span class="br">Jakarta…</span></div>
+    <div class="mid">
+      <div class="kicker">WEBSITE CONCEPT · Luxury Editorial</div>
+      <h1 class="hook-title" style="font-size:72px"><span class="w rv">Tiga</span> <span class="w rv">detik</span> <span class="w rv">pertama</span> <span class="w rv">di</span> <span class="w rv">layar</span> <span class="w rv">HP</span> <span class="w rv">menentukan:</span> <span class="w rv">lanjut</span> <span class="w rv">membaca</span> <span class="w rv">atau</span> <span class="w rv">langsung</span> <span class="w rv">menutup</span> <span class="w rv">tab.</span></h1>
+      <p class="hook-sub">Eksplorasi tampilan mobile Seri Skin Sanctuary (klinik estetika &amp; perawatan kulit) dengan arah…</p>
+      <div class="hook-peek"><img src="file:///D:/goandalan/site/demos/klinik-rona-derma/reels/reels_desktop.png" alt="Website concept" /></div>
+    </div>
+    <div class="bar bot"><span class="bl">@goandalan</span><span class="br">konsep fiktif</span></div>
+  </section>
+
+  <section id="plate-insight" class="plate p-phone" style="justify-content:space-between">
+    <div class="bar top"><span class="bl">SATU KEPUTUSAN DESAIN</span><span class="br">Jakarta…</span></div>
+    <div class="mid">
+      <h1 class="hook-title" style="font-size:92px"><span class="w rv">Tipografi</span> <span class="w rv">besar,</span> <span class="w rv">info</span> <span class="w rv">terpenting</span> <span class="w rv">duluan.</span></h1>
+      <p class="hook-sub">Arah visual Luxury Editorial.</p>
+    </div>
+    <div class="bar bot"><span class="bl">@goandalan</span><span class="br">konsep fiktif</span></div>
+  </section>
+
+  <section id="plate-details" class="plate p-reveal">
+    <div class="bar top"><span class="bl">DETAIL ANTARMUKA</span><span class="br">Jakarta…</span></div>
+    <div class="det-head">Detail antarmuka nyata.</div>
+    <div class="det-grid"><div class="tile rv t0" style="background-image:url('file:///D:/goandalan/site/demos/klinik-rona-derma/reels/reels_mobile_tall.png');background-size:440px auto;background-position:0 -0px"><em>01 · Hero</em></div><div class="tile rv t1" style="background-image:url('file:///D:/goandalan/site/demos/klinik-rona-derma/reels/reels_mobile_tall.png');background-size:440px auto;background-position:0 -523px"><em>02 · Konten</em></div><div class="tile rv t2" style="background-image:url('file:///D:/goandalan/site/demos/klinik-rona-derma/reels/reels_mobile_tall.png');background-size:440px auto;background-position:0 -964px"><em>03 · Detail</em></div></div>
+    <div class="bar bot"><span class="bl">@goandalan</span><span class="br">dari halaman demo</span></div>
+  </section>
+
+  <section id="plate-phone_rhythm" class="plate p-phone">
+    <div class="bar top"><span class="bl">RITME MOBILE</span><span class="br">Jakarta…</span></div>
+    <div class="phone-title">Satu ide per layar.</div>
+    <div class="phone-frame"><div class="phone-slot"></div></div>
+    <div class="bar bot"><span class="bl">@goandalan</span><span class="br">mobile 390×844</span></div>
+  </section>
+
+  <section id="plate-outro" class="plate p-hook p-outro">
+    <div class="bar top"><span class="bl">STUDI KASUS KONSEP FIKTIF</span><span class="br">@goandalan</span></div>
+    <div class="mid">
+      <span class="outro-tag">Website Concept · @goandalan</span>
+      <h1 class="hook-title" style="font-size:92px"><span class="w rv">Rapi</span> <span class="w rv">di</span> <span class="w rv">layar</span> <span class="w rv">kecil,</span> <span class="w rv">jelas</span> <span class="w rv">di</span> <span class="w rv">mata.</span></h1>
+      <p class="hook-sub">Arah visual Luxury Editorial untuk kategori klinik estetika &amp; perawatan…. Simpan sebagai referensi tata letak.</p>
+    </div>
+    <div class="bar bot"><span class="bl">GW SAMA ALAN</span><span class="br">Jakarta…</span></div>
+  </section></body></html>

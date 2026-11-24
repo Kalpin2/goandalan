@@ -1,0 +1,9 @@
+eksplorasi konsep website buat Pangkas Teduh Barbershop (barbershop).
+
+kali ini gw bawa pendekatan visual minimal / swiss grid supaya karakter websitenya beneran nyambung sama identitas tempatnya—bukan sekadar pakai satu template untuk semua bisnis. semua 3 item utama, jam operasional, sampai jalur akses cepat langsung kelihatan rapi di layar HP tanpa perlu zoom.
+
+draft awal tadi sebenarnya udah cukup bersih, tapi Alan tetap ngotot ngerapihin proporsi jarak di layar mobile sampai tiap bagian terasa pas dilihat.
+
+geser sampai slide terakhir buat lihat detail tampilannya di desktop dan HP. menurut lo arah visualnya udah cocok sama karakter Pangkas Teduh Barbershop?
+
+#websiteshowcase #webdesignindonesia #uidesign #goandalan

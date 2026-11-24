@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    
+    :root {
+      --bg: #F6F4EE;
+      --surface: #ECE9E0;
+      --ink: #121417;
+      --muted: #4C5159;
+      --accent: #C93E23;
+      --accent-2: #121417;
+      --border: rgba(18, 20, 23, 0.18);
+
+      --p1-bg: #121316;
+      --p1-ink: #F4F2EC;
+      --p1-accent: #D94226;
+      --p2-bg: #D94226;
+      --p2-ink: #121316;
+      --p-hi: #E6D28B;
+
+      --font-display: 'Anton', 'Barlow Condensed', sans-serif;
+      --font-body: 'Space Grotesk', 'DM Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+      --radius: 0px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #111; display: flex; flex-direction: column; gap: 40px; align-items: center; padding: 40px; }
+
+    .slide {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-body);
+    }
+
+    /* ================= SLIDE 1: FULL-BLEED GRAPHIC POSTER ================= */
+    .poster-s1 {
+      width: 100%; height: 100%;
+      background: var(--p1-bg);
+      color: var(--p1-ink);
+      padding: 58px 64px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+    }
+    .p1-top-meta, .p1-foot {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.1em;
+      text-transform: uppercase; opacity: 0.9;
+      position: relative; z-index: 4;
+    }
+    .p1-top-meta { padding-bottom: 16px; border-bottom: 1.5px solid color-mix(in srgb, var(--p1-ink) 28%, transparent); }
+    .p1-foot { padding-top: 16px; border-top: 1.5px solid color-mix(in srgb, var(--p1-ink) 28%, transparent); }
+
+    /* Slide 1 Variant A: Monumental Heritage / Art-Magazine Poster */
+    .p1-mon-hero {
+      flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 22px 0 18px; gap: 18px; min-height: 0; position: relative; z-index: 3;
+    }
+    .p1-mon-kicker {
+      font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--p-hi); margin-bottom: 8px;
+    }
+    .p1-giant-mon {
+      font-family: var(--font-display);
+      font-size: 126px; font-weight: 700; line-height: 0.88;
+      letter-spacing: -0.04em; text-transform: uppercase;
+      color: var(--p1-ink);
+    }
+    .p1-mon-break {
+      display: block; color: var(--p-hi); padding-left: 48px;
+    }
+    .p1-mon-collage {
+      position: relative; flex: 1; min-height: 0; width: 100%;
+    }
+    .p1-mon-photo {
+      width: 78%; height: 100%; border-radius: var(--radius); overflow: hidden;
+      border: 2px solid color-mix(in srgb, var(--p1-ink) 22%, transparent);
+    }
+    .p1-mon-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .p1-mon-inset {
+      position: absolute; right: 0; bottom: 18px; width: 410px;
+      background: var(--p1-accent); padding: 10px; border-radius: var(--radius);
+      box-shadow: 0 26px 56px rgba(0,0,0,0.38);
+      border: 1.5px solid color-mix(in srgb, var(--p1-ink) 25%, transparent);
+    }
+    .p1-inset-label {
+      font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.08em;
+      color: var(--p-hi); margin-bottom: 8px; text-transform: uppercase;
+    }
+    .p1-mon-inset img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center; border-radius: 4px; display: block; }
+    .p1-mon-bottom-bar {
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
+      padding-top: 8px;
+    }
+    .p1-mon-sub {
+      font-size: 32px; line-height: 1.28; max-width: 760px;
+      color: var(--p1-ink); opacity: 0.94;
+    }
+    .p1-issue-stamp {
+      flex-shrink: 0; width: 102px; height: 102px;
+      border: 2px solid var(--p-hi); border-radius: 999px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: var(--font-mono); color: var(--p-hi);
+    }
+    .p1-issue-stamp span { font-size: 12px; letter-spacing: 0.14em; }
+    .p1-issue-stamp strong { font-size: 36px; line-height: 1; }
+
+    /* Slide 1 Variant B: Constructivist / Diagonal Momentum Poster */
+    .poster-constructivist { overflow: hidden; }
+    .p1-const-stage {
+      flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 24px 0 18px; position: relative; z-index: 3; min-height: 0; overflow: hidden;
+    }
+    .p1-vermilion-slash {
+      position: absolute; right: 8px; top: 36px; width: 340px; height: 112px;
+      background: var(--p1-accent); transform: rotate(-8deg); opacity: 0.92; z-index: 0;
+    }
+    .p1-outline-ghost {
+      position: absolute; left: 0px; top: 8px; z-index: 1;
+      font-family: var(--font-display); font-size: 166px; line-height: 0.85;
+      letter-spacing: 0.01em; text-transform: uppercase;
+      color: transparent; -webkit-text-stroke: 2px color-mix(in srgb, var(--p1-ink) 22%, transparent);
+      pointer-events: none; user-select: none;
+    }
+    .p1-giant-const {
+      position: relative; z-index: 2;
+      font-family: var(--font-display); font-size: 148px; font-weight: 800;
+      line-height: 0.88; letter-spacing: 0.01em; text-transform: uppercase;
+      color: var(--p1-ink);
+    }
+    .p1-accent-word { color: var(--p1-accent); }
+    .p1-const-visual-row {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 24px;
+      align-items: end; flex: 1; min-height: 0; margin-top: 20px;
+    }
+    .p1-cutout-photo {
+      height: 100%; max-height: 460px; position: relative; overflow: hidden;
+      border-top: 5px solid var(--p1-accent);
+    }
+    .p1-cutout-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .p1-photo-tag {
+      position: absolute; left: 16px; bottom: 16px;
+      background: var(--p1-bg); color: var(--p1-ink);
+      font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.1em;
+      padding: 6px 12px;
+    }
+    .p1-const-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; height: 100%; max-height: 460px; }
+    .p1-lead-copy { font-size: 32px; line-height: 1.24; color: var(--p1-ink); opacity: 0.94; }
+    .p1-web-peek { border: 2px solid color-mix(in srgb, var(--p1-ink) 28%, transparent); overflow: hidden; }
+    .p1-web-peek img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center; display: block; }
+    .p1-vertical-edge {
+      position: absolute; right: 14px; bottom: 104px;
+      writing-mode: vertical-rl;
+      font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.2em;
+      color: var(--p1-ink); opacity: 0.5; white-space: nowrap;
+    }
+
+    /* ================= SLIDE 2: EDITORIAL CAMPAIGN STORY ================= */
+    .poster-s2 {
+      width: 100%; height: 100%;
+      background: var(--p2-bg);
+      color: var(--p2-ink);
+      padding: 58px 64px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .p2-top-meta, .p2-foot {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.1em;
+      text-transform: uppercase; opacity: 0.88;
+    }
+    .p2-top-meta { padding-bottom: 16px; border-bottom: 1.5px solid color-mix(in srgb, var(--p2-ink) 26%, transparent); }
+    .p2-foot { padding-top: 16px; border-top: 1.5px solid color-mix(in srgb, var(--p2-ink) 26%, transparent); }
+
+    .p2-split-banner {
+      padding: 20px 0 16px;
+      border-bottom: 2px solid color-mix(in srgb, var(--p2-ink) 35%, transparent);
+    }
+    .p2-mega-line {
+      font-family: var(--font-display); font-size: 74px; font-weight: 800;
+      line-height: 0.94; letter-spacing: 0.01em; text-transform: uppercase;
+      color: var(--p2-ink);
+    }
+    .p2-split-body, .p2-asym-grid {
+      flex: 1; display: grid; grid-template-columns: 1.15fr 0.85fr;
+      gap: 38px; align-items: center; padding: 24px 0; min-height: 0;
+    }
+    .p2-left-col { display: flex; flex-direction: column; gap: 22px; }
+    .p2-statement-badge {
+      display: inline-block; align-self: flex-start;
+      background: var(--p-hi); color: #161412;
+      font-family: var(--font-mono); font-size: 16px; font-weight: 600;
+      letter-spacing: 0.08em; padding: 8px 16px;
+    }
+    .p2-headline {
+      font-family: var(--font-body); font-size: 38px; font-weight: 700;
+      line-height: 1.16; letter-spacing: -0.02em;
+    }
+    .p2-headline em, .p2-headline-serif em { font-style: italic; color: var(--p-hi); }
+    .p2-headline-serif {
+      font-family: var(--font-display); font-size: 52px; font-weight: 700;
+      line-height: 1.06; letter-spacing: -0.02em;
+    }
+    .p2-sub { font-size: 32px; line-height: 1.28; opacity: 0.92; }
+    .p2-ledger { border-top: 1.5px solid color-mix(in srgb, var(--p2-ink) 30%, transparent); }
+    .p2-row {
+      display: grid; grid-template-columns: 48px 1fr; gap: 12px;
+      padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--p2-ink) 22%, transparent);
+    }
+    .p2-num { font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--p-hi); }
+    .p2-row h3 { font-size: 34px; font-weight: 700; margin-bottom: 6px; line-height: 1.12; }
+    .p2-row p { font-size: 32px; line-height: 1.24; opacity: 0.9; }
+
+    .p2-phone-col { display: flex; justify-content: center; align-items: center; height: 100%; }
+    .p2-phone-shell {
+      width: 374px; height: 790px; background: #131312;
+      border-radius: 10px; padding: 13px;
+      box-shadow: 0 28px 64px rgba(0,0,0,0.34);
+      border: 1.5px solid color-mix(in srgb, var(--p2-ink) 22%, transparent);
+    }
+    .p2-phone-screen { width: 100%; height: 100%; border-radius: 2px; overflow: hidden; background: var(--bg); }
+    .p2-phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+
+    /* ================= SLIDES 3 & 4: ACTUAL WEBSITE SHOWCASE ================= */
+    .showcase-s3, .showcase-s4 {
+      width: 100%; height: 100%;
+      background: var(--bg); color: var(--ink);
+      padding: 58px 64px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .meta-bar, .footer-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); flex-shrink: 0;
+    }
+    .meta-bar { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .footer-bar { padding-top: 16px; border-top: 1px solid var(--border); }
+    .mono-kicker {
+      display: inline-block; font-family: var(--font-mono); font-size: 15px; font-weight: 600;
+      letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+
+    .s3-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0 14px; gap: 18px; min-height: 0; }
+    .s3-title {
+      font-family: var(--font-display); font-size: 46px; font-weight: 700;
+      line-height: 1.08; letter-spacing: -0.02em;
+    }
+    .s3-overlap-stage { position: relative; flex: 1; min-height: 0; width: 100%; }
+    .browser-shell {
+      width: 836px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px;
+      box-shadow: none;
+    }
+    .browser-chrome { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; padding: 0 4px; }
+    .b-dot { width: 9px; height: 9px; border-radius: 0; background: var(--border); }
+    .b-url {
+      margin-left: 10px; font-family: var(--font-mono); font-size: 14px; color: var(--muted);
+      background: var(--bg); padding: 4px 14px; border-radius: 0px; border: 1px solid var(--border);
+    }
+    .browser-viewport { width: 100%; height: 520px; border-radius: 0px; overflow: hidden; border: 1px solid var(--border); background: var(--bg); }
+    .browser-viewport img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .overlap-phone {
+      position: absolute; right: 0; bottom: 0; width: 318px; height: 656px;
+      background: #131312; border-radius: 10px; padding: 12px;
+      box-shadow: 0 28px 66px rgba(0,0,0,0.28);
+    }
+    .overlap-phone-screen { width: 100%; height: 100%; border-radius: 2px; overflow: hidden; background: var(--bg); }
+    .overlap-phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .s3-caption-bar { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 14px; color: var(--muted); }
+
+    .s4-body { flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 20px 0 14px; min-height: 0; }
+    .s4-title {
+      font-family: var(--font-body); font-size: 42px; font-weight: 700;
+      line-height: 1.12; letter-spacing: -0.025em;
+    }
+    .s4-split-stage { flex: 1; display: grid; grid-template-columns: 1.32fr 0.88fr; gap: 24px; min-height: 0; }
+    .s4-left { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 0; }
+    .s4-right { display: flex; flex-direction: column; min-height: 0; }
+    .s4-frame {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; background: var(--bg); display: flex; flex-direction: column;
+    }
+    .df-label {
+      display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 13px;
+      letter-spacing: 0.08em; color: var(--muted); padding: 8px 12px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .s4-desk-img { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
+    .s4-desk-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .s4-mob-frame { flex: 1; min-height: 0; background: var(--bg); }
+    .s4-mob-img { flex: 1; min-height: 0; overflow: hidden; background: var(--bg); padding: 6px; }
+    .s4-mob-img img { width: 100%; height: 100%; object-fit: contain; object-position: top center; display: block; }
+
+    .s4-notes-ledger { border-top: 1.5px solid var(--ink); display: flex; flex-direction: column; }
+    .s4-note-row {
+      display: grid; grid-template-columns: 1fr; gap: 4px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .s4-note-num { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--accent); }
+    .s4-note-row h3 { font-size: 34px; font-weight: 700; color: var(--ink); line-height: 1.12; }
+    .s4-note-row p { font-size: 32px; line-height: 1.24; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <section class="slide" data-name="01_cover" data-kind="poster" data-n="1">
+                    <div class="poster-s1 poster-constructivist">
+                      <div class="p1-top-meta">
+                        <span>Pangkas Teduh Barbershop</span>
+                        <span>WEBSITE CONCEPT · Bandung</span>
+                      </div>
+                      <div class="p1-const-stage">
+                        <div class="p1-vermilion-slash"></div>
+                        <div class="p1-outline-ghost" aria-hidden="true">POTONG</div>
+                        <h1 class="p1-giant-const">POTONG<br><span class="p1-accent-word">PRESISI.</span></h1>
+                        <div class="p1-const-visual-row">
+                          <div class="p1-cutout-photo">
+                            <img src="file:///D:/goandalan/site/demos/pangkas-teduh-barbershop/media/hero.png" alt="Brand Craft Visual" />
+                            <span class="p1-photo-tag">GROOMING WEB</span>
+                          </div>
+                          <div class="p1-const-copy">
+                            <p class="p1-lead-copy">Tarif layanan, jam operasional, dan tombol reservasi langsung terbaca di layar HP.</p>
+                            <div class="p1-web-peek">
+                              <img src="desktop.png" alt="Website Preview" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p1-vertical-edge">CONSTRUCTIVISM</div>
+                      <div class="p1-foot">
+                        <span>@goandalan</span>
+                        <span>01 / 04</span>
+                      </div>
+                    </div>
+                    </section>
+  <section class="slide" data-name="02_context" data-kind="story" data-n="2">
+                    <div class="poster-s2 poster-split">
+                      <div class="p2-top-meta">
+                        <span>GALERI &amp; SLOT BOOKING · PANGKAS TEDUH BARBERSHOP</span>
+                        <span>Constructivism</span>
+                      </div>
+                      <div class="p2-split-banner">
+                        <div class="p2-mega-line">TANPA ANTRE. TANPA TEBAK.</div>
+                      </div>
+                      <div class="p2-split-body">
+                        <div class="p2-left-col">
+                          <h2 class="p2-headline">Ketajaman craft <em>Pangkas Teduh Barbershop</em> diterjemahkan ke struktur web yang tegas.</h2>
+                          <div class="p2-ledger">
+                            
+                    <div class="p2-row">
+                      <span class="p2-num">01</span>
+                      <div>
+                        <h3>Galeri potongan &amp; alat</h3>
+                        <p>Visual craft nyata yang membangun rasa yakin sebelum duduk di kursi.</p>
+                      </div>
+                    </div>
+                    
+                    <div class="p2-row">
+                      <span class="p2-num">02</span>
+                      <div>
+                        <h3>Lembar tarif editorial</h3>
+                        <p>3 layanan tersusun dalam garis tipis yang langsung terpindai di HP.</p>
+                      </div>
+                    </div>
+                    
+                          </div>
+                        </div>
+                        <div class="p2-phone-col">
+                          <div class="p2-phone-shell">
+                            <div class="p2-phone-screen"><img src="mobile.png" alt="Actual Mobile Website" /></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p2-foot">
+                        <span>@goandalan</span>
+                        <span>02 / 04</span>
+                      </div>
+                    </div>
+                    </section>
+  <section class="slide" data-name="03_reveal" data-kind="reveal" data-n="3">
+                <div class="showcase-s3">
+                  <div class="meta-bar">
+                    <span>ACTUAL WEBSITE · Pangkas Teduh Barbershop</span>
+                    <span>DESKTOP &amp; MOBILE</span>
+                  </div>
+                  <div class="s3-body">
+                    <div class="s3-head">
+                      <span class="mono-kicker">ACTUAL INTERFACE · pangkas-teduh-barbershop.id</span>
+                      <h2 class="s3-title">Desktop &amp; mobile untuk Pangkas Teduh Barbershop.</h2>
+                    </div>
+                    <div class="s3-overlap-stage">
+                      <div class="browser-shell">
+                        <div class="browser-chrome">
+                          <span class="b-dot"></span><span class="b-dot"></span><span class="b-dot"></span>
+                          <span class="b-url">pangkas-teduh-barbershop.id</span>
+                        </div>
+                        <div class="browser-viewport">
+                          <img src="desktop.png" alt="Actual Desktop Website" />
+                        </div>
+                      </div>
+                      <div class="overlap-phone">
+                        <div class="overlap-phone-screen">
+                          <img src="mobile.png" alt="Actual Mobile Website" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="s3-caption-bar">
+                      <span>VIEWPORT 1280×800 + 390×844</span>
+                      <span>Constructivism</span>
+                    </div>
+                  </div>
+                  <div class="footer-bar">
+                    <span>@goandalan</span>
+                    <span>03 / 04</span>
+                  </div>
+                </div>
+                </section>
+  <section class="slide" data-name="04_details" data-kind="details" data-n="4">
+                <div class="showcase-s4">
+                  <div class="meta-bar">
+                    <span>Pangkas Teduh Barbershop · INSIDE SECTIONS</span>
+                    <span>WEBSITE CONCEPT</span>
+                  </div>
+                  <div class="s4-body">
+                    <div>
+                      <span class="mono-kicker">INSIDE THE EXPERIENCE</span>
+                      <h2 class="s4-title">Tarif bersih & jalur booking slot.</h2>
+                    </div>
+                    <div class="s4-split-stage">
+                      <div class="s4-left">
+                        <div class="s4-frame">
+                          <div class="df-label"><span>DESKTOP SECTION VIEW</span><span>pangkas-teduh-barbershop.id</span></div>
+                          <div class="s4-desk-img"><img src="detail_desktop.png" alt="Inner Desktop Section" /></div>
+                        </div>
+                        <div class="s4-notes-ledger">
+                          
+                    <div class="s4-note-row">
+                      <span class="s4-note-num">01 / KATALOG</span>
+                      <div>
+                        <h3>3 item tampil langsung</h3>
+                        <p>Termasuk Precision Haircut + Wash, Beard Trim &amp; Hot Towel dengan detail.</p>
+                      </div>
+                    </div>
+                    
+                    <div class="s4-note-row">
+                      <span class="s4-note-num">02 / INFO INTI</span>
+                      <div>
+                        <h3>Kartu ringkas satu pandang</h3>
+                        <p>Menampilkan Jam Operasional, Lokasi secara terstruktur di sisi hero.</p>
+                      </div>
+                    </div>
+                    
+                        </div>
+                      </div>
+                      <div class="s4-right">
+                        <div class="s4-frame s4-mob-frame">
+                          <div class="df-label"><span>MOBILE SCROLL</span></div>
+                          <div class="s4-mob-img"><img src="detail_mobile.png" alt="Inner Mobile Section" /></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="footer-bar">
+                    <span>WEBSITE CONCEPT · @GOANDALAN</span>
+                    <span>04 / 04</span>
+                  </div>
+                </div>
+                </section>
+</body>
+</html>

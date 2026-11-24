@@ -1,0 +1,134 @@
+{
+  "content_format": "reels",
+  "brand_name": "Tepung & Waktu Bakery",
+  "industry": "Artisan Sourdough & Pastry Bakery",
+  "city": "Yogyakarta",
+  "domain": "tepung-waktu-bakery.id",
+  "sequence_type": "before_after_ux",
+  "art_direction_preset": "auto",
+  "carousel_style": "playful_pop",
+  "primary_style": "Playful / Colorful / Pop",
+  "voice_id": "V6",
+  "caption_voice": "casual_gw",
+  "hook_pattern_id": "HOOK-K1",
+  "creative_note": "",
+  "motion_profile": {
+    "scroll": "in_out_quart",
+    "text": "out_back",
+    "stagger": 0.05,
+    "text_dur": 0.4,
+    "fade_s": 0.12,
+    "wipe_s": 0.36,
+    "hold_frac": 0.3,
+    "shift_px": 64,
+    "intensity": "high",
+    "name": "snappy"
+  },
+  "video": {
+    "encoded_mp4": true,
+    "path": "D:\\goandalan\\site\\demos\\ragi-pagi-bakehouse\\reels\\reels.mp4",
+    "size_bytes": 1038906,
+    "duration_sec": 10.03,
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "codec": "h264/yuv420p+aac",
+    "audio_mode": "silent",
+    "has_audio": true,
+    "silent_audio_track": true,
+    "voiceover_voice": "",
+    "voiceover_tempo": 1.0,
+    "audio_note": ""
+  },
+  "capture": {
+    "source_kind": "file",
+    "desktop_png": "reels_desktop.png",
+    "mobile_tall_png": "reels_mobile_tall.png",
+    "mobile_hero_png": "reels_mobile_hero.png",
+    "viewport": [
+      390,
+      844
+    ],
+    "dpr": 2.0,
+    "cta": {
+      "label": "Pre-Order via WA",
+      "kind": "button",
+      "bbox_vp": {
+        "x": 20,
+        "y": 387.28125,
+        "w": 166.375,
+        "h": 48.390625
+      },
+      "plain": "reels_cta_plain.png",
+      "highlight": "reels_cta_highlight.png"
+    },
+    "tabs": null,
+    "section_tops": [
+      65
+    ],
+    "image_report": {
+      "height": 1190,
+      "images": 1,
+      "broken": 0
+    },
+    "page_height_css": 1190,
+    "tall_scale": "device"
+  },
+  "cover": "D:\\goandalan\\site\\demos\\ragi-pagi-bakehouse\\reels\\cover_reels.png",
+  "beat_script": [
+    {
+      "beat": 1,
+      "time_range": "0.0s – 2.2s",
+      "title": "Masalah UX umum",
+      "visual": "Teks kinetik menyorot satu masalah UX umum di kategori ini (ilustrasi, bukan klaim tentang bisnis nyata).",
+      "on_screen_text": "Pola umum: info penting terkubur di layar HP.",
+      "transition": "Masuk: Cut langsung"
+    },
+    {
+      "beat": 2,
+      "time_range": "2.2s – 4.1s",
+      "title": "Sebelum: pola membingungkan",
+      "visual": "Ilustrasi mobile generik: navigasi padat, tombol bersaing, teks kecil.",
+      "on_screen_text": "Padat, kecil, membingungkan.",
+      "transition": "Masuk: Crossfade 0.12s"
+    },
+    {
+      "beat": 3,
+      "time_range": "4.1s – 6.9s",
+      "title": "Sesudah: halaman demo nyata",
+      "visual": "Wipe bersih ke website konsep asli: hero jelas lalu scroll mulus 390×844.",
+      "on_screen_text": "Struktur baru, info jelas.",
+      "transition": "Masuk: Wipe horizontal 0.36s"
+    },
+    {
+      "beat": 4,
+      "time_range": "6.9s – 8.6s",
+      "title": "Interaksi lebih baik",
+      "visual": "Tombol kontak/booking asli pada halaman demo disorot dan ditekan.",
+      "on_screen_text": "Tombol kontak, nyata.",
+      "transition": "Masuk: Crossfade 0.12s"
+    },
+    {
+      "beat": 5,
+      "time_range": "8.6s – 10.0s",
+      "title": "Penutup showcase",
+      "visual": "Pernyataan penutup netral + tag Website Concept (tanpa CTA iklan jasa).",
+      "on_screen_text": "Lebih jelas, lebih mudah dihubungi.",
+      "transition": "Masuk: Crossfade 0.12s"
+    }
+  ],
+  "on_screen_texts": [
+    "Pola umum: info penting terkubur di layar HP.",
+    "Padat, kecil, membingungkan.",
+    "Struktur baru, info jelas.",
+    "Tombol kontak, nyata.",
+    "Lebih jelas, lebih mudah dihubungi.",
+    "Eksplorasi tampilan mobile Tepung & Waktu Bakery (artisan sourdough & pastry bakery) dengan arah Playful / Colorful / Pop."
+  ],
+  "safe_zone": {
+    "left": 64,
+    "right": 960,
+    "top": 290,
+    "bottom": 1580
+  }
+}

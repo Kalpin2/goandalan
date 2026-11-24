@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "score": 100,
+  "passed_checks": 18,
+  "total_checks": 18,
+  "checks": [
+    {
+      "name": "reels_video_9x16",
+      "passed": true,
+      "detail": "1080x1920 h264/yuv420p 30.0fps 11.87s 1585KB"
+    },
+    {
+      "name": "duration_target",
+      "passed": true,
+      "detail": "11.87s (target 8.0–12.5s)"
+    },
+    {
+      "name": "fps_ok",
+      "passed": true,
+      "detail": "30.0 fps"
+    },
+    {
+      "name": "frame_count_consistent",
+      "passed": true,
+      "detail": "356 frame (expected ≈356)"
+    },
+    {
+      "name": "audio_stream_aac",
+      "passed": true,
+      "detail": "aac 44100Hz ch=2"
+    },
+    {
+      "name": "audio_video_sync",
+      "passed": true,
+      "detail": "|audio−video|=0.00s"
+    },
+    {
+      "name": "no_black_frames",
+      "passed": true,
+      "detail": "0 segmen hitam"
+    },
+    {
+      "name": "no_long_freeze",
+      "passed": true,
+      "detail": "tidak ada freeze panjang"
+    },
+    {
+      "name": "frame_luma_ok",
+      "passed": true,
+      "detail": "min luma 22.1 (n=24), maks lompatan 105.4"
+    },
+    {
+      "name": "reels_cover_9x16",
+      "passed": true,
+      "detail": "1080x1920"
+    },
+    {
+      "name": "cover_grid_crop_safe",
+      "passed": true,
+      "detail": "semua teks cover berada dalam crop tengah 4:5"
+    },
+    {
+      "name": "ig_safe_zones",
+      "passed": true,
+      "detail": "semua teks di dalam safe zone x64–960, y290–1580"
+    },
+    {
+      "name": "text_clipping",
+      "passed": true,
+      "detail": "46 kotak teks diaudit, 0 terpotong"
+    },
+    {
+      "name": "mobile_readability",
+      "passed": true,
+      "detail": "font minimum 32px (lantai 32px)"
+    },
+    {
+      "name": "cta_visibility",
+      "passed": true,
+      "detail": "interaksi nyata: tombol CTA asli"
+    },
+    {
+      "name": "website_authenticity",
+      "passed": true,
+      "detail": "headline DOM terbaca, tinggi halaman 1321px, gambar rusak=0, sumber=file"
+    },
+    {
+      "name": "showcase_guardrails",
+      "passed": true,
+      "detail": "sales_cta_free=True, voice=V1 (casual_gw), slang_free_formal=True, alan=1"
+    },
+    {
+      "name": "anonymization_leak",
+      "passed": true,
+      "detail": "0 kebocoran (nama/WA/alamat) di caption & teks layar"
+    }
+  ],
+  "warnings": [],
+  "revisions": [],
+  "metrics": {
+    "media": {
+      "ok": true,
+      "width": 1080,
+      "height": 1920,
+      "codec": "h264",
+      "pix_fmt": "yuv420p",
+      "fps": 30.0,
+      "frames": 356,
+      "duration": 11.87,
+      "video_duration": 11.866667,
+      "has_audio": true,
+      "audio_codec": "aac",
+      "audio_rate": 44100,
+      "audio_duration": 11.87,
+      "audio_channels": 2
+    },
+    "plates_audit_boxes": 46,
+    "min_font_px": 32
+  },
+  "engine": {
+    "motion_profile": "snappy",
+    "sequence": "scroll_reveal_showcase",
+    "title_scale": 1.0
+  }
+}
