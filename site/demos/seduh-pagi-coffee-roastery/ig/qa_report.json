@@ -1,8 +1,8 @@
 {
   "status": "PASS",
   "score": 100,
-  "passed_checks": 8,
-  "total_checks": 8,
+  "passed_checks": 9,
+  "total_checks": 9,
   "checks": [
     {
       "name": "composition_variety",
@@ -30,6 +30,11 @@
       "detail": "S01:ovY=0,minFont=32px | S02:ovY=0,minFont=32px | S03:ovY=0,minFont=32px | S04:ovY=0,minFont=32px"
     },
     {
+      "name": "scannable_under_20s",
+      "passed": true,
+      "detail": "~18.9 dtk total (52 kata inti, per-slide=[8, 22, 4, 18]; target <=20.0 dtk & <=26 kata/slide)"
+    },
+    {
       "name": "typography_anti_patterns",
       "passed": true,
       "detail": "0 anti-patterns triggered",
@@ -47,5 +52,16 @@
     }
   ],
   "warnings": [],
-  "revisions": []
+  "revisions": [],
+  "digest_metrics": {
+    "total_core_words": 52,
+    "per_slide_words": [
+      8,
+      22,
+      4,
+      18
+    ],
+    "estimated_digest_sec": 18.9,
+    "target_max_sec": 20.0
+  }
 }

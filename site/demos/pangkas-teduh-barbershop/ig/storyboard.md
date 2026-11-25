@@ -5,7 +5,7 @@
 
 | Slide | Tujuan | Headline | Visual Utama | Komposisi |
 | :---: | :--- | :--- | :--- | :--- |
-| 01 | Graphic Campaign Poster | Dari potong rapi ke alur booking Pangkas Teduh Barbershop. | `hero.png` | `diagonal_momentum` |
-| 02 | Website Experience Story | Ketajaman craft Pangkas Teduh Barbershop diterjemahkan ke struktur web yang tegas. | `secondary.png` | `split_canvas` |
-| 03 | Actual Website — Desktop & Mobile | Desktop &amp; mobile untuk Pangkas Teduh Barbershop. | `desktop.png` | `screenshot_led` |
-| 04 | Inside Section Walkthrough | Tarif bersih & jalur booking slot. | `detail_desktop.png` | `modular_grid` |
+| 01 | Graphic Campaign Poster | Booking cepat di Pangkas Teduh Barbershop. | `hero.png` | `diagonal_momentum` |
+| 02 | Website Experience Story | Gaya tegas di layar HP. | `secondary.png` | `split_canvas` |
+| 03 | Actual Website — Desktop & Mobile | Tampilan Desktop &amp; HP. | `desktop.png` | `screenshot_led` |
+| 04 | Inside Section Walkthrough | Tarif & booking WA. | `detail_desktop.png` | `modular_grid` |

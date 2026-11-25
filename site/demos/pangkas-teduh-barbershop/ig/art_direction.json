@@ -130,17 +130,17 @@
       "accent": "assets/demos/barber_tools.png"
     },
     "registry_audit": {
-      "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
-      "registry_exists": true,
-      "skillspector_ready": true,
-      "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
-      "covered_domains": [
+      "registry_path": "D:\\AI WORKSPACE/obsidian-vault/hermes/MASTER-OBSIDIAN-HERMES/04-REPOSITORIES/REPOSITORY-REGISTRY.md",
+      "registry_exists": false,
+      "skillspector_ready": false,
+      "skillspector_path": "D:\\AI WORKSPACE/tools/SkillSpector/.venv/Scripts/skillspector.exe",
+      "covered_domains": [],
+      "missing_domains": [
         "anti-slop-web-design",
         "swiss-constructivist-typography",
         "grooming-editorial"
       ],
-      "missing_domains": [],
-      "needs_scout": false
+      "needs_scout": true
     }
   },
   "compositions": [
@@ -150,13 +150,13 @@
     "modular_grid"
   ],
   "closing_label": "Website Concept",
-  "contact_sheet": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\contact_sheet.png",
-  "cover_grid": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\cover_grid.png",
+  "contact_sheet": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/contact_sheet.png",
+  "cover_grid": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/cover_grid.png",
   "qa_status": "PASS",
   "qa_score": 100,
   "learning_log": {
     "recorded": true,
-    "path": "D:\\goandalan\\skills\\instagram-creative-agent\\references\\learning_log.md",
+    "path": "/home/antigravity/Kalpin2/goandalan/skills/instagram-creative-agent/references/learning_log.md",
     "gap_detected": false,
     "gap_signal": {
       "detected": false
@@ -167,34 +167,34 @@
     {
       "n": 1,
       "name": "01_cover.png",
-      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\01_cover.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/01_cover.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 1641383
+      "size_bytes": 1608420
     },
     {
       "n": 2,
       "name": "02_context.png",
-      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\02_context.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/02_context.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 737690
+      "size_bytes": 742646
     },
     {
       "n": 3,
       "name": "03_reveal.png",
-      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\03_reveal.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/03_reveal.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 1164166
+      "size_bytes": 1228517
     },
     {
       "n": 4,
       "name": "04_details.png",
-      "path": "D:\\goandalan\\site\\demos\\pangkas-teduh-barbershop\\ig\\04_details.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/pangkas-teduh-barbershop/ig/04_details.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 1124530
+      "size_bytes": 1075501
     }
   ]
 }

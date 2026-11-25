@@ -152,6 +152,9 @@ class DesignReviewer:
                         const isCenteredCardLayout = Boolean(
                           hlStyle && hlStyle.textAlign === 'center' && slide.querySelectorAll('.callout-card, .journey-card').length >= 3
                         );
+                        const coreEls = Array.from(slide.querySelectorAll('h1, h2, h3, p, .p2-statement-badge, .p2-mega-line'));
+                        const coreText = coreEls.map(el => (el.innerText || '').trim()).filter(Boolean).join(' ');
+                        const coreWords = coreText ? coreText.split(/\\s+/).filter(Boolean).length : 0;
                         return {
                           slide: idx + 1,
                           overflowY,
@@ -164,6 +167,7 @@ class DesignReviewer:
                           headlineAlign: hlStyle ? hlStyle.textAlign : 'left',
                           meaninglessMonoCount,
                           isCenteredCardLayout,
+                          coreWords,
                         };
                       });
                     }"""
@@ -188,6 +192,42 @@ class DesignReviewer:
         else:
             dom_report = []
         checks.append({"name": "dom_layout_and_legibility", "passed": dom_ok, "detail": " | ".join(dom_notes)})
+
+        # 4b. <= 20-Second Scannability Check (3.5 words/sec mobile reading + 1.0s visual scan/slide)
+        if dom_report:
+            per_slide_words = [int(r.get("coreWords", 0)) for r in dom_report]
+        else:
+            per_slide_words = []
+            for sl in spec_slides:
+                chunks = [
+                    sl.get("poster_display_top", ""),
+                    sl.get("poster_display_bottom", ""),
+                    sl.get("poster_statement", ""),
+                    re.sub(r"<[^>]+>", " ", str(sl.get("headline_html", ""))),
+                    str(sl.get("subhead", "")),
+                ]
+                for item in (sl.get("story_highlights") or [])[:2]:
+                    chunks.extend(str(x) for x in item[1:])
+                for pt in (sl.get("walkthrough_points") or [])[:2]:
+                    chunks.extend([str(pt.get("title", "")), str(pt.get("desc", ""))])
+                per_slide_words.append(len(" ".join(chunks).split()))
+        total_core_words = sum(per_slide_words)
+        max_slide_words = max(per_slide_words) if per_slide_words else 0
+        est_digest_sec = round((total_core_words / 3.5) + (1.0 * max(1, len(per_slide_words))), 1)
+        scannable_ok = est_digest_sec <= 20.0 and max_slide_words <= 26
+        checks.append(
+            {
+                "name": "scannable_under_20s",
+                "passed": scannable_ok,
+                "detail": (
+                    f"~{est_digest_sec:.1f} dtk total ({total_core_words} kata inti, per-slide={per_slide_words}; target <=20.0 dtk & <=26 kata/slide)"
+                ),
+            }
+        )
+        if not scannable_ok:
+            revisions.append(
+                f"Ringkas teks carousel agar bisa dicerna <= 20 detik (saat ini ~{est_digest_sec:.1f} dtk, {total_core_words} kata, maks {max_slide_words} kata/slide)."
+            )
 
         # 5. Section 11 Typography Anti-Patterns check
         anti_audit = audit_typography_anti_patterns(spec, dom_typography_report=dom_report)
@@ -283,6 +323,12 @@ class DesignReviewer:
             "checks": checks,
             "warnings": warnings,
             "revisions": revisions,
+            "digest_metrics": {
+                "total_core_words": total_core_words,
+                "per_slide_words": per_slide_words,
+                "estimated_digest_sec": est_digest_sec,
+                "target_max_sec": 20.0,
+            },
         }
         (out_dir / "qa_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         return report

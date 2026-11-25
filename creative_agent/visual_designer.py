@@ -23,6 +23,12 @@ def _esc(val: Any) -> str:
     return html.escape(str(val or ""), quote=True)
 
 
+_DANGLING_TAILS = {
+    "yang", "dan", "di", "ke", "dari", "untuk", "dengan", "atau", "pada",
+    "serta", "tanpa", "hingga", "sampai", "dalam", "agar", "supaya", "buat",
+}
+
+
 def _trim_words(val: Any, max_chars: int) -> str:
     txt = " ".join(str(val or "").split())
     if len(txt) <= max_chars:
@@ -30,7 +36,11 @@ def _trim_words(val: Any, max_chars: int) -> str:
     cut = txt[:max_chars].rsplit(" ", 1)[0].rstrip(" ,;:-")
     if not cut:
         cut = txt[:max_chars].rstrip(" ,;:-")
-    return cut + "." if not cut.endswith((".", "!", "?")) else cut
+    parts = cut.split()
+    while len(parts) > 2 and parts[-1].lower().strip(".,;:!?") in _DANGLING_TAILS:
+        parts.pop()
+    cut = " ".join(parts).rstrip(" ,;:-")
+    return cut + "." if cut and not cut.endswith((".", "!", "?")) else cut
 
 
 def _img_src(path_str: str | None, out_dir: Path) -> str:
@@ -277,6 +287,7 @@ class VisualDesigner:
             is_last = idx == total_slides
             closing_left = f"WEBSITE CONCEPT · {handle.upper()}" if is_last else handle
             counter = f"{idx:02d} / {total_slides:02d}"
+            foot_right = counter if is_last else f"GESER →  ·  {counter}"
 
             if s_kind == "poster":
                 s_photo = _img_src(slide.get("visual"), out_dir)
@@ -284,7 +295,7 @@ class VisualDesigner:
                 top_word = slide.get("poster_display_top") or brand_name.split()[0].upper()
                 bot_word = slide.get("poster_display_bottom") or "CONCEPT."
                 stamp_txt = slide.get("poster_stamp") or industry.upper()
-                short_sub = _trim_words(slide.get("subhead") or "", 88)
+                short_sub = _trim_words(slide.get("subhead") or "", 64)
 
                 if s_comp == "diagonal_momentum":
                     inner = f"""
@@ -310,10 +321,10 @@ class VisualDesigner:
                           </div>
                         </div>
                       </div>
-                      {'<div class="p1-vertical-edge">' + _esc(primary_ad.upper()) + '</div>' if use_rotated_edge else ''}
+                      {'<div class="p1-vertical-edge">' + _esc(stamp_txt.upper()) + '</div>' if use_rotated_edge else ''}
                       <div class="p1-foot">
                         <span>{_esc(closing_left)}</span>
-                        <span>{counter}</span>
+                        <span>{foot_right}</span>
                       </div>
                     </div>
                     """
@@ -326,7 +337,7 @@ class VisualDesigner:
                       </div>
                       <div class="p1-mon-hero">
                         <div class="p1-mon-type-wrap">
-                          <div class="p1-mon-kicker">{_esc(stamp_txt)} · {_esc(primary_ad)}</div>
+                          <div class="p1-mon-kicker">{_esc(stamp_txt)}</div>
                           <h1 class="p1-giant-mon">{_esc(top_word)}<span class="p1-mon-break">{_esc(bot_word)}</span></h1>
                         </div>
                         <div class="p1-mon-collage">
@@ -348,14 +359,14 @@ class VisualDesigner:
                       </div>
                       <div class="p1-foot">
                         <span>{_esc(closing_left)}</span>
-                        <span>{counter}</span>
+                        <span>{foot_right}</span>
                       </div>
                     </div>
                     """
 
             elif s_kind == "story":
                 s_mob = _img_src(slide.get("visual_mobile") or spec.get("assets", {}).get("mobile_screenshot"), out_dir)
-                s_statement = slide.get("poster_statement") or "WEBSITE YANG BEKERJA UNTUK BRAND."
+                s_statement = slide.get("poster_statement") or "JELAS DI HP."
                 highlights = slide.get("story_highlights") or [
                     (st["num"].split("/")[0].strip(), st["title"], st["desc"])
                     for st in (slide.get("journey_steps") or [])[:2]
@@ -366,7 +377,7 @@ class VisualDesigner:
                       <span class="p2-num">{_esc(num)}</span>
                       <div>
                         <h3>{_esc(title)}</h3>
-                        <p>{_esc(_trim_words(desc, 74))}</p>
+                        <p>{_esc(_trim_words(desc, 54))}</p>
                       </div>
                     </div>
                     """
@@ -377,7 +388,7 @@ class VisualDesigner:
                     <div class="poster-s2 poster-split">
                       <div class="p2-top-meta">
                         <span>{_esc(slide.get('kicker', ''))}</span>
-                        <span>{_esc(primary_ad)}</span>
+                        <span>KENAPA RAPI?</span>
                       </div>
                       <div class="p2-split-banner">
                         <div class="p2-mega-line">{_esc(s_statement)}</div>
@@ -397,7 +408,7 @@ class VisualDesigner:
                       </div>
                       <div class="p2-foot">
                         <span>{_esc(closing_left)}</span>
-                        <span>{counter}</span>
+                        <span>{foot_right}</span>
                       </div>
                     </div>
                     """
@@ -406,7 +417,7 @@ class VisualDesigner:
                     <div class="poster-s2 poster-editorial-dark">
                       <div class="p2-top-meta">
                         <span>{_esc(slide.get('kicker', ''))}</span>
-                        <span>{_esc(primary_ad)}</span>
+                        <span>KENAPA RAPI?</span>
                       </div>
                       <div class="p2-asym-grid">
                         <div class="p2-left-col">
@@ -424,7 +435,7 @@ class VisualDesigner:
                       </div>
                       <div class="p2-foot">
                         <span>{_esc(closing_left)}</span>
-                        <span>{counter}</span>
+                        <span>{foot_right}</span>
                       </div>
                     </div>
                     """
@@ -435,8 +446,8 @@ class VisualDesigner:
                 inner = f"""
                 <div class="showcase-s3">
                   <div class="meta-bar">
-                    <span>ACTUAL WEBSITE · {_esc(brand_name)}</span>
-                    <span>DESKTOP &amp; MOBILE</span>
+                    <span>PREVIEW NYATA · {_esc(brand_name)}</span>
+                    <span>LAPTOP &amp; HP</span>
                   </div>
                   <div class="s3-body">
                     <div class="s3-head">
@@ -460,13 +471,13 @@ class VisualDesigner:
                       </div>
                     </div>
                     <div class="s3-caption-bar">
-                      <span>VIEWPORT 1280×800 + 390×844</span>
-                      <span>{_esc(primary_ad)}</span>
+                      <span>TAMPILAN LAPTOP &amp; HP</span>
+                      <span>NYAMAN DIBACA 1 TANGAN</span>
                     </div>
                   </div>
                   <div class="footer-bar">
                     <span>{_esc(closing_left)}</span>
-                    <span>{counter}</span>
+                    <span>{foot_right}</span>
                   </div>
                 </div>
                 """
@@ -481,7 +492,7 @@ class VisualDesigner:
                       <span class="s4-note-num">{_esc(pt['num'])}</span>
                       <div>
                         <h3>{_esc(pt['title'])}</h3>
-                        <p>{_esc(_trim_words(pt['desc'], 76))}</p>
+                        <p>{_esc(_trim_words(pt['desc'], 54))}</p>
                       </div>
                     </div>
                     """
@@ -490,7 +501,7 @@ class VisualDesigner:
                 inner = f"""
                 <div class="showcase-s4">
                   <div class="meta-bar">
-                    <span>{_esc(brand_name)} · INSIDE SECTIONS</span>
+                    <span>{_esc(brand_name)} · DETAIL HALAMAN</span>
                     <span>WEBSITE CONCEPT</span>
                   </div>
                   <div class="s4-body">
@@ -501,7 +512,7 @@ class VisualDesigner:
                     <div class="s4-split-stage">
                       <div class="s4-left">
                         <div class="s4-frame">
-                          <div class="df-label"><span>DESKTOP SECTION VIEW</span><span>{_esc(domain)}</span></div>
+                          <div class="df-label"><span>BAGIAN LAYANAN</span><span>{_esc(domain)}</span></div>
                           <div class="s4-desk-img"><img src="{_esc(s_desk)}" alt="Inner Desktop Section" /></div>
                         </div>
                         <div class="s4-notes-ledger">
@@ -510,7 +521,7 @@ class VisualDesigner:
                       </div>
                       <div class="s4-right">
                         <div class="s4-frame s4-mob-frame">
-                          <div class="df-label"><span>MOBILE SCROLL</span></div>
+                          <div class="df-label"><span>TAMPILAN HP</span></div>
                           <div class="s4-mob-img"><img src="{_esc(s_mob)}" alt="Inner Mobile Section" /></div>
                         </div>
                       </div>
@@ -518,7 +529,7 @@ class VisualDesigner:
                   </div>
                   <div class="footer-bar">
                     <span>{_esc(closing_left)}</span>
-                    <span>{counter}</span>
+                    <span>{foot_right}</span>
                   </div>
                 </div>
                 """

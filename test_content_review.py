@@ -852,6 +852,19 @@ def run_all_tests() -> None:
             assert "Klinik Rahasia Uji Carousel" not in v1_car["full_caption"]
             assert "fiktif" in v1_car["full_caption"].lower()
             assert len([a for a in v1_car["assets"] if a["key"].startswith("slide-")]) == 4
+            car_qa = v1_car.get("qa_report") or {}
+            car_checks = {c["name"]: c for c in car_qa.get("checks", [])}
+            assert car_checks.get("scannable_under_20s", {}).get("passed") is True, car_checks.get("scannable_under_20s")
+            assert float((car_qa.get("digest_metrics") or {}).get("estimated_digest_sec", 99.0)) <= 20.0, car_qa.get("digest_metrics")
+            assert reviewer_client.post("/api/leads/reset-to-siap-dm").status_code == 403
+            with tempfile.TemporaryDirectory() as _rtd:
+                _rdb = Path(_rtd) / "reset_test.db"
+                db.init_db(_rdb)
+                db.upsert_lead({"slug": "dummy-a", "business_name": "Dummy A", "category": "Cafe", "status": "FULL_DEMO_READY"}, db_path=_rdb)
+                db.upsert_lead({"slug": "reels-pain-wa-syn", "business_name": "Syn Idea", "category": "Cafe", "status": "RECYCLED_CONTENT"}, db_path=_rdb)
+                _rres = db.reset_all_leads_to_siap_dm(db_path=_rdb)
+                assert _rres["reset_count"] == 1 and _rres["deleted_synthetic"] == 1
+                assert all(x["status"] == "CONCEPT_READY" for x in _rres["leads"])
 
             # 13c. Admin generates REELS (9:16 H.264 MP4 + AAC audio + cover_reels.png + beat_script) from draft_brief
             r_gen_reels = admin_client.post(

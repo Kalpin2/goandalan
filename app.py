@@ -1145,6 +1145,16 @@ def reject_or_delete_lead(
     return {"ok": True, "deleted_id": lead_id}
 
 
+@app.post("/api/leads/reset-to-siap-dm")
+def reset_leads_to_siap_dm(
+    _auth: dict[str, Any] = Depends(require_role("admin")),
+) -> dict[str, Any]:
+    """Admin-only utility: reset all leads cleanly back to `CONCEPT_READY` (Siap DM)."""
+    res = db.reset_all_leads_to_siap_dm(clear_synthetic_reels_ideas=True, clear_reviews=True)
+    dg.rebuild_portfolio_index()
+    return res
+
+
 @app.post("/api/leads/{lead_id}/concept")
 @app.post("/api/leads/{lead_id}/generate")
 def generate_concept_assets(

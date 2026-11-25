@@ -108,120 +108,105 @@ class CarouselPlanner:
         typo_dir: dict[str, Any],
         niche_bp: dict[str, Any],
     ) -> dict[str, Any]:
-        """Craft graphic-poster display phrases & editorial website story for Slides 1-2 & 4."""
+        """Craft ultra-scannable 4-slide copy (digestible in <= 20s total, ~4-5s/slide, zero jargon)."""
         ind = f"{industry} {brand_name}".lower()
         items = facts.get("items") or []
-        item_names = [it["name"] for it in items[:3]]
-        cta = facts.get("cta_label") or "Pesan via WhatsApp"
+        cta = (facts.get("cta_label") or "Pesan via WhatsApp").strip()
+        cta_short = cta[:22].rstrip()
 
         if any(k in ind for k in ("kopi", "coffee", "roast", "cafe")):
             return {
                 "s1_top": "SEDUH",
                 "s1_bottom": "DIGITAL.",
-                "s1_stamp": "SLOW BAR WEB",
-                "s2_kicker": f"ATMOSFER & MENU · {brand_name.upper()}",
-                "s2_statement": "BUKAN MENU PDF BURAM.",
-                "s2_headline_html": f"Hangatnya ruang seduh <em>{brand_name}</em>, kini terasa sejak layar pertama.",
-                "s2_subhead": (
-                    f"Halaman dirancang melayani tujuan utama kedai: suasana ruang, kurasi beans ({', '.join(item_names[:2]) or 'menu pilihan'}), "
-                    f"jam seduh, dan jalur {cta}."
-                ),
-                "s2_goal_title": "Atmosfer + kurasi seduhan",
-                "s2_content_title": "Beans, menu & jam seduh",
+                "s1_stamp": "KEDAI KOPI",
+                "s2_kicker": f"ALUR PENGUNJUNG · {brand_name.upper()}",
+                "s2_statement": "TANPA MENU PDF.",
+                "s2_headline_html": "Suasana kedai <em>langsung terasa.</em>",
+                "s2_subhead": f"Menu, jam buka, & {cta_short}.",
+                "s2_goal_title": "Suasana & menu jelas",
+                "s2_content_title": "Menu & jam seduh",
                 "s2_highlights": [
-                    ("01", "Atmosfer ruang nyata", "Fotografi slow bar yang membawa kehangatan kedai sebelum tamu datang."),
-                    ("02", "Menu & harga terbaca", f"{len(items) or 4} sajian pilihan tampil bersih tanpa perlu zoom file PDF."),
-                    ("03", "Pre-order & arah lokasi", f"Jam buka harian, alamat, dan tombol '{cta}' siap satu sentuhan."),
+                    ("01", "Suasana asli", "Foto kedai di layar awal."),
+                    ("02", "Menu tanpa PDF", f"{len(items) or 4} sajian jelas di HP."),
+                    ("03", "Kontak cepat", f"1 tap ke '{cta_short}'."),
                 ],
-                "s4_headline": "Dari kurasi menu sampai jam seduh.",
+                "s4_headline": "Menu, jam, & WA.",
             }
 
         if any(k in ind for k in ("barber", "pangkas", "cukur", "grooming")):
             return {
                 "s1_top": "POTONG",
                 "s1_bottom": "PRESISI.",
-                "s1_stamp": "GROOMING WEB",
-                "s2_kicker": f"GALERI & SLOT BOOKING · {brand_name.upper()}",
-                "s2_statement": "TANPA ANTRE. TANPA TEBAK.",
-                "s2_headline_html": f"Ketajaman craft <em>{brand_name}</em> diterjemahkan ke struktur web yang tegas.",
-                "s2_subhead": (
-                    f"Dibangun untuk goal barbershop: galeri craft potongan, daftar layanan & tarif bersih tanpa kotak berat, "
-                    f"dan jalur cepat '{cta}'."
-                ),
-                "s2_goal_title": "Galeri craft + booking slot",
-                "s2_content_title": "Tarif bersih tanpa kotak berat",
+                "s1_stamp": "BARBERSHOP",
+                "s2_kicker": f"ALUR BOOKING · {brand_name.upper()}",
+                "s2_statement": "TANPA ANTRE.",
+                "s2_headline_html": "Gaya tegas <em>di layar HP.</em>",
+                "s2_subhead": f"Tarif jelas & '{cta_short}'.",
+                "s2_goal_title": "Galeri & booking slot",
+                "s2_content_title": "Tarif bersih di HP",
                 "s2_highlights": [
-                    ("01", "Galeri potongan & alat", "Visual craft nyata yang membangun rasa yakin sebelum duduk di kursi."),
-                    ("02", "Lembar tarif editorial", f"{len(items) or 4} layanan tersusun dalam garis tipis yang langsung terpindai di HP."),
-                    ("03", "Alur booking WA cepat", f"Jadwal buka jelas dan tombol '{cta}' mengunci slot tanpa antre."),
+                    ("01", "Hasil potongan", "Visual asli bangun yakin."),
+                    ("02", "Tarif jelas", f"{len(items) or 4} layanan tanpa zoom."),
+                    ("03", "Booking cepat", f"1 tap '{cta_short}'."),
                 ],
-                "s4_headline": "Tarif bersih & jalur booking slot.",
+                "s4_headline": "Tarif & booking WA.",
             }
 
-        if any(k in ind for k in ("estetika", "perawatan kulit", "derma", "skincare clinic", "aesthetic")):
+        if any(k in ind for k in ("estetika", "perawatan kulit", "derma", "skincare clinic", "aesthetic", "klinik", "gigi", "dental")):
             return {
                 "s1_top": "TENANG",
-                "s1_bottom": "TERUKUR.",
-                "s1_stamp": "DERMA EDITORIAL",
-                "s2_kicker": f"PROTOKOL & RESERVASI · {brand_name.upper()}",
-                "s2_statement": "JELAS SEJAK KONSULTASI.",
-                "s2_headline_html": f"Ketenangan ruang <em>{brand_name}</em> dalam tampilan web yang jernih.",
-                "s2_subhead": (
-                    f"Dirancang untuk kepercayaan pasien: kurasi tindakan ({', '.join(item_names[:2]) or 'perawatan kulit'}), "
-                    f"durasi sesi transparan, dan jalur '{cta}'."
-                ),
-                "s2_goal_title": "Kredibilitas klinis + reservasi",
-                "s2_content_title": "Daftar tindakan & estimasi",
+                "s1_bottom": "JELAS.",
+                "s1_stamp": "KLINIK",
+                "s2_kicker": f"INFO PASIEN · {brand_name.upper()}",
+                "s2_statement": "JELAS SEJAK AWAL.",
+                "s2_headline_html": "Info pasien <em>tenang &amp; jernih.</em>",
+                "s2_subhead": f"Layanan, jadwal, & '{cta_short}'.",
+                "s2_goal_title": "Info klinis & reservasi",
+                "s2_content_title": "Daftar tindakan jelas",
                 "s2_highlights": [
-                    ("01", "Protokol dermatologi jelas", "Jenis perawatan, durasi sesi, dan estimasi tampil ringkas tanpa jargon rumit."),
-                    ("02", "Suasana tenang & privat", "Tipografi editorial berjarak lega mencerminkan ketenangan ruang klinik."),
-                    ("03", "Reservasi jadwal pasti", f"Jam praktik jelas dan tombol '{cta}' mengunci sesi tanpa antre."),
+                    ("01", "Tindakan ringkas", "Layanan & durasi langsung jelas."),
+                    ("02", "Tampilan tenang", "Nyaman dibaca di layar HP."),
+                    ("03", "Reservasi cepat", f"1 tap '{cta_short}'."),
                 ],
-                "s4_headline": "Rincian perawatan & alur konsultasi pasien.",
+                "s4_headline": "Layanan & jadwal praktik.",
             }
 
         if any(k in ind for k in ("pilates", "movement", "reformer", "barre", "yoga")):
             return {
                 "s1_top": "GERAK",
                 "s1_bottom": "SELARAS.",
-                "s1_stamp": "MOVEMENT WEB",
+                "s1_stamp": "STUDIO PILATES",
                 "s2_kicker": f"KELAS & RUANG · {brand_name.upper()}",
                 "s2_statement": "TENANG. TERPANDU.",
-                "s2_headline_html": f"Ritme tenang studio <em>{brand_name}</em> terasa sejak halaman pertama.",
-                "s2_subhead": (
-                    f"Menampilkan suasana ruang reformer, pilihan kelas kecil ({', '.join(item_names[:2]) or 'kelas harian'}), "
-                    f"serta jalur cepat '{cta}'."
-                ),
-                "s2_goal_title": "Atmosfer studio + booking sesi",
-                "s2_content_title": "Level kelas & tarif jernih",
+                "s2_headline_html": "Ritme tenang <em>di satu layar.</em>",
+                "s2_subhead": f"Kelas, jadwal, & '{cta_short}'.",
+                "s2_goal_title": "Suasana & booking sesi",
+                "s2_content_title": "Level kelas jelas",
                 "s2_highlights": [
-                    ("01", "Ruang reformer bercahaya", "Visual studio hangat membangun rasa tenang sebelum sesi pertama dimulai."),
-                    ("02", "Level kelas mudah dipindai", f"{len(items) or 4} kelas dan paket tampil rapi untuk pemula maupun praktisi rutin."),
-                    ("03", "Booking slot satu sentuhan", f"Jadwal harian dan tombol '{cta}' langsung siap di layar ponsel."),
+                    ("01", "Ruang studio", "Foto hangat sebelum latihan."),
+                    ("02", "Pilihan kelas", f"{len(items) or 4} paket rapi di HP."),
+                    ("03", "Booking cepat", f"1 tap '{cta_short}'."),
                 ],
-                "s4_headline": "Pilihan kelas kecil & jadwal sesi studio.",
+                "s4_headline": "Kelas & jadwal sesi.",
             }
 
         if any(k in ind for k in ("sourdough", "bakery", "bakehouse", "pastry", "croissant", "viennoiserie", "roti")):
             return {
                 "s1_top": "HANGAT",
                 "s1_bottom": "PAGI INI.",
-                "s1_stamp": "BAKEHOUSE WEB",
-                "s2_kicker": f"KATALOG PANGGANG · {brand_name.upper()}",
-                "s2_statement": "KELUAR OVEN. SIAP DIPESAN.",
-                "s2_headline_html": f"Aroma pagi <em>{brand_name}</em> tersusun dalam katalog web yang menggugah.",
-                "s2_subhead": (
-                    f"Menampilkan batch harian ({', '.join(item_names[:2]) or 'sourdough & pastry'}), "
-                    f"jam keluar oven, harga jernih, dan jalur '{cta}'."
-                ),
-                "s2_goal_title": "Katalog panggang + pre-order",
-                "s2_content_title": "Menu harian & jadwal oven",
+                "s1_stamp": "BAKEHOUSE",
+                "s2_kicker": f"KATALOG ROTI · {brand_name.upper()}",
+                "s2_statement": "SIAP DIPESAN.",
+                "s2_headline_html": "Katalog hangat <em>tiap pagi.</em>",
+                "s2_subhead": f"Menu roti, jam oven, & '{cta_short}'.",
+                "s2_goal_title": "Katalog & pre-order",
+                "s2_content_title": "Menu & jadwal oven",
                 "s2_highlights": [
-                    ("01", "Foto tekstur roti nyata", "Sourdough dan pastry tampil tajam tanpa tersembunyi di balik PDF."),
-                    ("02", "Harga & berat transparan", f"{len(items) or 4} sajian harian tersusun bersih dengan label batch yang jelas."),
-                    ("03", "Pre-order sebelum habis", f"Jam buka bakehouse dan tombol '{cta}' mempercepat pemesanan loaf."),
+                    ("01", "Foto roti asli", "Tekstur jelas tanpa PDF."),
+                    ("02", "Harga rapi", f"{len(items) or 4} menu harian terbaca."),
+                    ("03", "Pre-order cepat", f"1 tap '{cta_short}'."),
                 ],
-                "s4_headline": "Katalog sourdough harian & alur pre-order.",
+                "s4_headline": "Menu oven & pre-order.",
             }
 
         if any(k in ind for k in ("bengkel", "motor custom", "custom garage", "garage", "cafe racer", "scrambler", "kustom")):
@@ -229,184 +214,180 @@ class CarouselPlanner:
                 "s1_top": "RAKIT",
                 "s1_bottom": "MESIN.",
                 "s1_stamp": "CUSTOM GARAGE",
-                "s2_kicker": f"WORKSHOP & SPEK · {brand_name.upper()}",
-                "s2_statement": "RAPI DI RANGKA. JUJUR DI MESIN.",
-                "s2_headline_html": f"Karakter garang <em>{brand_name}</em> diterjemahkan ke antarmuka tegas.",
-                "s2_subhead": (
-                    f"Fokus pada kebutuhan rider: layanan fabrikasi & bangun motor ({', '.join(item_names[:2]) or 'custom build'}), "
-                    f"estimasi transparan, dan '{cta}'."
-                ),
-                "s2_goal_title": "Showcase build + konsultasi WA",
-                "s2_content_title": "Daftar layanan & estimasi",
+                "s2_kicker": f"WORKSHOP · {brand_name.upper()}",
+                "s2_statement": "RAPI & TEGAS.",
+                "s2_headline_html": "Spek bengkel <em>langsung jelas.</em>",
+                "s2_subhead": f"Layanan build, estimasi, & '{cta_short}'.",
+                "s2_goal_title": "Showcase & konsultasi",
+                "s2_content_title": "Layanan & estimasi",
                 "s2_highlights": [
-                    ("01", "Visual workshop autentik", "Foto motor custom dan detail las membangun respek sebelum rider mampir."),
-                    ("02", "Spek layanan tanpa basa-basi", f"{len(items) or 4} layanan fabrikasi dan tune-up tersaji langsung dengan kisaran biaya."),
-                    ("03", "Cek slot bengkel cepat", f"Jam workshop dan tombol '{cta}' langsung terhubung ke mekanik utama."),
+                    ("01", "Visual workshop", "Foto motor & detail asli."),
+                    ("02", "Spek jelas", f"{len(items) or 4} layanan plus estimasi."),
+                    ("03", "Cek slot", f"1 tap '{cta_short}'."),
                 ],
-                "s4_headline": "Rincian layanan workshop & estimasi build.",
+                "s4_headline": "Layanan & cek slot.",
             }
 
         short_brand = brand_name.split()[0].upper() if brand_name else "BRAND"
         return {
             "s1_top": short_brand[:10],
-            "s1_bottom": "CONCEPT.",
-            "s1_stamp": f"{industry.upper()[:14]}",
-            "s2_kicker": f"ARAH WEB · {brand_name.upper()}",
-            "s2_statement": "JELAS DI LAYAR HP.",
-            "s2_headline_html": f"Karakter asli <em>{brand_name}</em> dalam satu antarmuka tenang.",
-            "s2_subhead": niche_bp.get("primary_business_goal") or "Layanan inti, jam operasional, lokasi, dan tombol aksi disusun tanpa clutter.",
-            "s2_goal_title": "Hierarki sesuai karakter bisnis",
-            "s2_content_title": "Informasi layanan terkurasi",
+            "s1_bottom": "WEB.",
+            "s1_stamp": f"{industry.upper()[:16]}",
+            "s2_kicker": f"ALUR PENGUNJUNG · {brand_name.upper()}",
+            "s2_statement": "JELAS DI HP.",
+            "s2_headline_html": "Info penting <em>langsung terbaca.</em>",
+            "s2_subhead": "Layanan, lokasi, & kontak — 1 layar.",
+            "s2_goal_title": "Fokus tujuan bisnis",
+            "s2_content_title": "Layanan tertata rapi",
             "s2_highlights": [
-                ("01", "Fokus tujuan bisnis", niche_bp.get("primary_business_goal") or "Informasi utama langsung terbaca."),
-                ("02", "Struktur tanpa clutter", f"{len(items) or 4} layanan/produk tampil rapi tanpa kotak berlebihan."),
-                ("03", "Aksi mobile langsung", f"Tombol '{cta}' selalu terjangkau di layar smartphone."),
+                ("01", "Langsung paham", "Info inti jelas dalam 3 detik."),
+                ("02", "Rapi di HP", f"{len(items) or 4} layanan tanpa zoom."),
+                ("03", "Kontak cepat", f"1 tap '{cta_short}'."),
             ],
-            "s4_headline": "Detail bagian dalam pengalaman web.",
+            "s4_headline": "Layanan, info, & WA.",
         }
 
     def generate_headline_alternatives(self, brand_name: str, industry: str) -> list[dict[str, str]]:
-        """Generate 3 specific, non-clickbait cover headline alternatives."""
+        """Generate 3 punchy, <= 8-word cover subtitles scannable in ~2 seconds."""
         ind = (industry or "").lower()
         if any(k in ind for k in ("kopi", "coffee", "roast", "cafe")):
             return [
                 {
-                    "hook_html": f"Ruang digital sehangat seduhan <em>{brand_name}.</em>",
-                    "sub": "Menu harian, jam buka, dan jalur pesan cepat disusun dalam satu tampilan tenang.",
+                    "hook_html": f"Ruang digital <em>{brand_name}.</em>",
+                    "sub": "Menu, jam buka, & pesan WA.",
                 },
                 {
-                    "hook_html": f"Cerita kopi <em>{brand_name}</em>, kini dalam satu halaman bersih.",
-                    "sub": "Dari pilihan seduhan sampai lokasi kedai, semuanya langsung terbaca di layar HP.",
+                    "hook_html": f"Menu & suasana <em>{brand_name}</em> di HP.",
+                    "sub": "Kopi, lokasi, & kontak langsung terbaca.",
                 },
                 {
-                    "hook_html": f"Pengalaman berkunjung ke <em>{brand_name}</em> dimulai dari layar pertama.",
-                    "sub": "Konsep web mobile-first yang membawa suasana kedai ke genggaman pelanggan.",
+                    "hook_html": f"Pengalaman <em>{brand_name}</em> di HP.",
+                    "sub": "Tampilan rapi tanpa buka file PDF.",
                 },
             ]
         if any(k in ind for k in ("barber", "pangkas", "cukur", "grooming")):
             return [
                 {
-                    "hook_html": f"Dari potong rapi ke alur booking <em>{brand_name}.</em>",
-                    "sub": "Tarif layanan, jam operasional, dan tombol reservasi langsung terbaca di layar HP.",
+                    "hook_html": f"Booking cepat di <em>{brand_name}.</em>",
+                    "sub": "Tarif, jam buka, & booking WA.",
                 },
                 {
-                    "hook_html": f"Tampilan setajam hasil potongan <em>{brand_name}.</em>",
-                    "sub": "Layanan grooming, jadwal buka, dan akses booking tersusun rapi tanpa langkah berbelit.",
+                    "hook_html": f"Tampilan tegas <em>{brand_name}.</em>",
+                    "sub": "Layanan & jadwal slot langsung jelas.",
                 },
                 {
-                    "hook_html": f"Cara lebih ringkas mengenal layanan <em>{brand_name}.</em>",
-                    "sub": "Struktur presisi untuk cek paket perawatan dan amankan slot kunjungan.",
+                    "hook_html": f"Cek layanan <em>{brand_name}</em> di HP.",
+                    "sub": "Tarif rapi & booking 1 tap.",
                 },
             ]
         if any(k in ind for k in ("klinik", "clinic", "gigi", "dental", "medis", "skin", "estetika", "derma")):
             return [
                 {
-                    "hook_html": f"Kejelasan yang menenangkan untuk <em>{brand_name}.</em>",
-                    "sub": "Informasi perawatan, jam praktik, dan konsultasi awal tertata bersih tanpa kesan rumit.",
+                    "hook_html": f"Info tenang <em>{brand_name}.</em>",
+                    "sub": "Layanan, jadwal, & reservasi cepat.",
                 },
                 {
-                    "hook_html": f"Informasi pasien <em>{brand_name}</em>, tepat di tempat yang dicari.",
-                    "sub": "Dirancang tenang dan terstruktur supaya calon pasien langsung paham alur layanan.",
+                    "hook_html": f"Info pasien <em>{brand_name}</em> lebih rapi.",
+                    "sub": "Perawatan & jadwal langsung mudah dipahami.",
                 },
                 {
-                    "hook_html": f"Layanan <em>{brand_name}</em> dalam tampilan yang jernih dan terpercaya.",
-                    "sub": "Jenis tindakan, jadwal buka, dan jalur reservasi tampil rapi di layar HP.",
+                    "hook_html": f"Tampilan jernih <em>{brand_name}.</em>",
+                    "sub": "Tindakan, lokasi, & konsultasi di HP.",
                 },
             ]
         if any(k in ind for k in ("pilates", "movement", "reformer", "barre", "yoga")):
             return [
                 {
-                    "hook_html": f"Ritme gerak tenang di <em>{brand_name}.</em>",
-                    "sub": "Jadwal kelas kecil, profil reformer, dan booking sesi tersaji bersih di layar HP.",
+                    "hook_html": f"Ritme tenang <em>{brand_name}.</em>",
+                    "sub": "Jadwal kelas, studio, & booking cepat.",
                 },
             ]
         if any(k in ind for k in ("sourdough", "bakery", "bakehouse", "pastry", "croissant", "roti")):
             return [
                 {
-                    "hook_html": f"Keluar oven hangat setiap pagi di <em>{brand_name}.</em>",
-                    "sub": "Daftar sourdough harian, jadwal batch oven, dan pre-order WA langsung terbaca rapi.",
+                    "hook_html": f"Hangat tiap pagi <em>{brand_name}.</em>",
+                    "sub": "Menu roti, jam oven, & pre-order WA.",
                 },
             ]
         if any(k in ind for k in ("bengkel", "motor custom", "custom garage", "garage", "kustom")):
             return [
                 {
-                    "hook_html": f"Rapi di rangka, jujur di mesin bersama <em>{brand_name}.</em>",
-                    "sub": "Layanan fabrikasi, estimasi build, dan jadwal slot bengkel jelas di layar HP.",
+                    "hook_html": f"Rapi di rangka <em>{brand_name}.</em>",
+                    "sub": "Layanan build, estimasi, & cek slot.",
                 },
             ]
         return [
             {
-                "hook_html": f"Wajah digital yang selaras dengan karakter <em>{brand_name}.</em>",
-                "sub": f"Konsep antarmuka untuk {industry.lower()} dengan hierarki informasi yang langsung ke inti.",
+                "hook_html": f"Wajah digital <em>{brand_name}.</em>",
+                "sub": "Layanan, lokasi, & kontak WA.",
             },
             {
-                "hook_html": f"Dari informasi tersebar ke satu pengalaman jelas di <em>{brand_name}.</em>",
-                "sub": "Layanan utama, lokasi, dan akses kontak tersusun bersih untuk desktop maupun HP.",
+                "hook_html": f"Satu halaman jelas <em>{brand_name}.</em>",
+                "sub": "Info penting langsung terbaca di HP.",
             },
             {
-                "hook_html": f"Melihat <em>{brand_name}</em> dari sudut pandang pengunjung mobile.",
-                "sub": "Antarmuka ringan yang memprioritaskan keterbacaan dan kemudahan navigasi.",
+                "hook_html": f"Tampilan mobile <em>{brand_name}.</em>",
+                "sub": "Ringan, jelas, & mudah dihubungi.",
             },
         ]
 
     def build_verified_walkthrough(self, facts: dict[str, Any], brand_name: str) -> list[dict[str, str]]:
-        """Extract strictly verified feature highlights from actual HTML DOM facts (zero invention)."""
+        """Extract strictly verified, ultra-concise walkthrough callouts (<= 3-4 words/desc, zero truncation)."""
         items = facts.get("items") or []
         info_rows = facts.get("info_rows") or []
-        cta_label = facts.get("cta_label") or "Tombol Aksi Utama"
+        cta_label = (facts.get("cta_label") or "Kontak WA").strip()
         faq_count = int(facts.get("faq_count") or 0)
 
         points: list[dict[str, str]] = []
         if items:
-            sample_names = ", ".join(it["name"] for it in items[:2])
             points.append(
                 {
-                    "num": "01 / KATALOG",
-                    "title": f"{len(items)} item tampil langsung",
-                    "desc": f"Termasuk {sample_names} dengan detail yang langsung terbaca tanpa zoom.",
+                    "num": "01 / DAFTAR",
+                    "title": f"{len(items)} item tampil",
+                    "desc": "Jelas tanpa zoom PDF.",
                 }
             )
         else:
             points.append(
                 {
-                    "num": "01 / HIERARKI",
-                    "title": "Fokus above-the-fold",
-                    "desc": f"Identitas {brand_name} dan informasi utama langsung terlihat di layar pertama.",
+                    "num": "01 / LAYAR AWAL",
+                    "title": "Info inti di atas",
+                    "desc": "Layanan utama langsung terlihat.",
                 }
             )
 
         if info_rows:
-            labels = ", ".join(r["label"].title() for r in info_rows[:3])
             points.append(
                 {
                     "num": "02 / INFO INTI",
-                    "title": "Kartu ringkas satu pandang",
-                    "desc": f"Menampilkan {labels} secara terstruktur di sisi hero.",
+                    "title": "Jam & lokasi",
+                    "desc": "Terlihat di layar awal.",
                 }
             )
         else:
             points.append(
                 {
                     "num": "02 / RESPONSIF",
-                    "title": "Proporsi desktop & mobile",
-                    "desc": "Tipografi dan jarak elemen disesuaikan untuk kenyamanan baca di HP.",
+                    "title": "Nyaman di HP",
+                    "desc": "Huruf lega 1 tangan.",
                 }
             )
 
+        cta_short = cta_label[:18].rstrip()
         if faq_count > 0:
             points.append(
                 {
-                    "num": "03 / INTERAKSI",
-                    "title": f"FAQ + '{cta_label}'",
-                    "desc": f"Memuat {faq_count} accordion pertanyaan umum dan jalur akses langsung.",
+                    "num": "03 / AKSI",
+                    "title": f"FAQ + '{cta_short}'",
+                    "desc": f"{faq_count} FAQ + 1 tap WA.",
                 }
             )
         else:
             points.append(
                 {
-                    "num": "03 / AKSI LANGSUNG",
-                    "title": f"Tombol '{cta_label}'",
-                    "desc": "Diposisikan konsisten agar pengunjung langsung melihat langkah berikutnya.",
+                    "num": "03 / AKSI",
+                    "title": f"Tombol '{cta_short}'",
+                    "desc": "1 tap langsung WA.",
                 }
             )
         return points[:3]
@@ -541,16 +522,16 @@ class CarouselPlanner:
             },
             "reveal": {
                 "composition": behaviors[2] if len(behaviors) > 2 else comps["slide_3"],
-                "kicker": f"ACTUAL INTERFACE · {domain}",
-                "headline_html": f"Desktop &amp; mobile untuk {brand_name}.",
-                "subhead": f"{typo_dir.get('primary_art_direction') or art_direction['primary_style']} · {status_badge}",
+                "kicker": f"PREVIEW NYATA · {domain}",
+                "headline_html": "Tampilan Desktop &amp; HP.",
+                "subhead": status_badge,
                 "visual_desktop": assets.get("desktop_screenshot", "desktop.png"),
                 "visual_mobile": assets.get("mobile_screenshot", "mobile.png"),
                 "visual_detail": assets.get("desktop_detail", "detail_desktop.png"),
             },
             "details": {
                 "composition": behaviors[3] if len(behaviors) > 3 else comps["slide_4"],
-                "kicker": "INSIDE THE EXPERIENCE",
+                "kicker": "DETAIL TAMPILAN",
                 "headline_html": poster_words["s4_headline"],
                 "closing_label": "Website Concept",
                 "walkthrough_points": walkthrough,

@@ -168,17 +168,17 @@
       "accent": "assets/demos/coffee_matcha.png"
     },
     "registry_audit": {
-      "registry_path": "D:\\AI WORKSPACE\\obsidian-vault\\hermes\\MASTER-OBSIDIAN-HERMES\\04-REPOSITORIES\\REPOSITORY-REGISTRY.md",
-      "registry_exists": true,
-      "skillspector_ready": true,
-      "skillspector_path": "D:\\AI WORKSPACE\\tools\\SkillSpector\\.venv\\Scripts\\skillspector.exe",
-      "covered_domains": [
+      "registry_path": "D:\\AI WORKSPACE/obsidian-vault/hermes/MASTER-OBSIDIAN-HERMES/04-REPOSITORIES/REPOSITORY-REGISTRY.md",
+      "registry_exists": false,
+      "skillspector_ready": false,
+      "skillspector_path": "D:\\AI WORKSPACE/tools/SkillSpector/.venv/Scripts/skillspector.exe",
+      "covered_domains": [],
+      "missing_domains": [
         "anti-slop-web-design",
         "editorial-typography",
         "hospitality-photography"
       ],
-      "missing_domains": [],
-      "needs_scout": false
+      "needs_scout": true
     }
   },
   "compositions": [
@@ -188,13 +188,13 @@
     "caption_led"
   ],
   "closing_label": "Website Concept",
-  "contact_sheet": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\contact_sheet.png",
-  "cover_grid": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\cover_grid.png",
+  "contact_sheet": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/contact_sheet.png",
+  "cover_grid": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/cover_grid.png",
   "qa_status": "PASS",
   "qa_score": 100,
   "learning_log": {
     "recorded": true,
-    "path": "D:\\goandalan\\skills\\instagram-creative-agent\\references\\learning_log.md",
+    "path": "/home/antigravity/Kalpin2/goandalan/skills/instagram-creative-agent/references/learning_log.md",
     "gap_detected": true,
     "gap_signal": {
       "detected": true,
@@ -241,40 +241,40 @@
   "learning_cycle": {
     "recorded": false,
     "already_recorded": true,
-    "path": "D:\\goandalan\\skills\\instagram-creative-agent\\references\\learning_log.md"
+    "path": "/home/antigravity/Kalpin2/goandalan/skills/instagram-creative-agent/references/learning_log.md"
   },
   "slides": [
     {
       "n": 1,
       "name": "01_cover.png",
-      "path": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\01_cover.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/01_cover.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 2394863
+      "size_bytes": 2357385
     },
     {
       "n": 2,
       "name": "02_context.png",
-      "path": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\02_context.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/02_context.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 880707
+      "size_bytes": 761474
     },
     {
       "n": 3,
       "name": "03_reveal.png",
-      "path": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\03_reveal.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/03_reveal.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 1240565
+      "size_bytes": 1259920
     },
     {
       "n": 4,
       "name": "04_details.png",
-      "path": "D:\\goandalan\\site\\demos\\seduh-pagi-coffee-roastery\\ig\\04_details.png",
+      "path": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/ig/04_details.png",
       "width": 2160,
       "height": 2700,
-      "size_bytes": 1181952
+      "size_bytes": 1103838
     }
   ]
 }

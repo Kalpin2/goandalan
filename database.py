@@ -1016,6 +1016,59 @@ def get_review_by_lead(lead_id: int, db_path: Path | None = None) -> dict[str, A
         return _row_to_dict(row)
 
 
+def reset_all_leads_to_siap_dm(
+    *,
+    clear_synthetic_reels_ideas: bool = True,
+    clear_reviews: bool = True,
+    db_path: Path | None = None,
+) -> dict[str, Any]:
+    """Reset all leads back to `CONCEPT_READY` (Siap DM), clearing timers/anonymization & stale review queue."""
+    now = iso_now()
+    deleted_synthetic = 0
+    reset_count = 0
+    with get_conn(db_path) as conn:
+        if clear_synthetic_reels_ideas:
+            syn_rows = conn.execute(
+                "SELECT id FROM leads WHERE slug LIKE 'reels-pain-%'"
+            ).fetchall()
+            syn_ids = [int(r["id"]) for r in syn_rows]
+            for sid in syn_ids:
+                conn.execute("DELETE FROM leads WHERE id = ?", (sid,))
+            deleted_synthetic = len(syn_ids)
+
+        if clear_reviews:
+            conn.execute("DELETE FROM content_comments")
+            conn.execute("DELETE FROM content_corrections")
+            conn.execute("DELETE FROM content_versions")
+            conn.execute("DELETE FROM content_reviews")
+
+        cur = conn.execute(
+            """
+            UPDATE leads
+            SET status = 'CONCEPT_READY',
+                is_anonymized = 0,
+                contacted_at = NULL,
+                follow_up_due_at = NULL,
+                follow_up_sent_at = NULL,
+                updated_at = ?
+            """,
+            (now,),
+        )
+        reset_count = int(cur.rowcount or 0)
+        rows = conn.execute(
+            "SELECT id, slug, business_name, category, status FROM leads ORDER BY id"
+        ).fetchall()
+        leads_out = [dict(r) for r in rows]
+
+    return {
+        "ok": True,
+        "reset_count": reset_count,
+        "deleted_synthetic": deleted_synthetic,
+        "cleared_reviews": bool(clear_reviews),
+        "leads": leads_out,
+    }
+
+
 if __name__ == "__main__":
     init_db()
     print(f"[OK] SQLite initialized & migrated at {settings.DB_PATH}")

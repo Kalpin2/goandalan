@@ -1049,7 +1049,14 @@
         <!-- Prospek Aktif & Closing -->
         <div class="space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3 class="t-card">Prospek Aktif &amp; Closing</h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="t-card">Prospek Aktif &amp; Closing</h3>
+              <button x-show="auth.role === 'admin'" type="button" @click="resetAllLeadsToSiapDm()" :disabled="resettingToSiapDm"
+                      class="btn btn-sm btn-secondary" title="Kembalikan semua prospek dummy ke antrean Siap DM (CONCEPT_READY)">
+                <span x-show="!resettingToSiapDm">↩ Reset Semua ke Siap DM</span>
+                <span x-show="resettingToSiapDm">Mereset...</span>
+              </button>
+            </div>
             <div class="flex flex-wrap gap-1.5">
               <template x-for="f in ['ALL', 'INTERESTED', 'FULL_DEMO_READY', 'DP_PAID', 'WON']" :key="f">
                 <button @click="pipelineFilter = f" class="btn btn-sm tabular"
@@ -2555,6 +2562,7 @@
         busyFullDemoId: null,
         submittingJob: false,
         submittingManual: false,
+        resettingToSiapDm: false,
         activeJob: null,
         nowTick: Date.now(),
         toast: { show: false, text: '', timer: null },
@@ -3182,6 +3190,30 @@
         },
 
         // ==================== REVIEW & PUBLISH WORKFLOW METHODS ====================
+        async resetAllLeadsToSiapDm() {
+          if (!confirm('Kembalikan semua prospek ke status Siap DM (CONCEPT_READY) dan bersihkan antrean review sementara?')) return;
+          this.resettingToSiapDm = true;
+          try {
+            const res = await fetch('/api/leads/reset-to-siap-dm', {
+              method: 'POST',
+              credentials: 'same-origin',
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+              this.showToast(`✓ ${data.reset_count || 0} prospek dikembalikan ke Siap DM!`);
+              await this.loadDashboard(false);
+              await this.loadReviewQueue(false);
+              this.activeTab = 'outreach';
+            } else {
+              this.showToast(this.extractApiError(data, 'Gagal mereset prospek ke Siap DM.'));
+            }
+          } catch {
+            this.showToast('Koneksi terputus saat mereset prospek.');
+          } finally {
+            this.resettingToSiapDm = false;
+          }
+        },
+
         reviewHeaders(extra = {}) {
           return { ...extra };
         },
