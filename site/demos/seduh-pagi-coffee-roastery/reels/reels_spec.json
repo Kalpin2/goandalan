@@ -4,17 +4,17 @@
   "industry": "Coffee Roastery",
   "city": "Jakarta Selatan",
   "domain": "kedai-hening-coffee.id",
-  "sequence_type": "before_after_ux",
-  "art_direction_preset": "warm_organic_hospitality",
+  "sequence_type": "scroll_reveal_showcase",
+  "art_direction_preset": "auto",
   "carousel_style": "organic_warm",
   "primary_style": "Organic / Natural / Warm",
   "voice_id": "V1",
   "caption_voice": "casual_gw",
   "hook_pattern_id": "HOOK-L1",
-  "pain_code": "PAIN-WA",
-  "reel_hook_id": "REEL-HOOK-1",
+  "pain_code": "",
+  "reel_hook_id": "",
   "attract_cta": true,
-  "vo_script": "Berapa pelanggan batal mampir hari ini cuma karena kelamaan nunggu balasan chat WA soal menu dan jam buka? Di konsep halaman mobile ini, menu andalan, lokasi Maps, sampai tombol pesan langsung kebaca dalam tiga detik tanpa ribet. Mau lihat konsep versi usaha kamu? Langsung DM kata KONSEP.",
+  "vo_script": "Sekilas, 1 ide utama: bagaimana struktur halaman coffee roastery dibuat langsung terbaca di HP. Di konsep tampilan mobile Kedai Hening Coffee ini, menu utama, lokasi, sampai tombol kontak langsung terbaca rapi tanpa ribet. Mau lihat konsep versi bisnis kamu? Langsung DM kata KONSEP.",
   "vo_style": "casual_ardi",
   "vo_voice": "id-ID-ArdiNeural",
   "bgm_track": "warm_hospitality",
@@ -35,8 +35,8 @@
   "video": {
     "encoded_mp4": true,
     "path": "/home/antigravity/Kalpin2/goandalan/site/demos/seduh-pagi-coffee-roastery/reels/reels.mp4",
-    "size_bytes": 1297402,
-    "duration_sec": 15.0,
+    "size_bytes": 3231799,
+    "duration_sec": 21.27,
     "fps": 30,
     "width": 1080,
     "height": 1920,
@@ -48,8 +48,9 @@
     "bgm_track": "warm_hospitality",
     "bgm_file": "warm_hospitality.wav",
     "voiceover_voice": "id-ID-ArdiNeural",
-    "voiceover_tempo": 1.23,
-    "vo_cues_count": 10,
+    "voiceover_duration_sec": 19.82,
+    "voiceover_tempo": 1.0,
+    "vo_cues_count": 12,
     "audio_note": ""
   },
   "capture": {
@@ -90,52 +91,52 @@
   "beat_script": [
     {
       "beat": 1,
-      "time_range": "0.0s – 3.3s",
-      "title": "Masalah UX umum",
-      "visual": "Teks kinetik menyorot satu masalah UX umum di kategori ini (ilustrasi, bukan klaim tentang bisnis nyata).",
-      "on_screen_text": "Pola umum: info penting terkubur di layar HP.",
+      "time_range": "0.0s – 4.5s",
+      "title": "Hook & konteks konsep",
+      "visual": "Poster tipografi + intip desktop; kata hook masuk bergiliran dengan push-in halus.",
+      "on_screen_text": "Sekilas, 1 ide utama: bagaimana struktur halaman coffee roastery dibuat langsung terbaca di HP.",
       "transition": "Masuk: Cut langsung"
     },
     {
       "beat": 2,
-      "time_range": "3.3s – 6.1s",
-      "title": "Sebelum: pola membingungkan",
-      "visual": "Ilustrasi mobile generik: navigasi padat, tombol bersaing, teks kecil.",
-      "on_screen_text": "Padat, kecil, membingungkan.",
-      "transition": "Masuk: Crossfade 0.26s"
+      "time_range": "4.5s – 7.7s",
+      "title": "Tampilan 3 detik pertama",
+      "visual": "Hero website demo asli masuk dari bawah (slide-up) di bezel HP.",
+      "on_screen_text": "3 detik pertama langsung jelas.",
+      "transition": "Masuk: Slide-up halus 0.26s"
     },
     {
       "beat": 3,
-      "time_range": "6.1s – 10.3s",
-      "title": "Sesudah: halaman demo nyata",
-      "visual": "Wipe bersih ke website konsep asli: hero jelas lalu scroll mulus 390×844.",
-      "on_screen_text": "Struktur baru, info jelas.",
-      "transition": "Masuk: Wipe horizontal 0.44s"
+      "time_range": "7.7s – 14.3s",
+      "title": "Jelajah layanan & info",
+      "visual": "Scroll asli 390×844 dengan easing dan jeda baca di setiap section penting.",
+      "on_screen_text": "Info & layanan rapi tanpa PDF.",
+      "transition": "Masuk: Slide-left mulus 0.26s"
     },
     {
       "beat": 4,
-      "time_range": "10.3s – 12.9s",
-      "title": "Interaksi lebih baik",
+      "time_range": "14.3s – 18.1s",
+      "title": "Aksi nyata / tombol kontak",
       "visual": "Tombol kontak/booking asli pada halaman demo disorot dan ditekan.",
       "on_screen_text": "Tombol kontak, nyata.",
-      "transition": "Masuk: Crossfade 0.26s"
+      "transition": "Masuk: Slide-left mulus 0.26s"
     },
     {
       "beat": 5,
-      "time_range": "12.9s – 15.0s",
-      "title": "Penutup showcase",
-      "visual": "Pernyataan penutup netral + tag Website Concept (tanpa CTA iklan jasa).",
+      "time_range": "18.1s – 21.3s",
+      "title": "Ringkasan & penutup",
+      "visual": "Ringkasan jelas + identitas konsep.",
       "on_screen_text": "DM kata KONSEP",
-      "transition": "Masuk: Crossfade 0.26s"
+      "transition": "Masuk: Zoom-in penutup 0.26s"
     }
   ],
   "on_screen_texts": [
-    "Pola umum: info penting terkubur di layar HP.",
-    "Padat, kecil, membingungkan.",
-    "Struktur baru, info jelas.",
+    "Sekilas, 1 ide utama: bagaimana struktur halaman coffee roastery dibuat langsung terbaca di HP.",
+    "3 detik pertama langsung jelas.",
+    "Info & layanan rapi tanpa PDF.",
     "Tombol kontak, nyata.",
     "DM kata KONSEP",
-    "Eksplorasi tampilan mobile Kedai Hening Coffee (coffee roastery) dengan arah Organic / Natural / Warm."
+    "Tampilan mobile Kedai Hening Coffee — layanan, lokasi, dan kontak langsung jelas di layar HP."
   ],
   "safe_zone": {
     "left": 64,
@@ -144,5 +145,5 @@
     "bottom": 1580
   },
   "audio_mode": "voiceover_and_music",
-  "target_duration": 13.5
+  "target_duration": 13.0
 }

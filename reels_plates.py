@@ -76,8 +76,8 @@ def _clip(text: str, n: int) -> str:
 
 def _title_size(text: str, scale: float, big: bool = True) -> int:
     n = len(text or "")
-    base = (112 if n <= 36 else 96 if n <= 52 else 84 if n <= 68 else 72 if n <= 88 else 64) if big else (92 if n <= 40 else 80 if n <= 60 else 68)
-    return max(60, int(base * scale))
+    base = (96 if n <= 34 else 84 if n <= 52 else 74 if n <= 72 else 66 if n <= 92 else 58) if big else (84 if n <= 38 else 74 if n <= 58 else 64)
+    return max(56, int(base * scale))
 
 
 def render_plate_set(
@@ -118,7 +118,6 @@ def render_plate_set(
     S = SAFE_ZONE
     pad_r = REELS_W - S["right"]
     pad_b = REELS_H - S["bottom"]
-    content_w = S["right"] - S["left"]
 
     # crop offsets (css px) for the "details" modular tiles: top / mid / lower sections
     tops = [t for t in sorted(section_tops or []) if t > 200]
@@ -126,13 +125,15 @@ def render_plate_set(
     mid = tops[len(tops) // 3] if len(tops) >= 3 else H * 0.38
     low = tops[(2 * len(tops)) // 3] if len(tops) >= 3 and tops[(2 * len(tops)) // 3] > mid + 300 else H * 0.70
     crops = [0.0, float(mid), float(low)]
-    crop_labels = ["01 · Hero", "02 · Konten", "03 · Detail"]
+    crop_labels = ["01 · Tampilan Awal", "02 · Layanan", "03 · Kontak"]
 
-    brand_s, city_s = _clip(brand_name, 24), _clip(city or industry, 14)
+    brand_s, city_s = _clip(brand_name, 22), _clip(city or industry, 22)
+    ind_s = _clip(industry, 20)
 
     def bar(cls: str, left: str, right: str) -> str:
         return f'<div class="bar {cls}"><span class="bl">{_esc(left)}</span><span class="br">{_esc(right)}</span></div>'
 
+    sub_spacer = '<div class="sub-spacer"></div>'
     sections: dict[str, str] = {}
 
     hook_size = _title_size(hook_headline, title_scale)
@@ -140,39 +141,38 @@ def render_plate_set(
   <section id="plate-hook" class="plate p-hook">
     {bar('top', brand_s, city_s)}
     <div class="mid">
-      <div class="kicker">WEBSITE CONCEPT · {_esc(_clip(primary_ad, 22))}</div>
+      <div class="step-pill">01 / 05 · KONSEP WEBSITE {_esc(ind_s.upper())}</div>
       <h1 class="hook-title" style="font-size:{hook_size}px">{_words(hook_headline)}</h1>
-      <p class="hook-sub">{_esc(_clip(sub_hook, 96))}</p>
-      <div class="hook-peek"><img src="{_esc(desk_uri)}" alt="Website concept" /></div>
+      <p class="hook-sub">{_esc(_clip(sub_hook, 110))}</p>
+      <div class="hook-peek"><img src="{_esc(desk_uri)}" alt="Preview website" /></div>
     </div>
-    {bar('bot', handle, 'konsep fiktif')}
+    {sub_spacer}
   </section>"""
 
-    def phone_plate(pid: str, kicker: str, title: str, inner_slot: str = "") -> str:
+    def phone_plate(pid: str, step_tag: str, title: str, inner_slot: str = "") -> str:
         return f"""
   <section id="plate-{pid}" class="plate p-phone">
-    {bar('top', kicker, city_s)}
-    <div class="phone-title">{_esc(title)}</div>
-    <div class="phone-frame"><div class="phone-slot">{inner_slot}</div></div>
-    {bar('bot', handle, 'mobile 390×844')}
+    {bar('top', step_tag, brand_s)}
+    <div class="phone-title">{_esc(_clip(title, 34))}</div>
+    <div class="phone-frame"><div class="phone-notch"></div><div class="phone-slot">{inner_slot}</div></div>
   </section>"""
 
-    sections["phone_hero"] = phone_plate("phone_hero", "HERO REVEAL", "Hero yang langsung jelas.")
-    sections["phone_scroll"] = phone_plate("phone_scroll", "MOBILE SCROLL", "Scroll mulus, info terbaca.")
-    sections["phone_after"] = phone_plate("phone_after", "STRUKTUR BARU", "Struktur baru, info jelas.")
-    sections["phone_rhythm"] = phone_plate("phone_rhythm", "RITME MOBILE", "Satu ide per layar.")
-    sections["phone_feature"] = phone_plate("phone_feature", "INTERAKSI NYATA", feature_title)
+    sections["phone_hero"] = phone_plate("phone_hero", "02 / 05 · TAMPILAN AWAL", "3 detik pertama langsung jelas.")
+    sections["phone_scroll"] = phone_plate("phone_scroll", "03 / 05 · LAYANAN & INFO", "Info & layanan rapi tanpa PDF.")
+    sections["phone_after"] = phone_plate("phone_after", "03 / 05 · SESUDAH (BARU)", "Rapi, terbaca, siap dihubungi.")
+    sections["phone_rhythm"] = phone_plate("phone_rhythm", "04 / 05 · PENGALAMAN HP", "Nyaman dibaca satu tangan.")
+    sections["phone_feature"] = phone_plate("phone_feature", "04 / 05 · AKSI NYATA", feature_title)
 
     prob_size = _title_size(problem_text, title_scale, big=False)
     sections["problem"] = f"""
   <section id="plate-problem" class="plate p-hook">
-    {bar('top', 'MASALAH UMUM UX', city_s)}
+    {bar('top', '01 / 05 · MASALAH UMUM', ind_s)}
     <div class="mid">
-      <div class="kicker">POLA UMUM · {_esc(_clip(industry, 24))}</div>
+      <div class="step-pill">MASALAH DI LAYAR HP</div>
       <h1 class="hook-title" style="font-size:{prob_size}px">{_words(problem_text)}</h1>
-      <p class="hook-sub">Ilustrasi pola umum di kategori ini, bukan situs bisnis nyata.</p>
+      <p class="hook-sub">Ilustrasi kendala umum yang sering membuat calon pelanggan ragu sebelum menghubungi.</p>
     </div>
-    {bar('bot', handle, 'konsep fiktif')}
+    {sub_spacer}
   </section>"""
 
     wire = """
@@ -186,21 +186,21 @@ def render_plate_set(
       </div>"""
     sections["before"] = f"""
   <section id="plate-before" class="plate p-before">
-    {bar('top', 'SEBELUM', 'ilustrasi umum')}
-    <div class="phone-title">Padat, kecil, membingungkan.</div>
-    <div class="phone-frame"><div class="phone-slot">{wire}</div></div>
-    {bar('bot', handle, 'bukan situs nyata')}
+    {bar('top', '02 / 05 · SEBELUM', 'ilustrasi umum')}
+    <div class="phone-title">Tampilan lama: padat &amp; bingung.</div>
+    <div class="phone-frame"><div class="phone-notch"></div><div class="phone-slot">{wire}</div></div>
   </section>"""
 
     ins_size = _title_size(insight_text, title_scale, big=False)
     sections["insight"] = f"""
   <section id="plate-insight" class="plate p-phone" style="justify-content:space-between">
-    {bar('top', 'SATU KEPUTUSAN DESAIN', city_s)}
+    {bar('top', '02 / 05 · SOLUSI UTAMA', brand_s)}
     <div class="mid">
+      <div class="step-pill">FOKUS PENGALAMAN PENGGUNA</div>
       <h1 class="hook-title" style="font-size:{ins_size}px">{_words(insight_text)}</h1>
-      <p class="hook-sub">Arah visual {_esc(_clip(primary_ad, 40))}.</p>
+      <p class="hook-sub">Dirancang supaya calon pelanggan menemukan info inti dalam hitungan detik di HP.</p>
     </div>
-    {bar('bot', handle, 'konsep fiktif')}
+    {sub_spacer}
   </section>"""
 
     tiles = ""
@@ -213,22 +213,28 @@ def render_plate_set(
         )
     sections["details"] = f"""
   <section id="plate-details" class="plate p-reveal">
-    {bar('top', 'DETAIL ANTARMUKA', city_s)}
-    <div class="det-head">Detail antarmuka nyata.</div>
+    {bar('top', '03 / 05 · BAGIAN PENTING', brand_s)}
+    <div class="det-head">Tiga layar paling penting.</div>
     <div class="det-grid">{tiles}</div>
-    {bar('bot', handle, 'dari halaman demo')}
   </section>"""
 
     clo_size = _title_size(closing_text, title_scale, big=False)
+    is_dm_cta = "dm kata konsep" in (closing_text or "").lower()
+    outro_sub = (
+        f"Ingin melihat contoh konsep website rapi untuk usaha {ind_s.lower()} kamu? Kirim pesan sekarang."
+        if is_dm_cta
+        else f"Konsep tampilan mobile untuk {brand_s} ({ind_s.lower()}) — jelas, ringan, dan siap dihubungi."
+    )
     sections["outro"] = f"""
   <section id="plate-outro" class="plate p-hook p-outro">
-    {bar('top', 'STUDI KASUS KONSEP FIKTIF', handle)}
+    {bar('top', '05 / 05 · RINGKASAN', handle)}
     <div class="mid">
-      <span class="outro-tag">Website Concept · {_esc(handle)}</span>
+      <span class="outro-tag">{'SIAP COBA KONSEP?' if is_dm_cta else f'WEBSITE CONCEPT · {_esc(handle)}'}</span>
       <h1 class="hook-title" style="font-size:{clo_size}px">{_words(closing_text)}</h1>
-      <p class="hook-sub">Arah visual {_esc(_clip(primary_ad, 34))} untuk kategori {_esc(_clip(industry.lower(), 30))}. Simpan sebagai referensi tata letak.</p>
+      <p class="hook-sub">{_esc(_clip(outro_sub, 118))}</p>
+      <div class="outro-foot">GW SAMA ALAN · {_esc(city_s.upper())}</div>
     </div>
-    {bar('bot', 'GW SAMA ALAN', city_s)}
+    {sub_spacer}
   </section>"""
 
     body = "\n".join(sections[n] for n in names if n in sections)
@@ -244,46 +250,52 @@ def render_plate_set(
     body {{ background:#000; display:flex; flex-direction:column; gap:24px; }}
     .plate {{ width:{REELS_W}px; height:{REELS_H}px; position:relative; overflow:hidden; font-family:var(--font-body);
       display:flex; flex-direction:column; justify-content:space-between;
-      padding:{S['top']}px {pad_r}px {pad_b}px {S['left']}px; }}
-    .bar {{ display:flex; justify-content:space-between; align-items:center; gap:24px; font-family:var(--font-mono);
-      font-size:{MIN_FONT_PX}px; line-height:1.1; letter-spacing:0.03em; text-transform:uppercase; opacity:.9; white-space:nowrap; }}
+      padding:{S['top'] + 16}px {pad_r}px {pad_b}px {S['left']}px; }}
+    .bar {{ display:flex; justify-content:space-between; align-items:center; gap:20px; font-family:var(--font-mono);
+      font-size:{MIN_FONT_PX}px; line-height:1.15; letter-spacing:0.03em; text-transform:uppercase; opacity:.88; white-space:nowrap; }}
     .bar span {{ overflow:hidden; text-overflow:ellipsis; }}
-    .bar .bl {{ max-width:68%; }} .bar .br {{ max-width:38%; text-align:right; }}
-    .bar.top {{ padding-bottom:18px; border-bottom:1.5px solid currentColor; }}
-    .bar.bot {{ padding-top:18px; border-top:1.5px solid currentColor; }}
+    .bar .bl {{ max-width:56%; }} .bar .br {{ max-width:44%; text-align:right; }}
+    .bar.top {{ padding-bottom:14px; border-bottom:1.5px solid color-mix(in srgb, currentColor 28%, transparent); }}
+    .bar.bot {{ padding-top:14px; border-top:1.5px solid color-mix(in srgb, currentColor 28%, transparent); }}
+    .sub-spacer {{ height:168px; flex-shrink:0; }}
+    .outro-foot {{ margin-top:36px; font-family:var(--font-mono); font-size:{MIN_FONT_PX}px; letter-spacing:0.04em; opacity:.78; text-transform:uppercase; }}
     .mid {{ display:flex; flex-direction:column; }}
-    .p-hook {{ background:var(--p1-bg); color:var(--p1-ink); }}
-    .kicker {{ font-family:var(--font-mono); font-size:{MIN_FONT_PX}px; letter-spacing:.06em; text-transform:uppercase;
-      color:var(--p-hi); margin-bottom:26px; }}
-    .hook-title {{ font-family:var(--font-display); font-weight:700; line-height:1.0; letter-spacing:-0.02em; }}
+    .p-hook {{ background:radial-gradient(circle at 80% 18%, color-mix(in srgb, var(--p-hi) 18%, transparent), transparent 55%), var(--p1-bg); color:var(--p1-ink); }}
+    .step-pill {{ align-self:flex-start; display:inline-flex; align-items:center; padding:8px 18px; border-radius:999px;
+      font-family:var(--font-mono); font-size:{MIN_FONT_PX}px; letter-spacing:.04em; text-transform:uppercase;
+      background:color-mix(in srgb, var(--p-hi) 18%, transparent); color:var(--p-hi);
+      border:1.5px solid color-mix(in srgb, var(--p-hi) 52%, transparent); margin-bottom:24px; }}
+    .hook-title {{ font-family:var(--font-display); font-weight:700; line-height:1.12; letter-spacing:-0.015em; }}
     .hook-title .w {{ display:inline-block; }}
-    .hook-sub {{ margin-top:30px; font-size:36px; line-height:1.34; opacity:.92; max-width:860px;
+    .hook-sub {{ margin-top:24px; font-size:35px; line-height:1.38; opacity:.92; max-width:860px;
       display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }}
-    .hook-peek {{ margin-top:44px; border-radius:22px; overflow:hidden; height:360px; background:var(--bg);
-      border:2px solid color-mix(in srgb, var(--p1-ink) 26%, transparent); box-shadow:0 36px 80px rgba(0,0,0,.38); }}
+    .hook-peek {{ margin-top:34px; border-radius:22px; overflow:hidden; height:320px; background:var(--bg);
+      border:2px solid color-mix(in srgb, var(--p1-ink) 24%, transparent); box-shadow:0 32px 72px rgba(0,0,0,.42); }}
     .hook-peek img {{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }}
-    .outro-tag {{ align-self:flex-start; padding:12px 24px; border:2px solid var(--p-hi); border-radius:999px; margin-bottom:34px;
+    .outro-tag {{ align-self:flex-start; padding:10px 22px; border:2px solid var(--p-hi); border-radius:999px; margin-bottom:28px;
       font-family:var(--font-mono); font-size:{MIN_FONT_PX}px; letter-spacing:.04em; color:var(--p-hi); text-transform:uppercase; }}
-    .p-phone {{ background:var(--p2-bg); color:var(--p2-ink); justify-content:flex-start; }}
-    .p-phone .bar.bot {{ margin-top:auto; }}
-    .phone-title {{ margin-top:30px; font-family:var(--font-display); font-size:56px; font-weight:700; line-height:1.1; white-space:nowrap; }}
+    .p-phone {{ background:radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--p-hi) 14%, transparent), transparent 62%), var(--p2-bg);
+      color:var(--p2-ink); justify-content:flex-start; }}
+    .phone-title {{ margin-top:22px; font-family:var(--font-display); font-size:50px; font-weight:700; line-height:1.14;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }}
     .phone-frame {{ position:absolute; left:{PHONE['frame_x']}px; top:{PHONE['frame_y']}px; width:{PHONE['frame_w']}px; height:{PHONE['frame_h']}px;
-      border-radius:{PHONE['radius'] + 14}px; background:#141416; padding:16px;
-      border:3px solid color-mix(in srgb, var(--p2-ink) 26%, transparent); box-shadow:0 44px 96px rgba(0,0,0,.48); }}
+      border-radius:{PHONE['radius'] + 14}px; background:linear-gradient(180deg, #1E1E24 0%, #101014 100%); padding:16px;
+      border:3px solid color-mix(in srgb, var(--p2-ink) 28%, transparent);
+      box-shadow:0 38px 88px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,0.06) inset; }}
+    .phone-notch {{ position:absolute; top:24px; left:50%; transform:translateX(-50%); width:128px; height:22px;
+      border-radius:999px; background:#09090B; z-index:4; border:1px solid rgba(255,255,255,0.08); }}
     .phone-slot {{ width:{PHONE['slot_w']}px; height:{PHONE['slot_h']}px; border-radius:{PHONE['radius']}px; background:#09090b; overflow:hidden; }}
-    .p-before {{ background:#1c1c1f; color:#EDEDED; justify-content:flex-start; }}
-    .p-before .bar.bot {{ margin-top:auto; }}
-    .illus {{ width:100%; height:100%; background:#d8d8d8; padding:14px; display:flex; flex-direction:column; gap:12px; font-family:Arial,sans-serif; }}
+    .p-before {{ background:radial-gradient(circle at 50% 40%, rgba(239,68,68,0.12), transparent 60%), #18181B; color:#F4F4F5; justify-content:flex-start; }}
+    .illus {{ width:100%; height:100%; background:#d8d8d8; padding:14px; padding-top:40px; display:flex; flex-direction:column; gap:12px; font-family:Arial,sans-serif; }}
     .i-nav {{ display:flex; gap:6px; }} .i-nav i {{ flex:1; height:26px; background:#9a9a9a; }}
-    .i-banner {{ height:210px; background:#b5b5b5; display:flex; gap:8px; padding:8px; }} .i-banner b {{ flex:1; background:#a0a0a0; }}
+    .i-banner {{ height:190px; background:#b5b5b5; display:flex; gap:8px; padding:8px; }} .i-banner b {{ flex:1; background:#a0a0a0; }}
     .i-btns {{ display:flex; gap:6px; }} .i-btns span {{ flex:1; background:#777; color:#ddd; font-size:20px; text-align:center; padding:8px 2px; }}
     .i-lines {{ display:flex; flex-direction:column; gap:7px; }} .i-lines u {{ height:12px; background:#a9a9a9; display:block; width:100%; }}
     .i-lines u:nth-child(3n) {{ width:72%; }} .i-lines u:nth-child(4n) {{ width:88%; }}
     .p-reveal {{ background:var(--bg); color:var(--ink); justify-content:flex-start; }}
-    .p-reveal .bar.bot {{ margin-top:auto; }}
-    .det-head {{ margin-top:30px; font-family:var(--font-display); font-size:60px; font-weight:700; line-height:1.1; }}
-    .det-grid {{ margin-top:30px; display:grid; grid-template-columns:440px 440px; grid-template-rows:380px 380px; gap:16px; }}
-    .tile {{ position:relative; border-radius:24px; overflow:hidden; border:2px solid var(--border); background-repeat:no-repeat; background-color:var(--surface);
+    .det-head {{ margin-top:22px; font-family:var(--font-display); font-size:54px; font-weight:700; line-height:1.12; }}
+    .det-grid {{ margin-top:26px; display:grid; grid-template-columns:440px 440px; grid-template-rows:340px 340px; gap:16px; }}
+    .tile {{ position:relative; border-radius:22px; overflow:hidden; border:2px solid var(--border); background-repeat:no-repeat; background-color:var(--surface);
       box-shadow:0 22px 48px rgba(0,0,0,.18); }}
     .tile.t0 {{ grid-row:1 / span 2; }}
     .tile em {{ position:absolute; left:14px; bottom:14px; font-style:normal; font-family:var(--font-mono); font-size:{MIN_FONT_PX}px;

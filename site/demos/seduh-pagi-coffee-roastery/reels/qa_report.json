@@ -1,18 +1,23 @@
 {
   "status": "PASS",
   "score": 100,
-  "passed_checks": 18,
-  "total_checks": 18,
+  "passed_checks": 19,
+  "total_checks": 19,
   "checks": [
     {
       "name": "reels_video_9x16",
       "passed": true,
-      "detail": "1080x1920 h264/yuv420p 30.0fps 15.00s 1266KB"
+      "detail": "1080x1920 h264/yuv420p 30.0fps 21.27s 3156KB"
     },
     {
       "name": "duration_target",
       "passed": true,
-      "detail": "15.00s (target 8.0–15.5s)"
+      "detail": "21.27s (mengikuti V/O natural 19.82s → target 20.6–23.8s)"
+    },
+    {
+      "name": "voiceover_natural_speed",
+      "passed": true,
+      "detail": "kecepatan V/O 1.00x (1.00x natural, tanpa speed-up/slow-mo)"
     },
     {
       "name": "fps_ok",
@@ -22,7 +27,7 @@
     {
       "name": "frame_count_consistent",
       "passed": true,
-      "detail": "450 frame (expected ≈450)"
+      "detail": "638 frame (expected ≈638)"
     },
     {
       "name": "audio_stream_aac",
@@ -32,7 +37,7 @@
     {
       "name": "audio_video_sync",
       "passed": true,
-      "detail": "|audio−video|=0.25s"
+      "detail": "|audio−video|=0.00s"
     },
     {
       "name": "no_black_frames",
@@ -47,7 +52,7 @@
     {
       "name": "frame_luma_ok",
       "passed": true,
-      "detail": "min luma 66.1 (n=30), maks lompatan 61.8"
+      "detail": "min luma 62.5 (n=43), maks lompatan 94.9"
     },
     {
       "name": "reels_cover_9x16",
@@ -67,7 +72,7 @@
     {
       "name": "text_clipping",
       "passed": true,
-      "detail": "65 kotak teks diaudit, 0 terpotong"
+      "detail": "35 kotak teks diaudit, 0 terpotong"
     },
     {
       "name": "mobile_readability",
@@ -105,21 +110,21 @@
       "codec": "h264",
       "pix_fmt": "yuv420p",
       "fps": 30.0,
-      "frames": 450,
-      "duration": 15.0,
-      "video_duration": 15.0,
+      "frames": 638,
+      "duration": 21.27,
+      "video_duration": 21.266667,
       "has_audio": true,
       "audio_codec": "aac",
       "audio_rate": 44100,
-      "audio_duration": 14.75,
+      "audio_duration": 21.27,
       "audio_channels": 2
     },
-    "plates_audit_boxes": 65,
+    "plates_audit_boxes": 35,
     "min_font_px": 32
   },
   "engine": {
     "motion_profile": "balanced",
-    "sequence": "before_after_ux",
+    "sequence": "scroll_reveal_showcase",
     "title_scale": 1.0,
     "vo_style": "casual_ardi",
     "bgm_track": "warm_hospitality",

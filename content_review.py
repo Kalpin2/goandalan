@@ -951,14 +951,14 @@ def generate_content_from_brief(
         seq_type = "auto"
 
     v_id_raw = (voice_id or "auto").strip()
-    v_id = "auto" if v_id_raw.lower() == "auto" else v_id_raw.upper()
+    v_id = "auto" if v_id_raw.lower() in {"", "auto"} else v_id_raw.upper()
     if v_id not in VALID_VOICE_IDS:
-        raise ReviewValidationError(f"voice_id tidak valid: '{voice_id}'. Gunakan auto atau V1-V6.")
+        v_id = "auto"
 
     h_id_raw = (hook_pattern_id or "auto").strip()
-    h_id = "auto" if h_id_raw.lower() == "auto" else h_id_raw.upper()
+    h_id = "auto" if h_id_raw.lower() in {"", "auto"} else h_id_raw.upper()
     if h_id not in VALID_HOOK_PATTERNS:
-        raise ReviewValidationError(f"hook_pattern_id tidak valid: '{hook_pattern_id}'.")
+        h_id = "auto"
 
     clean_note = (creative_note or "").strip()[:300]
     eff_audio = (audio_mode or "voiceover_and_music").strip().lower()
@@ -987,7 +987,7 @@ def generate_content_from_brief(
         eff_dur = float(target_duration or (13.0 if is_attract_reels else 10.0))
     except Exception:
         eff_dur = 13.0 if is_attract_reels else 10.0
-    eff_dur = max(8.0, min(15.0, eff_dur))
+    eff_dur = max(8.0, min(45.0, eff_dur))
 
     next_v = (int(rev["current_version"]) + 1) if (rev and int(rev["current_version"]) >= 1) else 1
     snap_dir = _snapshot_dir(lead, next_v)
@@ -1037,6 +1037,8 @@ def generate_content_from_brief(
             copied = _copy_reels_live_assets_to_snapshot(lead, reels_res, snap_dir)
             beat_script = copied["beat_script"]
             final_rendered_vo = str(reels_res.get("vo_script") or clean_vo_script)
+            actual_dur = float(((reels_res.get("spec") or {}).get("video") or {}).get("duration_sec") or eff_dur)
+            config_snapshot["target_duration"] = actual_dur
             # Zero-token deterministic edit logging for Reels V/O scripts
             if orig_vo_script or clean_vo_script:
                 ri.log_reels_event(
@@ -1048,7 +1050,7 @@ def generate_content_from_brief(
                     voice=str((reels_res.get("spec") or {}).get("voice_id") or v_id),
                     vo_style=str(reels_res.get("vo_style") or eff_vo_style),
                     bgm_track=str(reels_res.get("bgm_track") or eff_bgm_track),
-                    duration_sec=float(((reels_res.get("spec") or {}).get("video") or {}).get("duration_sec") or eff_dur),
+                    duration_sec=actual_dur,
                     notes=f"generated_by:{actor}",
                 )
             clean_vo_script = final_rendered_vo
@@ -1092,10 +1094,11 @@ def generate_content_from_brief(
                 shutil.rmtree(snap_dir, ignore_errors=True)
                 raise ReviewConflictError(f"Status berubah menjadi '{fresh['review_status']}'.")
             review_id = fresh["id"]
+            next_review_status = "revised" if (fresh["review_status"] == "changes_requested" and next_v > 1) else "pending_review"
             conn.execute(
                 """
                 UPDATE content_reviews
-                SET review_status = 'pending_review',
+                SET review_status = ?,
                     content_format = ?,
                     art_direction_preset = ?,
                     sequence_type = ?,
@@ -1114,6 +1117,7 @@ def generate_content_from_brief(
                 WHERE id = ?
                 """,
                 (
+                    next_review_status,
                     fmt, ad_preset, seq_type, v_id, h_id, eff_audio,
                     clean_vo_script, eff_vo_style, eff_bgm_track,
                     clean_note, next_v, now, review_id,
@@ -1431,16 +1435,56 @@ def revise_content(
         shutil.rmtree(next_dir, ignore_errors=True)
     next_dir.mkdir(parents=True, exist_ok=True)
 
+    cur_fmt = str(rev.get("content_format") or prev_ver_dict.get("content_format") or "carousel").lower()
+    new_beat_script_json = prev_ver_dict.get("beat_script_json") or "[]"
+    new_config_json = prev_ver_dict.get("config_json") or "{}"
+
     try:
         if regenerate:
-            import carousel_generator as cg
+            if cur_fmt == "reels":
+                import reels_generator as rg
 
-            cg.generate_concept_package_for_lead(lead_id, anonymize=True)
-            copied = _copy_live_assets_to_snapshot(lead, next_dir)
-            new_caption = caption if caption is not None else copied["caption"]
-            new_hashtags = hashtags if hashtags is not None else copied["hashtags"]
-            new_qa = copied["qa_report"]
-            slide_texts = copied["slide_texts"]
+                ad_p = str(rev.get("art_direction_preset") or "auto")
+                seq_p = str(rev.get("sequence_type") or "auto")
+                v_p = str(rev.get("voice_id") or "auto")
+                h_p = str(rev.get("hook_pattern_id") or "auto")
+                aud_p = str(rev.get("audio_mode") or "voiceover_and_music")
+                vo_s = str(rev.get("vo_script") or "")
+                vo_st = str(rev.get("vo_style") or "auto")
+                bgm_t = str(rev.get("bgm_track") or "auto")
+                pain_c = str(rev.get("pain_code") or "")
+                rh_id = str(rev.get("reel_hook_id") or "")
+                reels_res = rg.generate_reels_package_for_lead(
+                    lead_id,
+                    anonymize=True,
+                    art_direction_preset=None if ad_p == "auto" else ad_p,
+                    sequence_type=None if seq_p == "auto" else seq_p,
+                    voice_id=None if v_p == "auto" else v_p,
+                    hook_pattern_id=None if h_p == "auto" else h_p,
+                    audio_mode=aud_p,
+                    creative_note=str(rev.get("creative_note") or ""),
+                    vo_script=vo_s,
+                    vo_style=vo_st,
+                    bgm_track=bgm_t,
+                    pain_code=pain_c,
+                    reel_hook_id=rh_id,
+                    attract_cta=bool(rev.get("source") == "reels_idea_scrape" or pain_c),
+                )
+                copied = _copy_reels_live_assets_to_snapshot(lead, reels_res, next_dir)
+                new_caption = caption if caption is not None else copied["caption"]
+                new_hashtags = hashtags if hashtags is not None else copied["hashtags"]
+                new_qa = copied["qa_report"]
+                slide_texts = copied["slide_texts"]
+                new_beat_script_json = json.dumps(copied.get("beat_script") or [], ensure_ascii=False)
+            else:
+                import carousel_generator as cg
+
+                cg.generate_concept_package_for_lead(lead_id, anonymize=True)
+                copied = _copy_live_assets_to_snapshot(lead, next_dir)
+                new_caption = caption if caption is not None else copied["caption"]
+                new_hashtags = hashtags if hashtags is not None else copied["hashtags"]
+                new_qa = copied["qa_report"]
+                slide_texts = copied["slide_texts"]
         elif use_live_assets:
             copied = _copy_live_assets_to_snapshot(lead, next_dir)
             new_caption = caption if caption is not None else copied["caption"]
@@ -1453,6 +1497,10 @@ def revise_content(
                 src = prev_dir / fname
                 if src.exists():
                     shutil.copy2(src, next_dir / fname)
+            for extra_json in ("reels_spec.json",):
+                src_j = prev_dir / extra_json
+                if src_j.exists():
+                    shutil.copy2(src_j, next_dir / extra_json)
             for asset_key, (fname, raw_bytes) in (uploaded_files or {}).items():
                 if asset_key not in ASSET_KEY_TO_FILENAME:
                     raise ReviewValidationError(f"Asset key tidak valid: {asset_key}")
@@ -1501,16 +1549,19 @@ def revise_content(
         conn.execute(
             """
             INSERT INTO content_versions (
-                review_id, version_number, caption, hashtags, slides_dir,
-                qa_report_json, leak_check_json, created_by, created_at, note
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                review_id, version_number, content_format, caption, hashtags, slides_dir,
+                config_json, beat_script_json, qa_report_json, leak_check_json, created_by, created_at, note
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 fresh["id"],
                 next_v,
+                cur_fmt,
                 new_caption,
                 new_hashtags,
                 rel_dir,
+                new_config_json,
+                new_beat_script_json,
                 json.dumps(new_qa, ensure_ascii=False),
                 json.dumps(leak_report, ensure_ascii=False),
                 actor,

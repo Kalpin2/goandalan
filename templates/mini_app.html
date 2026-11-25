@@ -498,7 +498,7 @@
 
     <!-- TOAST -->
     <div x-show="toast.show" x-cloak x-transition
-         class="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-3.5 py-2 rounded-lg text-[13px] font-medium max-w-[92vw] text-center surface-modal"
+         class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] px-3.5 py-2 rounded-lg text-[13px] font-medium max-w-[92vw] text-center surface-modal"
          style="color: var(--ink);">
       <span x-text="toast.text"></span>
     </div>
@@ -1794,7 +1794,7 @@
           <div class="flex items-center gap-1.5 flex-wrap">
             <span class="t-meta">Versi:</span>
             <template x-for="v in (reviewDetail?.versions || [])" :key="v.version_number">
-              <button @click="reviewSelectedVersion = v.version_number; reviewSlideIdx = 0; reviewCaptionDraft = v.full_caption || ''"
+              <button @click="reviewSelectedVersion = v.version_number; reviewSlideIdx = 0; reviewCaptionDraft = v.full_caption || ''; $nextTick(() => { if ($refs.reelsVideo) $refs.reelsVideo.load(); })"
                       class="btn btn-sm t-mono tabular"
                       :class="reviewSelectedVersion === v.version_number ? 'btn-primary' : 'btn-ghost'"
                       x-text="'v' + v.version_number + (reviewDetail?.approved_version === v.version_number ? ' ✓' : '')"></button>
@@ -1837,7 +1837,8 @@
                 <div x-show="reviewViewMode === 'video'" class="space-y-2.5">
                   <div class="rounded-xl overflow-hidden aspect-[9/16] max-h-[62vh] mx-auto bg-black"
                        style="border: 1px solid var(--border);">
-                    <video x-show="reviewAssetByKey('reels_video')"
+                    <video x-ref="reelsVideo"
+                           x-show="reviewAssetByKey('reels_video')"
                            :src="withReviewToken(reviewAssetByKey('reels_video')?.preview_url)"
                            :poster="withReviewToken(reviewAssetByKey('cover_reels')?.preview_url)"
                            controls playsinline preload="metadata"
@@ -2199,10 +2200,10 @@
                 <span class="t-card text-[14px] tabular">Regenerasi Library (v<span class="t-mono" x-text="(reviewDetail?.current_version || 1) + 1"></span>)</span>
                 <span class="pill pill-amber text-[10px]">Ubah Preset / Format</span>
               </div>
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" @click="regenForm.content_format = 'carousel'; regenForm.sequence_type = 'auto'" class="btn btn-sm"
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button type="button" @click="regenForm.content_format = 'carousel'; regenForm.sequence_type = 'auto'" class="btn btn-sm whitespace-normal"
                         :class="regenForm.content_format === 'carousel' ? 'btn-primary' : 'btn-secondary'">Carousel 4:5</button>
-                <button type="button" @click="regenForm.content_format = 'reels'; regenForm.sequence_type = 'auto'" class="btn btn-sm"
+                <button type="button" @click="regenForm.content_format = 'reels'; regenForm.sequence_type = 'auto'" class="btn btn-sm whitespace-normal"
                         :class="regenForm.content_format === 'reels' ? 'btn-primary' : 'btn-secondary'">Reels 9:16</button>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -2227,18 +2228,58 @@
                   </template>
                 </select>
               </div>
-              <div x-show="regenForm.content_format === 'reels'" class="space-y-1">
-                <label class="t-meta text-[11px]">Mode Audio Reels</label>
-                <select x-model="regenForm.audio_mode" class="field field-sm text-[12px]">
-                  <template x-for="opt in libraryOptions.audio_modes" :key="'raud-' + opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
+              <div x-show="regenForm.content_format === 'reels'" class="space-y-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Mode Audio Reels</label>
+                    <select x-model="regenForm.audio_mode" class="field field-sm text-[12px]">
+                      <template x-for="opt in libraryOptions.audio_modes" :key="'raud-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Motion Intensity</label>
+                    <select x-model="regenForm.motion_intensity" class="field field-sm text-[12px]">
+                      <template x-for="opt in (libraryOptions.motion_intensities || [{id:'auto', label:'Otomatis'}])" :key="'rmi-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Gaya V/O (Natural 1.0x)</label>
+                    <select x-model="regenForm.vo_style" class="field field-sm text-[12px]">
+                      <template x-for="opt in (libraryOptions.vo_styles || [{id:'auto', label:'Auto Adaptif'}])" :key="'rvos-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Pilihan BGM (Sidechain Ducking)</label>
+                    <select x-model="regenForm.bgm_track" class="field field-sm text-[12px]">
+                      <template x-for="opt in (libraryOptions.bgm_tracks || [{id:'auto', label:'Auto Sesuai Target'}])" :key="'rbgm-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="t-meta text-[11px]">Script V/O (opsional — durasi video otomatis ikuti V/O 1.0x)</label>
+                    <span class="t-mono text-[10px]" style="color: var(--muted);" x-text="countWords(regenForm.vo_script) + ' kata'"></span>
+                  </div>
+                  <textarea rows="3" x-model="regenForm.vo_script"
+                            placeholder="Kosongkan untuk auto-generate narasi yang jelas, atau edit naskah V/O di sini..."
+                            class="field field-sm text-[12px]"></textarea>
+                </div>
               </div>
               <input type="text" x-model="regenForm.creative_note" placeholder="Arahan tambahan untuk generasi baru (opsional)" class="field field-sm" />
+              <div x-show="regenError" class="rounded-lg px-3 py-2 text-[12px]"
+                   style="background: var(--red-soft); border: 1px solid var(--red-border); color: var(--red);"
+                   x-text="regenError"></div>
               <button type="button" @click="regenerateWithConfig()" :disabled="generatingLeadId === reviewDetail?.lead_id" class="btn btn-primary w-full">
                 <span x-show="generatingLeadId !== reviewDetail?.lead_id">⚡ Generate Ulang ke v<span class="t-mono tabular" x-text="(reviewDetail?.current_version || 1) + 1"></span></span>
-                <span x-show="generatingLeadId === reviewDetail?.lead_id">Merender versi baru + leak check...</span>
+                <span x-show="generatingLeadId === reviewDetail?.lead_id">Merender versi baru (V/O natural + transisi + QA)...</span>
               </button>
             </div>
 
@@ -2252,7 +2293,7 @@
               <form x-show="showReviseForm" @submit.prevent="submitAdminRevision()" class="space-y-2.5 pt-2 hairline-t">
                 <label class="flex items-center gap-2 text-[13px]" style="color: var(--ink-2);">
                   <input type="checkbox" x-model="reviseForm.regenerate" class="w-4 h-4 rounded" style="accent-color: var(--accent);" />
-                  <span>Regenerate ulang otomatis 4 slide anonim</span>
+                  <span x-text="selectedVersionFormat() === 'reels' ? 'Regenerate ulang otomatis video Reels 9:16 (V/O natural)' : 'Regenerate ulang otomatis 4 slide anonim'"></span>
                 </label>
                 <div x-show="!reviseForm.regenerate" class="space-y-1.5">
                   <div class="t-meta">Atau upload pengganti (PNG/JPG/WebP, opsional):</div>
@@ -2482,7 +2523,8 @@
         savingMetricsId: null,
         learningEvalResult: null,
         postedMetricsDrafts: {},
-        regenForm: { content_format: 'carousel', art_direction_preset: 'auto', sequence_type: 'auto', voice_id: 'auto', hook_pattern_id: 'auto', audio_mode: 'voiceover_and_music', creative_note: '' },
+        regenForm: { content_format: 'carousel', art_direction_preset: 'auto', sequence_type: 'auto', voice_id: 'auto', hook_pattern_id: 'auto', audio_mode: 'voiceover_and_music', motion_intensity: 'auto', vo_style: 'auto', bgm_track: 'auto', vo_script: '', creative_note: '' },
+        regenError: '',
         reviewDetail: null,
         reviewSelectedVersion: 1,
         reviewSlideIdx: 0,
@@ -3386,12 +3428,26 @@
           if (!this.reviewDetail) return;
           const lid = this.reviewDetail.lead_id;
           this.generatingLeadId = lid;
+          this.regenError = '';
           try {
+            const payload = {
+              content_format: this.regenForm.content_format || 'carousel',
+              art_direction_preset: this.regenForm.art_direction_preset || 'auto',
+              sequence_type: this.regenForm.sequence_type || 'auto',
+              voice_id: this.regenForm.voice_id || 'auto',
+              hook_pattern_id: this.regenForm.hook_pattern_id || 'auto',
+              audio_mode: this.regenForm.audio_mode || 'voiceover_and_music',
+              motion_intensity: this.regenForm.motion_intensity || 'auto',
+              vo_style: this.regenForm.vo_style || 'auto',
+              bgm_track: this.regenForm.bgm_track || 'auto',
+              vo_script: this.regenForm.vo_script || '',
+              creative_note: this.regenForm.creative_note || '',
+            };
             const res = await fetch(`/api/content/${lid}/generate`, {
               method: 'POST',
               credentials: 'same-origin',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(this.regenForm),
+              body: JSON.stringify(payload),
             });
             const data = await res.json().catch(() => ({}));
             if (res.ok) {
@@ -3400,12 +3456,24 @@
               this.reviewSlideIdx = 0;
               this.reviewViewMode = this.selectedVersionFormat() === 'reels' ? 'video' : 'slide';
               this.reviewCaptionDraft = this.selectedReviewVersionObj()?.full_caption || '';
+              this.regenError = '';
+              this.$nextTick(() => {
+                if (this.$refs.reelsVideo && typeof this.$refs.reelsVideo.load === 'function') {
+                  this.$refs.reelsVideo.load();
+                }
+              });
               this.showToast(`✓ Versi v${data.current_version} (${this.selectedVersionFormat().toUpperCase()}) siap direview!`);
               await this.loadReviewQueue(false);
               await this.loadDashboard(false);
             } else {
-              this.showToast(this.extractApiError(data, 'Gagal generate ulang konten.'));
+              const msg = this.extractApiError(data, `Gagal generate ulang konten (HTTP ${res.status}).`);
+              this.regenError = msg;
+              this.showToast(msg);
             }
+          } catch (err) {
+            const msg = 'Gagal terhubung ke server saat generate ulang. Coba lagi.';
+            this.regenError = msg;
+            this.showToast(msg);
           } finally {
             this.generatingLeadId = null;
           }
@@ -3438,6 +3506,9 @@
         extractApiError(data, fallback = 'Terjadi kesalahan.') {
           if (!data) return fallback;
           if (typeof data.detail === 'string') return data.detail;
+          if (Array.isArray(data.detail) && data.detail.length > 0) {
+            return data.detail.map(e => e?.msg || JSON.stringify(e)).join('; ');
+          }
           if (data.detail && data.detail.message) return data.detail.message;
           return fallback;
         },
@@ -3520,8 +3591,13 @@
             voice_id: data.voice_id || 'auto',
             hook_pattern_id: data.hook_pattern_id || 'auto',
             audio_mode: data.audio_mode || 'voiceover_and_music',
+            motion_intensity: (this.selectedReviewVersionObj()?.config?.motion_intensity) || 'auto',
+            vo_style: data.vo_style || 'auto',
+            bgm_track: data.bgm_track || 'auto',
+            vo_script: data.vo_script || (this.selectedReviewVersionObj()?.reels_spec?.vo_script) || '',
             creative_note: data.creative_note || '',
           };
+          this.regenError = '';
           this.confirmApproveOpen = false;
           this.confirmPostedOpen = false;
           this.showCorrectionForm = false;
@@ -3777,17 +3853,25 @@
               credentials: 'same-origin',
               body: fd,
             });
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
             if (res.ok) {
               this.reviewDetail = data;
               this.reviewSelectedVersion = data.current_version;
+              this.reviewViewMode = this.selectedVersionFormat() === 'reels' ? 'video' : 'slide';
               this.showReviseForm = false;
+              this.$nextTick(() => {
+                if (this.$refs.reelsVideo && typeof this.$refs.reelsVideo.load === 'function') {
+                  this.$refs.reelsVideo.load();
+                }
+              });
               this.showToast(`Revisi v${data.current_version} tersimpan!`);
               await this.loadReviewQueue(false);
               await this.loadDashboard(false);
             } else {
-              this.showToast(this.extractApiError(data, 'Gagal membuat revisi.'));
+              this.showToast(this.extractApiError(data, `Gagal membuat revisi (HTTP ${res.status}).`));
             }
+          } catch (err) {
+            this.showToast('Gagal terhubung ke server saat menyimpan revisi.');
           } finally {
             this.submittingRevise = false;
           }

@@ -989,7 +989,9 @@ def run_all_tests() -> None:
             assert ri.select_bgm_track("Coffee Roastery")["id"] == "warm_hospitality"
             assert ri.select_bgm_track("Bengkel Custom")["id"] == "energetic_craft"
             assert ri.resolve_vo_profile("Studio Pilates")["is_formal"] is True
+            assert ri.resolve_vo_profile("Studio Pilates")["rate"] == "+0%"
             assert ri.resolve_vo_profile("Coffee Roastery")["is_formal"] is False
+            assert ri.resolve_vo_profile("Coffee Roastery")["rate"] == "+0%"
 
             # Scrape Reels Ideas endpoint (admin & reviewer allowed)
             r_scrape = reviewer_client.post("/api/content/reels-ideas/scrape", json={"limit": 1})
@@ -1005,7 +1007,7 @@ def run_all_tests() -> None:
             vo_words = len(idea_brief["vo_script"].split())
             assert 30 <= vo_words <= 60, f"Unexpected VO word count: {vo_words}"
 
-            # Edit V/O script + generate 12-15s Reels with adaptive V/O & target BGM
+            # Edit V/O script + generate Reels with 1.0x natural V/O & target BGM (video duration MUST follow V/O)
             edited_vo = (
                 "Berapa pelanggan batal datang cuma karena kelamaan menunggu balasan WA soal menu dan jam buka? "
                 "Lihat halaman mobile ini: menu utama, lokasi Maps, dan tombol pesan langsung terbaca cepat di layar HP. "
@@ -1020,16 +1022,66 @@ def run_all_tests() -> None:
                     "vo_script": edited_vo,
                     "vo_style": "auto",
                     "bgm_track": "auto",
-                    "target_duration": 13.0,
                 },
             )
             assert r_gen_idea.status_code == 200, r_gen_idea.text
             d_gen_idea = r_gen_idea.json()
             assert d_gen_idea["review_status"] == "pending_review"
+            v1_spec = d_gen_idea["versions"][0]["reels_spec"]
             assert d_gen_idea["versions"][0]["qa_report"]["status"] == "PASS", d_gen_idea["versions"][0]["qa_report"]
-            assert d_gen_idea["versions"][0]["reels_spec"]["bgm_track"] in {"calm_editorial", "warm_hospitality", "energetic_craft"}
+            assert v1_spec["bgm_track"] in {"calm_editorial", "warm_hospitality", "energetic_craft"}
+            assert abs(float(v1_spec["video"]["voiceover_tempo"]) - 1.0) < 0.005, v1_spec["video"]
+            v1_vo_dur = float(v1_spec["video"].get("voiceover_duration_sec") or 0.0)
+            if v1_vo_dur > 0:
+                assert float(v1_spec["video"]["duration_sec"]) >= v1_vo_dur + 0.8, v1_spec["video"]
             # Confirm V/O edit was logged to reels_learning_log.md
             assert "reels_log:" in (ref_dir / "reels_learning_log.md").read_text(encoding="utf-8")
+
+            # Request revision -> changes_requested -> Regenerasi Library (v2) with longer VO + Admin revise regenerate=true (v3)
+            r_corr_reels = reviewer_client.post(
+                f"/api/content/{idea_lid}/corrections",
+                json={"corrections": [{"slide_index": None, "note": "Perjelas transisi dan jangan percepat voiceover"}]},
+            )
+            assert r_corr_reels.status_code == 200 and r_corr_reels.json()["review_status"] == "changes_requested"
+
+            longer_vo = (
+                "Banyak calon pelanggan batal mampir karena bingung cari menu dan jam buka di profil. "
+                "Di tampilan mobile ini, begitu link dibuka, halaman pertama langsung merangkum layanan utama dengan huruf besar yang nyaman dibaca. "
+                "Lanjut ke bawah, daftar menu, peta lokasi, dan tombol WhatsApp langsung tersedia tanpa perlu bolak-balik chat. "
+                "Mau lihat konsep versi usaha kamu? Langsung DM kata KONSEP."
+            )
+            r_regen_v2 = reviewer_client.post(
+                f"/api/content/{idea_lid}/generate",
+                json={
+                    "content_format": "reels",
+                    "sequence_type": "scroll_reveal_showcase",
+                    "audio_mode": "voiceover_and_music",
+                    "vo_script": longer_vo,
+                    "vo_style": "auto",
+                    "bgm_track": "auto",
+                },
+            )
+            assert r_regen_v2.status_code == 200, r_regen_v2.text
+            d_regen_v2 = r_regen_v2.json()
+            assert d_regen_v2["current_version"] == 2
+            assert d_regen_v2["review_status"] == "revised", d_regen_v2["review_status"]
+            v2_spec = d_regen_v2["versions"][-1]["reels_spec"]
+            assert d_regen_v2["versions"][-1]["qa_report"]["status"] == "PASS", d_regen_v2["versions"][-1]["qa_report"]
+            assert abs(float(v2_spec["video"]["voiceover_tempo"]) - 1.0) < 0.005
+            v2_vo_dur = float(v2_spec["video"].get("voiceover_duration_sec") or 0.0)
+            if v2_vo_dur > 0:
+                assert float(v2_spec["video"]["duration_sec"]) >= v2_vo_dur + 0.8, v2_spec["video"]
+
+            # Admin revise with regenerate=true on Reels MUST return 200 (not 500) and keep content_format == reels
+            r_adm_rev = admin_client.post(
+                f"/api/content/{idea_lid}/revise",
+                data={"regenerate": "true", "note": "Admin regen reels v3"},
+            )
+            assert r_adm_rev.status_code == 200, r_adm_rev.text
+            d_adm_rev = r_adm_rev.json()
+            assert d_adm_rev["current_version"] == 3
+            assert d_adm_rev["versions"][-1]["content_format"] == "reels"
+            assert d_adm_rev["review_status"] == "revised"
 
             # Approve -> Mark Posted -> Save IG Metrics
             assert reviewer_client.post(f"/api/content/{idea_lid}/approve").status_code == 200

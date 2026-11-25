@@ -133,19 +133,19 @@ def resolve_vo_profile(
     cat_formal = is_formal_vo_category(category, brand_name)
 
     if req == "formal_gadis":
-        return {"style": "formal_gadis", "voice": "id-ID-GadisNeural", "rate": "+2%", "is_formal": True}
+        return {"style": "formal_gadis", "voice": "id-ID-GadisNeural", "rate": "+0%", "is_formal": True}
     if req == "formal_ardi_calm":
         return {"style": "formal_ardi_calm", "voice": "id-ID-ArdiNeural", "rate": "+0%", "is_formal": True}
     if req == "casual_ardi":
         # Protect clinical/legal/pilates/b2b from slang even if casual requested, or keep voice casual if non-formal
         if cat_formal:
             return {"style": "formal_ardi_calm", "voice": "id-ID-ArdiNeural", "rate": "+0%", "is_formal": True}
-        return {"style": "casual_ardi", "voice": "id-ID-ArdiNeural", "rate": "+5%", "is_formal": False}
+        return {"style": "casual_ardi", "voice": "id-ID-ArdiNeural", "rate": "+0%", "is_formal": False}
 
-    # Default auto adaptive
+    # Default auto adaptive (natural 1.0x speed, zero speed-up)
     if cat_formal:
-        return {"style": "formal_gadis", "voice": "id-ID-GadisNeural", "rate": "+2%", "is_formal": True}
-    return {"style": "casual_ardi", "voice": "id-ID-ArdiNeural", "rate": "+5%", "is_formal": False}
+        return {"style": "formal_gadis", "voice": "id-ID-GadisNeural", "rate": "+0%", "is_formal": True}
+    return {"style": "casual_ardi", "voice": "id-ID-ArdiNeural", "rate": "+0%", "is_formal": False}
 
 
 def sanitize_formal_vo_text(text: str) -> str:

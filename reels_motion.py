@@ -23,17 +23,17 @@ SAFE_ZONE = {"left": 64, "right": 960, "top": 290, "bottom": 1580}
 GRID_CROP_4x5 = {"top": 285, "bottom": 1635}  # center crop of a 9:16 cover used by the 4:5 / 3:4 profile grid
 MIN_FONT_PX = 32
 
-# Phone mock-up geometry (kept inside SAFE_ZONE; content centered on the safe box center x=512)
+# Phone mock-up geometry (centered on safe box center x=512; bottom y=1386 leaves clean subtitle band y=1416..1558)
 PHONE = {
-    "frame_x": 216,
-    "frame_y": 480,
-    "frame_w": 592,
-    "frame_h": 1000,
-    "slot_x": 232,
-    "slot_y": 496,
-    "slot_w": 560,
-    "slot_h": 968,
-    "radius": 38,
+    "frame_x": 228,
+    "frame_y": 468,
+    "frame_w": 568,
+    "frame_h": 918,
+    "slot_x": 244,
+    "slot_y": 484,
+    "slot_w": 536,
+    "slot_h": 886,
+    "radius": 36,
 }
 
 
@@ -160,15 +160,20 @@ def build_scroll_plan(n_frames: int, max_y: float, stops: list[float], easing: s
     travel_total = max(segs * 6, n - hold_each * (segs + 1))
     total_dist = sum(pts[i + 1] - pts[i] for i in range(segs)) or 1.0
 
-    ys: list[float] = [0.0] * hold_each
+    ys: list[float] = []
+    # Gentle breathing drift during reading holds keeps every frame alive & natural without jarring jumps
+    for h_i in range(hold_each):
+        ys.append(min(float(max_y), 4.0 * (h_i / max(1, hold_each))))
     for i in range(segs):
         y0, y1 = pts[i], pts[i + 1]
-        tf = max(6, int(round(travel_total * (y1 - y0) / total_dist)))
+        tf = max(8, int(round(travel_total * (y1 - y0) / total_dist)))
         for j in range(tf):
             ys.append(y0 + (y1 - y0) * ease(easing, (j + 1) / tf))
-        ys.extend([y1] * hold_each)
+        drift_dir = 1.0 if y1 < max_y - 8 else -1.0
+        for h_i in range(hold_each):
+            ys.append(max(0.0, min(float(max_y), y1 + drift_dir * 4.5 * (h_i / max(1, hold_each)))))
 
-    if len(ys) != n:  # resample to exact frame count (nearest, monotonic)
+    if len(ys) != n:  # resample to exact frame count (nearest, monotonic-safe)
         ys = [ys[min(len(ys) - 1, int(i * len(ys) / n))] for i in range(n)]
     return ys
 

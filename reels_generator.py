@@ -308,6 +308,8 @@ def _group_word_boundaries(boundaries: list[dict[str, Any]], delay_sec: float = 
         buf.clear()
 
     for b in boundaries:
+        if buf and (b["start"] - buf[-1]["end"]) >= 0.22:
+            _flush()
         buf.append(b)
         if len(buf) >= 5 or b["text"].endswith((".", "?", "!", ",")):
             _flush()
@@ -330,7 +332,8 @@ def _generate_indonesian_voiceover(
         return {"ok": False, "error": "empty_script", "duration_sec": 0.0, "boundaries": []}
 
     voice_name = voice_override or ("id-ID-GadisNeural" if is_formal else "id-ID-ArdiNeural")
-    rate = rate_override or ("+2%" if is_formal else "+5%")
+    # Selalu 100% natural (+0%) — DILARANG speed-up atau slow-mo voiceover
+    rate = rate_override or "+0%"
 
     result_box: dict[str, Any] = {
         "ok": False,
@@ -399,7 +402,7 @@ def _compose_reels_mp4(
     target_duration: float = REELS_TARGET_DURATION,
     enable_synced_captions: bool = True,
 ) -> dict[str, Any]:
-    """Encode 1080x1920 H.264 yuv420p MP4 (30fps) from scene frames + AAC audio (VO + sidechain-ducked target BGM)."""
+    """Encode 1080x1920 H.264 yuv420p MP4 (30fps) from scene frames + AAC audio (natural 1.0x VO + sidechain-ducked target BGM)."""
     if composer is None:
         raise ValueError("composer (SceneComposer) wajib diberikan.")
     eff_audio = audio_mode if audio_mode in VALID_AUDIO_MODES else "voiceover_and_music"
@@ -414,17 +417,23 @@ def _compose_reels_mp4(
             vo_mp3,
             is_formal=is_formal,
             voice_override=vo_voice_override,
-            rate_override=vo_rate_override,
+            rate_override="+0%",
             timeout_sec=30,
         )
         if not vo_info["ok"]:
             audio_note = f"Voiceover fallback ({vo_info.get('error') or 'offline'})"
             eff_audio = "music_only" if eff_audio == "voiceover_and_music" else "silent"
 
-    target = float(target_duration)
-    if vo_info.get("ok"):
-        target = max(target, vo_info["duration_sec"] + 1.0)
-    target = max(8.0, min(15.0, target))
+    vo_delay_sec = 0.35
+    vo_delay_ms = int(round(vo_delay_sec * 1000))
+    vo_dur_sec = round(float(vo_info.get("duration_sec") or 0.0), 2) if vo_info.get("ok") else 0.0
+
+    # Durasi video SELALU mengikuti durasi natural voiceover (tanpa speed-up / slow-mo)
+    if vo_info.get("ok") and vo_dur_sec > 0.0:
+        # 0.35s intro breath + natural 1.0x VO + ~1.15s outro & BGM swell breath
+        target = max(8.0, min(45.0, round(vo_dur_sec + 1.50, 2)))
+    else:
+        target = max(8.0, min(35.0, float(target_duration)))
 
     plan = composer.build_plan(target)
     total_frames = sum(s["frames"] for s in plan)
@@ -433,18 +442,17 @@ def _compose_reels_mp4(
     if eff_audio in {"voiceover_and_music", "music_only"} and not music_wav.exists():
         _synthesize_ambient_music_wav(music_wav, duration_sec=actual_duration + 0.5)
 
+    # STRICT 1.0x natural playback — tidak pernah menggunakan filter atempo
     tempo = 1.0
-    if vo_info.get("ok"):
-        tempo = max(1.0, min(1.3, vo_info["duration_sec"] / max(1.0, actual_duration - 0.6)))
-    vo_chain = f"aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo," + (f"atempo={tempo:.3f}," if tempo > 1.005 else "")
+    vo_chain = f"aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,"
 
     # Wire synced kinetic captions into SceneComposer inside IG safe zone
     cues: list[dict[str, Any]] = []
     if enable_synced_captions and (voiceover_script or "").strip():
         if vo_info.get("ok") and vo_info.get("boundaries"):
-            cues = _group_word_boundaries(vo_info["boundaries"], delay_sec=0.25, tempo=tempo)
+            cues = _group_word_boundaries(vo_info["boundaries"], delay_sec=vo_delay_sec, tempo=1.0)
         if not cues:
-            cues = _build_proportional_cues(voiceover_script, actual_duration, delay_sec=0.25)
+            cues = _build_proportional_cues(voiceover_script, actual_duration, delay_sec=vo_delay_sec)
         composer.vo_cues = cues
 
     ffmpeg_bin = shutil.which("ffmpeg")
@@ -458,6 +466,7 @@ def _compose_reels_mp4(
             "encoded_mp4": False, "fallback_frames_dir": str(seq_dir), "duration_sec": actual_duration, "fps": fps,
             "width": REELS_WIDTH, "height": REELS_HEIGHT, "audio_mode": eff_audio, "has_audio": False,
             "audio_note": audio_note, "bgm_track": bgm_track_id, "sidechain_ducked": False,
+            "voiceover_duration_sec": vo_dur_sec, "voiceover_tempo": 1.0,
             "vo_cues_count": len(cues), "plan": plan,
         }
 
@@ -467,18 +476,18 @@ def _compose_reels_mp4(
     ]
     has_audio, silent_track, sidechain_ducked = False, False, False
     aac = ["-c:a", "aac", "-b:a", "128k", "-ar", str(AUDIO_SAMPLE_RATE), "-ac", "2", "-t", str(actual_duration)]
-    fade_out_st = max(0.2, round(actual_duration - 0.75, 2))
+    fade_out_st = max(0.2, round(actual_duration - 0.80, 2))
     if eff_audio == "voiceover_and_music" and vo_info.get("ok") and vo_mp3.exists() and music_wav.exists():
         # Pad V/O sidechain to exact actual_duration so BGM swells back smoothly after V/O finishes & A/V sync == 0.00s
         cmd += [
             "-i", str(vo_mp3),
             "-stream_loop", "-1", "-i", str(music_wav),
             "-filter_complex",
-            f"[1:a]{vo_chain}adelay=250|250,apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.18,asplit=2[vo_main][vo_sc];"
+            f"[1:a]{vo_chain}adelay={vo_delay_ms}|{vo_delay_ms},apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.18,asplit=2[vo_main][vo_sc];"
             f"[2:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,"
             f"atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,"
-            f"afade=t=in:st=0:d=0.25,afade=t=out:st={fade_out_st:.2f}:d=0.70,volume=0.36[bg_raw];"
-            "[bg_raw][vo_sc]sidechaincompress=threshold=0.025:ratio=6:attack=25:release=260:makeup=1[bg_ducked];"
+            f"afade=t=in:st=0:d=0.30,afade=t=out:st={fade_out_st:.2f}:d=0.75,volume=0.36[bg_raw];"
+            "[bg_raw][vo_sc]sidechaincompress=threshold=0.025:ratio=6:attack=25:release=280:makeup=1[bg_ducked];"
             "[vo_main][bg_ducked]amix=inputs=2:duration=longest:dropout_transition=2,alimiter=limit=0.95[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
@@ -486,7 +495,7 @@ def _compose_reels_mp4(
     elif eff_audio == "voiceover_only" and vo_info.get("ok") and vo_mp3.exists():
         cmd += [
             "-i", str(vo_mp3), "-filter_complex",
-            f"[1:a]{vo_chain}adelay=250|250,apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.15[aout]",
+            f"[1:a]{vo_chain}adelay={vo_delay_ms}|{vo_delay_ms},apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.15[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
         has_audio = True
@@ -495,7 +504,7 @@ def _compose_reels_mp4(
             "-stream_loop", "-1", "-i", str(music_wav), "-filter_complex",
             f"[1:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,"
             f"atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,"
-            f"afade=t=in:st=0:d=0.25,afade=t=out:st={fade_out_st:.2f}:d=0.70,volume=0.52[aout]",
+            f"afade=t=in:st=0:d=0.30,afade=t=out:st={fade_out_st:.2f}:d=0.75,volume=0.52[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
         has_audio = True
@@ -536,7 +545,8 @@ def _compose_reels_mp4(
         "silent_audio_track": silent_track, "sidechain_ducked": sidechain_ducked,
         "bgm_track": bgm_track_id, "bgm_file": music_wav.name if music_wav.exists() else "",
         "voiceover_voice": vo_info.get("voice") if vo_info.get("ok") else "",
-        "voiceover_tempo": round(tempo, 3), "vo_cues_count": len(cues), "audio_note": audio_note, "plan": plan,
+        "voiceover_duration_sec": vo_dur_sec,
+        "voiceover_tempo": 1.0, "vo_cues_count": len(cues), "audio_note": audio_note, "plan": plan,
     }
 
 
@@ -612,9 +622,15 @@ def generate_reels_package_for_lead(
     )
     caption_text = recycled_cap["caption"]
     hook_first_line = caption_text.splitlines()[0].strip() if caption_text else f"Konsep web {display_name}."
+    hook_first_line = re.sub(r"(?i)^10\s*detik\b", "Sekilas", hook_first_line)
     hook_short = hook_first_line[:104].rsplit(" ", 1)[0] if len(hook_first_line) > 104 else hook_first_line
 
-    sub_hook = f"Eksplorasi tampilan mobile {display_name} ({industry.lower()}) dengan arah {art_dir['primary_style']}."
+    is_formal_voice = bool(recycled_cap["caption_voice"] == "formal_editorial" or vo_profile["is_formal"])
+    sub_hook = (
+        f"Tampilan mobile {display_name} — informasi utama, layanan, dan kontak tertata jelas."
+        if is_formal_voice
+        else f"Tampilan mobile {display_name} — layanan, lokasi, dan kontak langsung jelas di layar HP."
+    )
     try:
         from content_review import _sanitize_ux_flaw_for_brief
         ux_clean = _sanitize_ux_flaw_for_brief(lead, display_name) if (lead.get("ux_flaw") or "").strip() else ""
@@ -642,7 +658,6 @@ def generate_reels_package_for_lead(
     )
     plates = plate_set["paths"]
 
-    is_formal_voice = bool(recycled_cap["caption_voice"] == "formal_editorial" or vo_profile["is_formal"])
     if (vo_script or "").strip():
         final_vo_script = re.sub(r"\s+", " ", vo_script.strip())
     else:
@@ -655,36 +670,49 @@ def generate_reels_package_for_lead(
             )
         else:
             final_vo_script = (
-                f"{vo_core}. Eksplorasi tampilan mobile untuk {display_name}, dirancang rapi dan mudah dibaca di layar ponsel."
+                f"{vo_core}. Di tampilan mobile {display_name} ini, informasi utama langsung terbaca jelas di layar pertama, diikuti daftar layanan rapi dan tombol kontak yang mudah dijangkau."
                 if is_formal_voice
-                else f"{vo_core}. Ini konsep tampilan mobile untuk {display_name}, rapi dan gampang dibaca di layar HP."
+                else f"{vo_core}. Di tampilan mobile {display_name} ini, begitu dibuka pengunjung langsung paham layanannya, scroll-nya rapi, dan tombol kontaknya gampang ditemukan di layar HP."
             )
     if is_formal_voice:
         final_vo_script = ri.sanitize_formal_vo_text(final_vo_script)
 
     bgm_info = ri.select_bgm_track(industry, bgm_track=bgm_track, brand_name=display_name)
     eff_target_dur = float(target_duration or (13.0 if attract_cta else REELS_TARGET_DURATION))
+    accent_hex = (
+        (art_dir.get("typography_direction") or {}).get("poster_palette", {}).get("poster_highlight")
+        or (art_dir.get("palette") or {}).get("accent")
+        or "#818CF8"
+    )
 
     composer = SceneComposer(
         sequence_key=eff_seq, plates=plates, reveal=plate_set["reveal"], capture=capture, profile=profile, fps=REELS_FPS,
-        texts=story,
+        texts=story, accent_hex=accent_hex,
     )
     mp4_path = reels_dir / "reels.mp4"
     video_meta = _compose_reels_mp4(
         plates=plates, mobile_tall_png=cap_pack["mobile_tall_png"], target_mp4=mp4_path, fps=REELS_FPS,
         audio_mode=audio_mode, voiceover_script=final_vo_script, is_formal=is_formal_voice,
-        vo_voice_override=vo_profile["voice"], vo_rate_override=vo_profile["rate"],
+        vo_voice_override=vo_profile["voice"], vo_rate_override="+0%",
         bgm_path=bgm_info["path"], bgm_track_id=bgm_info["id"],
         composer=composer, target_duration=eff_target_dur,
-        enable_synced_captions=bool(attract_cta or (vo_script or "").strip()),
+        enable_synced_captions=bool(audio_mode in {"voiceover_and_music", "voiceover_only"} or attract_cta or (vo_script or "").strip()),
     )
 
     plan = video_meta.pop("plan")
     beat_script: list[dict[str, Any]] = []
     cursor = 0.0
+    _trans_labels = {
+        "cut": "Cut langsung",
+        "crossfade": f"Crossfade {profile['fade_s']:.2f}s",
+        "wipe": f"Wipe brand {profile['wipe_s']:.2f}s",
+        "slide_up": f"Slide-up halus {profile['fade_s']:.2f}s",
+        "slide_left": f"Slide-left mulus {profile['fade_s']:.2f}s",
+        "zoom_cross": f"Zoom-in penutup {profile['fade_s']:.2f}s",
+    }
     for idx, sc in enumerate(plan, start=1):
         d = sc["frames"] / float(REELS_FPS)
-        trans = {"cut": "Cut langsung", "crossfade": f"Crossfade {profile['fade_s']:.2f}s", "wipe": f"Wipe horizontal {profile['wipe_s']:.2f}s"}[sc["transition"]]
+        trans = _trans_labels.get(sc["transition"], f"Transisi {sc['transition']}")
         beat_script.append({
             "beat": idx, "time_range": f"{cursor:.1f}s – {cursor + d:.1f}s", "title": sc["title"], "visual": sc["visual"],
             "on_screen_text": sc["text"], "transition": f"Masuk: {trans}",

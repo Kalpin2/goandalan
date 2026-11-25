@@ -96,7 +96,7 @@ def build_reels_qa(
     on_screen_texts: list[str],
     lead: dict[str, Any],
     guardrail: dict[str, Any],
-    target_range: tuple[float, float] = (8.0, 15.5),
+    target_range: tuple[float, float] = (8.0, 45.0),
     leak_checker: Any = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
@@ -105,13 +105,23 @@ def build_reels_qa(
     def add(name: str, passed: bool, detail: str) -> None:
         checks.append({"name": name, "passed": bool(passed), "detail": detail})
 
+    vo_dur = float(video_meta.get("voiceover_duration_sec") or 0.0)
+    vo_tempo = float(video_meta.get("voiceover_tempo", 1.0))
+    eff_min_dur = max(target_range[0], round(vo_dur + 0.8, 2)) if vo_dur > 0 else target_range[0]
+    eff_max_dur = min(target_range[1], max(16.0, round(vo_dur + 4.0, 2))) if vo_dur > 0 else min(target_range[1], 35.0)
+
     pm = probe_media(mp4_path) if video_meta.get("encoded_mp4") else {"ok": False}
     if pm.get("ok"):
         dur = pm["duration"]
         add("reels_video_9x16",
             pm["width"] == REELS_W and pm["height"] == REELS_H and pm["codec"] == "h264" and pm["pix_fmt"] == "yuv420p",
             f"{pm['width']}x{pm['height']} {pm['codec']}/{pm['pix_fmt']} {pm['fps']}fps {dur:.2f}s {mp4_path.stat().st_size // 1024}KB")
-        add("duration_target", target_range[0] <= dur <= target_range[1], f"{dur:.2f}s (target {target_range[0]}–{target_range[1]}s)")
+        add("duration_target", eff_min_dur <= dur <= eff_max_dur,
+            f"{dur:.2f}s (mengikuti V/O natural {vo_dur:.2f}s → target {eff_min_dur:.1f}–{eff_max_dur:.1f}s)" if vo_dur > 0
+            else f"{dur:.2f}s (target {eff_min_dur:.1f}–{eff_max_dur:.1f}s)")
+        add("voiceover_natural_speed", abs(vo_tempo - 1.0) < 0.005,
+            f"kecepatan V/O {vo_tempo:.2f}x (1.00x natural, tanpa speed-up/slow-mo)" if abs(vo_tempo - 1.0) < 0.005
+            else f"V/O diubah ke {vo_tempo:.2f}x (DILARANG speed-up/slow-mo)")
         add("fps_ok", pm["fps"] in (30.0, 60.0) or abs(pm["fps"] - 30) < 0.5 or abs(pm["fps"] - 60) < 0.5, f"{pm['fps']} fps")
         exp_frames = int(round(pm["video_duration"] * pm["fps"])) if pm["fps"] else 0
         add("frame_count_consistent", abs(pm["frames"] - exp_frames) <= 2, f"{pm['frames']} frame (expected ≈{exp_frames})")
