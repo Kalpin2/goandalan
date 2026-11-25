@@ -212,6 +212,12 @@ _CREATE_CONTENT_REVIEW_TABLES_SQL = (
         voice_id TEXT NOT NULL DEFAULT 'auto',
         hook_pattern_id TEXT NOT NULL DEFAULT 'auto',
         audio_mode TEXT NOT NULL DEFAULT 'voiceover_and_music',
+        vo_script TEXT NOT NULL DEFAULT '',
+        vo_style TEXT NOT NULL DEFAULT 'auto',
+        bgm_track TEXT NOT NULL DEFAULT 'auto',
+        pain_code TEXT NOT NULL DEFAULT '',
+        reel_hook_id TEXT NOT NULL DEFAULT '',
+        metrics_json TEXT NOT NULL DEFAULT '{}',
         creative_note TEXT NOT NULL DEFAULT '',
         current_version INTEGER NOT NULL DEFAULT 0,
         approved_version INTEGER,
@@ -364,8 +370,17 @@ def migrate_review_tables_up(conn: sqlite3.Connection) -> None:
         conn.execute(f"PRAGMA foreign_keys={'ON' if fk_prev else 'OFF'};")
 
     rev_cols_after = {r["name"] for r in conn.execute("PRAGMA table_info(content_reviews)").fetchall()}
-    if "audio_mode" not in rev_cols_after:
-        conn.execute("ALTER TABLE content_reviews ADD COLUMN audio_mode TEXT NOT NULL DEFAULT 'voiceover_and_music';")
+    for col_name, col_ddl in (
+        ("audio_mode", "TEXT NOT NULL DEFAULT 'voiceover_and_music'"),
+        ("vo_script", "TEXT NOT NULL DEFAULT ''"),
+        ("vo_style", "TEXT NOT NULL DEFAULT 'auto'"),
+        ("bgm_track", "TEXT NOT NULL DEFAULT 'auto'"),
+        ("pain_code", "TEXT NOT NULL DEFAULT ''"),
+        ("reel_hook_id", "TEXT NOT NULL DEFAULT ''"),
+        ("metrics_json", "TEXT NOT NULL DEFAULT '{}'"),
+    ):
+        if col_name not in rev_cols_after:
+            conn.execute(f"ALTER TABLE content_reviews ADD COLUMN {col_name} {col_ddl};")
 
     ver_cols = {r["name"] for r in conn.execute("PRAGMA table_info(content_versions)").fetchall()}
     if "content_format" not in ver_cols:

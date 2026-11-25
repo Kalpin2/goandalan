@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "generated_at": "2026-11-25T02:14:07+00:00",
+  "totals": {
+    "copy_logs": 9,
+    "reels_logs": 1,
+    "posted_metric_items": 0
+  },
+  "patterns": {
+    "PAIN-WA": {
+      "u": 1,
+      "ed": 0
+    },
+    "REEL-HOOK-1": {
+      "u": 1,
+      "ed": 0
+    }
+  },
+  "voices": {
+    "V1": {
+      "u": 10,
+      "ed": 0
+    }
+  },
+  "top_human_edits": [],
+  "weak_categories": [],
+  "token_budget_rule": "Read learning_digest.json + pre-router pattern slice only; never load full raw logs."
+}

@@ -294,8 +294,23 @@ class ContentGeneratePayload(BaseModel):
     audio_mode: str = "voiceover_and_music"
     motion_intensity: str = "auto"
     target_duration: float = 10.0
+    vo_script: str = ""
+    vo_style: str = "auto"
+    bgm_track: str = "auto"
     creative_note: str = ""
     note: str = ""
+
+
+class ReelsIdeasScrapePayload(BaseModel):
+    topic: str = ""
+    limit: int = Field(default=3, ge=1, le=4)
+
+
+class PostedMetricsPayload(BaseModel):
+    views: int = Field(default=0, ge=0)
+    saves: int = Field(default=0, ge=0)
+    shares: int = Field(default=0, ge=0)
+    dm_in: int = Field(default=0, ge=0)
 
 
 class CorrectionItemPayload(BaseModel):
@@ -1242,6 +1257,33 @@ def get_content_review_queue(
     return cr.list_review_queue(status_filter=status)
 
 
+@app.post("/api/content/reels-ideas/scrape")
+def scrape_reels_ideas_endpoint(
+    payload: ReelsIdeasScrapePayload | None = None,
+    auth: dict[str, str] = Depends(require_role("admin", "reviewer")),
+) -> dict[str, Any]:
+    """Scrape real Indonesian UMKM business pain points (Agent-Reach + fallback) into Reels draft briefs."""
+    p = payload or ReelsIdeasScrapePayload()
+    try:
+        return cr.create_reels_ideas_briefs(
+            actor=auth["actor"],
+            topic=p.topic,
+            limit=p.limit,
+        )
+    except cr.ReviewError as exc:
+        _handle_review_error(exc)
+
+
+@app.post("/api/learning/evaluate")
+def evaluate_learning_endpoint(
+    _auth: dict[str, str] = Depends(require_role("admin", "reviewer")),
+) -> dict[str, Any]:
+    """Deterministically refresh `learning_digest.json` (<= ~1,200 tokens) and propose max 3 candidates."""
+    from creative_agent import token_optimizer
+
+    return token_optimizer.evaluate_learning_signals()
+
+
 @app.post("/api/content/{item_id}/generate")
 def generate_content_item(
     item_id: int,
@@ -1262,6 +1304,9 @@ def generate_content_item(
             audio_mode=p.audio_mode,
             motion_intensity=p.motion_intensity,
             target_duration=p.target_duration,
+            vo_script=p.vo_script,
+            vo_style=p.vo_style,
+            bgm_track=p.bgm_track,
             creative_note=p.creative_note,
             note=p.note,
         )
@@ -1512,6 +1557,25 @@ def mark_content_posted(
             posted_url=payload.posted_url if payload else "",
             posted_at=payload.posted_at if payload else None,
             expected_status=payload.expected_status if payload else None,
+        )
+    except cr.ReviewError as exc:
+        _handle_review_error(exc)
+
+
+@app.post("/api/content/{lead_id}/metrics")
+def save_content_posted_metrics(
+    lead_id: int,
+    payload: PostedMetricsPayload,
+    auth: dict[str, str] = Depends(require_role("admin", "reviewer")),
+) -> dict[str, Any]:
+    try:
+        return cr.save_posted_metrics(
+            lead_id=lead_id,
+            actor=auth["actor"],
+            views=payload.views,
+            saves=payload.saves,
+            shares=payload.shares,
+            dm_in=payload.dm_in,
         )
     except cr.ReviewError as exc:
         _handle_review_error(exc)

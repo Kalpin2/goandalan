@@ -1006,35 +1006,10 @@ def draft_recycled_caption(
 # Learning Signal Logger & Automatic Outcome Sync (§12.1 & §12.2)
 # ---------------------------------------------------------------------------
 def summarize_human_edit(original_draft: str, final_text: str) -> str:
-    """Compute concise deterministic summary comparing agent draft vs human-sent text."""
-    orig = (original_draft or "").strip()
-    final = (final_text or "").strip()
-    if orig == final:
-        return "unchanged"
+    """Compute concise deterministic summary comparing agent draft vs human-sent text (0 LLM tokens)."""
+    from creative_agent.token_optimizer import compute_edit_delta
 
-    notes: list[str] = []
-    ow = _count_words(orig)
-    fw = _count_words(final)
-    if fw < ow - 3:
-        notes.append(f"shortened ({ow}->{fw}w)")
-    elif fw > ow + 3:
-        notes.append(f"expanded ({ow}->{fw}w)")
-
-    orig_emoji = len(EMOJI_PATTERN.findall(orig))
-    final_emoji = len(EMOJI_PATTERN.findall(final))
-    if orig_emoji > final_emoji:
-        notes.append("removed emoji")
-    elif final_emoji > orig_emoji:
-        notes.append("added emoji")
-
-    for old_s, new_s in (("Kak", "Bapak/Ibu"), ("Bapak/Ibu", "Kak"), ("Anda", "Kak"), ("Kak", "Anda")):
-        if old_s in orig and old_s not in final and new_s in final:
-            notes.append(f"changed sapaan {old_s}->{new_s}")
-            break
-
-    if not notes:
-        notes.append("edited wording")
-    return ", ".join(notes)
+    return compute_edit_delta(original_draft, final_text)["summary"]
 
 
 def log_copy_event(
@@ -1054,6 +1029,8 @@ def log_copy_event(
     log_path: Path | None = None,
 ) -> dict[str, Any]:
     """Append a §12.2 `copy_log` YAML entry to `copy_learning_log.md` (strictly anonymized for recycled content)."""
+    from creative_agent.token_optimizer import compute_edit_delta
+
     path = log_path or COPY_LEARNING_LOG_PATH
     is_anon = is_recycled or channel == "caption" or bool(lead.get("is_anonymized"))
     display_name = (
@@ -1064,7 +1041,8 @@ def log_copy_event(
     routing = route_voice_for_lead(lead)
     v_code = voice or routing["voice"]
     sap = sapaan or routing["sapaan"]
-    edit_sum = summarize_human_edit(original_draft, final_text)
+    delta = compute_edit_delta(original_draft, final_text)
+    edit_sum = delta["summary"]
     now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
     wc = _count_words(final_text or original_draft)
 
@@ -1090,11 +1068,16 @@ def log_copy_event(
         "patterns_used": list(patterns_used or []),
         "levers": list(levers or []),
         "word_count": wc,
+        "word_delta": delta["word_delta"],
+        "sapaan_changed": delta["sapaan_changed"],
+        "emoji_removed": delta["emoji_removed"],
+        "shortened": delta["shortened"],
         "had_specific_detail": bool((lead.get("ig_observation") or "").strip()),
         "exploration_candidate": exploration_candidate or "",
         "original_draft": safe_orig,
         "final_text": safe_final,
         "edit_summary": edit_sum,
+        "edit_delta": delta,
         "outcome": outcome,
         "outcome_at": "",
         "notes": notes,
@@ -1116,6 +1099,10 @@ def log_copy_event(
         f"  patterns_used: {json.dumps(entry['patterns_used'], ensure_ascii=False)}\n"
         f"  levers: {json.dumps(entry['levers'], ensure_ascii=False)}\n"
         f"  word_count: {entry['word_count']}\n"
+        f"  word_delta: {entry['word_delta']}\n"
+        f"  sapaan_changed: {json.dumps(entry['sapaan_changed'], ensure_ascii=False)}\n"
+        f"  emoji_removed: {entry['emoji_removed']}\n"
+        f"  shortened: {'true' if entry['shortened'] else 'false'}\n"
         f"  had_specific_detail: {'true' if entry['had_specific_detail'] else 'false'}\n"
         f"  exploration_candidate: {json.dumps(entry['exploration_candidate'], ensure_ascii=False)}\n"
         f"  original_draft: {json.dumps(entry['original_draft'], ensure_ascii=False)}\n"

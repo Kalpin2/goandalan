@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="dark-mode">
 <head>
   <meta charset="UTF-8" />
@@ -153,6 +153,7 @@
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
     .btn-sm { font-size: 12px; padding: 5px 10px; min-height: 30px; border-radius: 7px; }
     .btn-lg { font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 10px; }
+    .btn.whitespace-normal { white-space: normal; }
 
     .btn-primary {
       background: var(--accent);
@@ -1270,6 +1271,19 @@
           </button>
         </div>
 
+        <!-- ACTION BAR: Scrape Attract-Customer Reels Ideas (Brief sub-tab) -->
+        <div x-show="reviewSubTab === 'draft_brief'" class="surface-card rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+          <div class="min-w-0 space-y-0.5">
+            <div class="t-meta text-[11px] uppercase tracking-wider" style="color: var(--accent-hover);">Attract Customer · Reels 9:16</div>
+            <p class="t-body text-[12px]" style="color: var(--muted);">Kumpulkan masalah nyata bisnis lokal (WA/Booking/Ads/PDF) jadi Draft Brief Reels siap edit V/O. Carousel 4:5 tetap berasal dari <strong>/recycle</strong> Tab Timer 48j.</p>
+          </div>
+          <button type="button" @click="scrapeReelsIdeas()" :disabled="scrapingReelsIdeas"
+                  class="btn btn-sm btn-primary whitespace-normal break-words text-left shrink-0">
+            <span x-show="!scrapingReelsIdeas">🔎 Cari Ide Reels dari Masalah Bisnis (Agent-Reach)</span>
+            <span x-show="scrapingReelsIdeas">Mengumpulkan Masalah UMKM &amp; Draft V/O...</span>
+          </button>
+        </div>
+
         <!-- Atlassian Clear Empty State -->
         <template x-if="filteredReviewQueue().length === 0">
           <div class="surface-card rounded-xl p-8 text-center space-y-2 max-w-lg mx-auto">
@@ -1277,7 +1291,7 @@
                  style="background: var(--surface-2); border: 1px solid var(--border); color: var(--muted);">✓</div>
             <h3 class="t-card">Tidak ada konten di sub-tab ini</h3>
             <p class="t-body mx-auto text-[13px]" style="color: var(--muted);">
-              <span x-show="reviewSubTab === 'draft_brief'">Klik <strong>♻ Jadikan Konten IG</strong> di Tab Timer 48j untuk membuat Draft Brief anonim baru sebelum memilih format Carousel / Reels.</span>
+              <span x-show="reviewSubTab === 'draft_brief'">Klik <strong>♻ Jadikan Konten IG</strong> di Tab Timer 48j untuk Carousel pamer web, atau klik <strong>Cari Ide Reels</strong> di atas untuk membuat brief Reels Attract Customer.</span>
               <span x-show="reviewSubTab !== 'draft_brief'">Konten hasil generate dari sub-tab <strong>Brief / Siap Generate</strong> akan masuk otomatis ke antrean review di sini.</span>
             </p>
           </div>
@@ -1292,6 +1306,8 @@
                   <div class="flex flex-wrap items-center gap-1.5 mb-1">
                     <span class="pill pill-amber">Brief / Siap Generate</span>
                     <span class="pill">Brand Fiktif</span>
+                    <span x-show="item.pain_code" class="pill pill-accent t-mono" x-text="item.pain_code"></span>
+                    <span x-show="item.reel_hook_id" class="pill t-mono" x-text="item.reel_hook_id"></span>
                   </div>
                   <h3 class="t-card truncate" x-text="item.anon_name"></h3>
                   <div class="t-meta mt-0.5" x-text="(item.category || 'Bisnis Lokal') + ' · ' + (item.city || '—')"></div>
@@ -1300,24 +1316,55 @@
               </div>
 
               <div class="surface-inset rounded-lg p-3 space-y-1">
-                <div class="t-meta text-[11px]">Ringkasan Celah UX (Anonim)</div>
+                <div class="t-meta text-[11px]">Ringkasan Celah UX / Masalah Bisnis (Anonim)</div>
                 <p class="t-body text-[13px]" x-text="item.ux_flaw_sanitized"></p>
               </div>
 
               <!-- Format Toggle: Carousel 4:5 vs Reels 9:16 -->
               <div class="space-y-1.5">
                 <div class="t-meta text-[11px]">Format Konten</div>
-                <div class="grid grid-cols-2 gap-2">
-                  <button type="button" @click="setBriefFormat(item, 'carousel')" class="btn btn-sm flex-col items-start text-left py-2 h-auto"
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button type="button" @click="setBriefFormat(item, 'carousel')" class="btn btn-sm flex-col items-start text-left whitespace-normal break-words py-2 h-auto min-w-0 w-full"
                           :class="getBriefCfg(item).content_format === 'carousel' ? 'btn-primary' : 'btn-secondary'">
-                    <span class="font-semibold">Carousel (4 Slide 4:5)</span>
-                    <span class="text-[10px] opacity-80 font-normal">4 PNG 2160×2700 + Contact Sheet + Caption</span>
+                    <span class="font-semibold whitespace-normal break-words text-left">Carousel (4 Slide 4:5)</span>
+                    <span class="text-[10px] opacity-80 font-normal whitespace-normal break-words text-left">4 PNG 2160×2700 + Contact Sheet + Caption</span>
                   </button>
-                  <button type="button" @click="setBriefFormat(item, 'reels')" class="btn btn-sm flex-col items-start text-left py-2 h-auto"
+                  <button type="button" @click="setBriefFormat(item, 'reels')" class="btn btn-sm flex-col items-start text-left whitespace-normal break-words py-2 h-auto min-w-0 w-full"
                           :class="getBriefCfg(item).content_format === 'reels' ? 'btn-primary' : 'btn-secondary'">
-                    <span class="font-semibold">Reels (Video 9:16)</span>
-                    <span class="text-[10px] opacity-80 font-normal">MP4 1080×1920 30fps (~8–12 dtk) + Cover + Beat Script</span>
+                    <span class="font-semibold whitespace-normal break-words text-left">Reels (Video 9:16)</span>
+                    <span class="text-[10px] opacity-80 font-normal whitespace-normal break-words text-left">MP4 1080×1920 30fps (~8–15 dtk) + Cover + Beat Script</span>
                   </button>
+                </div>
+              </div>
+
+              <!-- Editable V/O Script + Adaptive V/O Style & Target BGM (Reels only) -->
+              <div x-show="getBriefCfg(item).content_format === 'reels'" class="surface-inset rounded-lg p-3 space-y-2.5" style="border: 1px solid var(--border);">
+                <div class="flex flex-wrap items-center justify-between gap-1.5">
+                  <label class="t-meta text-[11px] font-medium" style="color: var(--ink);">Script V/O (Edit Sebelum Render · Tercatat 0-Token)</label>
+                  <span class="pill t-mono tabular text-[10px]"
+                        :class="(countWords(getBriefCfg(item).vo_script) >= 35 && countWords(getBriefCfg(item).vo_script) <= 55) ? 'pill-green' : ''"
+                        x-text="countWords(getBriefCfg(item).vo_script) + ' kata (target 35–55)'"></span>
+                </div>
+                <textarea x-model="getBriefCfg(item).vo_script" rows="3"
+                          placeholder="Tulis atau edit naskah narasi V/O (35–55 kata untuk durasi 12–15 detik)..."
+                          class="field field-sm text-[12px]"></textarea>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Gaya V/O (Adaptive TTS)</label>
+                    <select x-model="getBriefCfg(item).vo_style" class="field field-sm text-[12px]">
+                      <template x-for="opt in (libraryOptions.vo_styles || [{id:'auto', label:'Auto Adaptif (Sesuai Kategori)'}])" :key="'vos-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="t-meta text-[11px]">Pilihan BGM (Sidechain Ducking)</label>
+                    <select x-model="getBriefCfg(item).bgm_track" class="field field-sm text-[12px]">
+                      <template x-for="opt in (libraryOptions.bgm_tracks || [{id:'auto', label:'Auto Sesuai Target Bisnis'}])" :key="'bgm-' + opt.id">
+                        <option :value="opt.id" x-text="opt.label"></option>
+                      </template>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -1489,27 +1536,84 @@
           </template>
         </div>
 
+        <!-- ACTION BAR: Token-Efficient Pattern Evaluation (Posted sub-tab) -->
+        <div x-show="reviewSubTab === 'posted'" class="surface-card rounded-xl p-3.5 space-y-2.5">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+            <div class="min-w-0 space-y-0.5">
+              <div class="t-meta text-[11px] uppercase tracking-wider" style="color: var(--accent-hover);">Self-Learning Hemat Token</div>
+              <p class="t-body text-[12px]" style="color: var(--muted);">Catat metrik nyata IG lalu perbarui <code>learning_digest.json</code> (≤ 1.200 token) tanpa membaca log mentah penuh.</p>
+            </div>
+            <button type="button" @click="evaluateLearningPatterns()" :disabled="evaluatingLearning"
+                    class="btn btn-sm btn-primary whitespace-normal break-words text-left shrink-0">
+              <span x-show="!evaluatingLearning">📊 Evaluasi Pola (Hemat Token)</span>
+              <span x-show="evaluatingLearning">Menyusun Digest &amp; Kandidat...</span>
+            </button>
+          </div>
+          <div x-show="learningEvalResult" class="surface-inset rounded-lg p-2.5 text-[12px] flex flex-wrap items-center gap-2">
+            <span class="pill pill-green t-mono" x-text="'Digest ~' + (learningEvalResult?.estimated_tokens || 0) + ' tok'"></span>
+            <span class="pill t-mono" x-text="'Copy: ' + (learningEvalResult?.digest?.totals?.copy_logs || 0)"></span>
+            <span class="pill t-mono" x-text="'Reels: ' + (learningEvalResult?.digest?.totals?.reels_logs || 0)"></span>
+            <span class="pill pill-accent t-mono" x-text="'Usulan Baru: ' + ((learningEvalResult?.proposed_candidates || []).length)"></span>
+          </div>
+        </div>
+
         <!-- Review Queue Grid (1 col mobile / 2 col desktop) -->
         <div x-show="reviewSubTab !== 'draft_brief' && filteredReviewQueue().length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <template x-for="item in filteredReviewQueue()" :key="item.review_id">
-            <article @click="openReviewDetail(item.lead_id)"
-                     class="surface-card rounded-xl p-3.5 flex items-center gap-3.5 cursor-pointer ui-anim hover:opacity-95">
-              <div class="w-16 h-20 rounded-lg overflow-hidden shrink-0 relative" style="border: 1px solid var(--border); background: var(--canvas);">
-                <img x-show="item.thumbnail_url" :src="withReviewToken(item.thumbnail_url)" :alt="'Preview ' + item.anon_name" class="w-full h-full object-cover" />
-                <span x-show="item.content_format === 'reels'" class="absolute bottom-1 right-1 px-1 py-0.5 rounded text-[9px] t-mono font-semibold" style="background: rgba(9,9,11,0.86); color: #FAFAFA;">9:16</span>
-              </div>
-              <div class="flex-1 min-w-0 space-y-1.5">
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="pill" :class="reviewStatusBadgeClass(item.review_status)" x-text="reviewStatusLabel(item.review_status)"></span>
-                  <span class="pill" :class="item.content_format === 'reels' ? 'pill-accent' : ''" x-text="item.content_format === 'reels' ? 'Reels 9:16' : 'Carousel 4:5'"></span>
-                  <span class="pill t-mono tabular" x-text="'v' + item.current_version"></span>
-                  <span x-show="item.open_corrections_count > 0" class="pill pill-red t-mono tabular"
-                        x-text="item.open_corrections_count + ' open'"></span>
+            <article class="surface-card rounded-xl p-3.5 space-y-3 ui-anim">
+              <div @click="openReviewDetail(item.lead_id)" class="flex items-center gap-3.5 cursor-pointer hover:opacity-95">
+                <div class="w-16 h-20 rounded-lg overflow-hidden shrink-0 relative" style="border: 1px solid var(--border); background: var(--canvas);">
+                  <img x-show="item.thumbnail_url" :src="withReviewToken(item.thumbnail_url)" :alt="'Preview ' + item.anon_name" class="w-full h-full object-cover" />
+                  <span x-show="item.content_format === 'reels'" class="absolute bottom-1 right-1 px-1 py-0.5 rounded text-[9px] t-mono font-semibold" style="background: rgba(9,9,11,0.86); color: #FAFAFA;">9:16</span>
                 </div>
-                <h3 class="t-card truncate" x-text="item.anon_name"></h3>
-                <div class="flex items-center justify-between gap-2 t-meta text-[12px] tabular">
-                  <span class="truncate" x-text="item.category + ' · ' + (item.leak_passed ? 'Anonim ✓' : 'Leak!')"></span>
-                  <span class="t-mono shrink-0" x-text="formatShortTime(item.updated_at)"></span>
+                <div class="flex-1 min-w-0 space-y-1.5">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="pill" :class="reviewStatusBadgeClass(item.review_status)" x-text="reviewStatusLabel(item.review_status)"></span>
+                    <span class="pill" :class="item.content_format === 'reels' ? 'pill-accent' : ''" x-text="item.content_format === 'reels' ? 'Reels 9:16' : 'Carousel 4:5'"></span>
+                    <span class="pill t-mono tabular" x-text="'v' + item.current_version"></span>
+                    <span x-show="item.open_corrections_count > 0" class="pill pill-red t-mono tabular"
+                          x-text="item.open_corrections_count + ' open'"></span>
+                  </div>
+                  <h3 class="t-card truncate" x-text="item.anon_name"></h3>
+                  <div class="flex items-center justify-between gap-2 t-meta text-[12px] tabular">
+                    <span class="truncate" x-text="item.category + ' · ' + (item.leak_passed ? 'Anonim ✓' : 'Leak!')"></span>
+                    <span class="t-mono shrink-0" x-text="formatShortTime(item.updated_at)"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Posted IG Metrics Form (only visible in Sudah Diposting sub-tab) -->
+              <div x-show="reviewSubTab === 'posted' && item.review_status === 'posted'"
+                   @click.stop
+                   class="surface-inset rounded-lg p-2.5 space-y-2" style="border: 1px solid var(--border);">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="t-meta text-[11px] font-medium" style="color: var(--ink);">Metrik IG Postingan</span>
+                  <span x-show="item.metrics?.updated_at" class="t-mono text-[10px]" style="color: var(--muted);" x-text="'Update ' + formatShortTime(item.metrics.updated_at)"></span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="space-y-0.5 min-w-0">
+                    <span class="t-meta text-[10px] block">Views</span>
+                    <input type="number" min="0" x-model.number="getPostedMetrics(item).views" class="field field-sm t-mono tabular text-[12px]" />
+                  </label>
+                  <label class="space-y-0.5 min-w-0">
+                    <span class="t-meta text-[10px] block">Saves</span>
+                    <input type="number" min="0" x-model.number="getPostedMetrics(item).saves" class="field field-sm t-mono tabular text-[12px]" />
+                  </label>
+                  <label class="space-y-0.5 min-w-0">
+                    <span class="t-meta text-[10px] block">Shares</span>
+                    <input type="number" min="0" x-model.number="getPostedMetrics(item).shares" class="field field-sm t-mono tabular text-[12px]" />
+                  </label>
+                  <label class="space-y-0.5 min-w-0">
+                    <span class="t-meta text-[10px] block">DM Masuk</span>
+                    <input type="number" min="0" x-model.number="getPostedMetrics(item).dm_in" class="field field-sm t-mono tabular text-[12px]" />
+                  </label>
+                </div>
+                <div class="flex justify-end">
+                  <button type="button" @click="savePostedMetrics(item)" :disabled="savingMetricsId === item.lead_id"
+                          class="btn btn-sm btn-secondary">
+                    <span x-show="savingMetricsId !== item.lead_id">Simpan Metrik</span>
+                    <span x-show="savingMetricsId === item.lead_id">Menyimpan...</span>
+                  </button>
                 </div>
               </div>
             </article>
@@ -2368,9 +2472,16 @@
             { id: 'music_only', label: 'Musik Saja (Instrumental)', desc: 'Musik ambient lo-fi halus tanpa narasi suara.' },
             { id: 'silent', label: 'Tanpa Audio (Bisu)', desc: 'Video tanpa track audio — siap ditambahkan audio langsung di Instagram.' },
           ],
+          vo_styles: [{ id: 'auto', label: 'Auto Adaptif (Sesuai Kategori)' }],
+          bgm_tracks: [{ id: 'auto', label: 'Auto Sesuai Target Bisnis' }],
         },
         briefConfigs: {},
         generatingLeadId: null,
+        scrapingReelsIdeas: false,
+        evaluatingLearning: false,
+        savingMetricsId: null,
+        learningEvalResult: null,
+        postedMetricsDrafts: {},
         regenForm: { content_format: 'carousel', art_direction_preset: 'auto', sequence_type: 'auto', voice_id: 'auto', hook_pattern_id: 'auto', audio_mode: 'voiceover_and_music', creative_note: '' },
         reviewDetail: null,
         reviewSelectedVersion: 1,
@@ -3060,6 +3171,7 @@
         getBriefCfg(item) {
           const k = String(item.lead_id);
           if (!this.briefConfigs[k]) {
+            const isIdea = item.source === 'reels_idea_scrape' || Boolean(item.pain_code);
             this.briefConfigs[k] = {
               content_format: item.content_format || 'carousel',
               art_direction_preset: item.art_direction_preset || 'auto',
@@ -3068,11 +3180,104 @@
               hook_pattern_id: item.hook_pattern_id || 'auto',
               audio_mode: item.audio_mode || 'voiceover_and_music',
               motion_intensity: item.motion_intensity || 'auto',
-              target_duration: item.target_duration ? Number(item.target_duration) : 10.0,
+              target_duration: item.target_duration ? Number(item.target_duration) : (isIdea ? 13.0 : 10.0),
+              vo_script: item.vo_script || '',
+              vo_style: item.vo_style || 'auto',
+              bgm_track: item.bgm_track || 'auto',
               creative_note: item.creative_note || '',
             };
           }
           return this.briefConfigs[k];
+        },
+
+        async scrapeReelsIdeas() {
+          this.scrapingReelsIdeas = true;
+          try {
+            const res = await fetch('/api/content/reels-ideas/scrape', {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ limit: 3 }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+              this.showToast(`✓ ${data.created_count || 0} Draft Brief Reels siap edit V/O (${data.source_mode || 'bank'})!`);
+              await this.loadReviewQueue(false);
+              await this.loadDashboard(false);
+              this.reviewSubTab = 'draft_brief';
+            } else {
+              this.showToast(this.extractApiError(data, 'Gagal mengumpulkan ide Reels.'));
+            }
+          } catch {
+            this.showToast('Koneksi gagal saat mencari ide Reels.');
+          } finally {
+            this.scrapingReelsIdeas = false;
+          }
+        },
+
+        getPostedMetrics(item) {
+          const k = String(item.lead_id);
+          if (!this.postedMetricsDrafts[k]) {
+            const m = item.metrics || {};
+            this.postedMetricsDrafts[k] = {
+              views: Number(m.views || 0),
+              saves: Number(m.saves || 0),
+              shares: Number(m.shares || 0),
+              dm_in: Number(m.dm_in || 0),
+            };
+          }
+          return this.postedMetricsDrafts[k];
+        },
+
+        async savePostedMetrics(item) {
+          const m = this.getPostedMetrics(item);
+          this.savingMetricsId = item.lead_id;
+          try {
+            const res = await fetch(`/api/content/${item.lead_id}/metrics`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                views: Math.max(0, Number(m.views || 0)),
+                saves: Math.max(0, Number(m.saves || 0)),
+                shares: Math.max(0, Number(m.shares || 0)),
+                dm_in: Math.max(0, Number(m.dm_in || 0)),
+              }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+              this.showToast(`✓ Metrik IG ${item.anon_name} disimpan & digest diperbarui!`);
+              await this.loadReviewQueue(false);
+            } else {
+              this.showToast(this.extractApiError(data, 'Gagal menyimpan metrik IG.'));
+            }
+          } catch {
+            this.showToast('Koneksi gagal saat menyimpan metrik.');
+          } finally {
+            this.savingMetricsId = null;
+          }
+        },
+
+        async evaluateLearningPatterns() {
+          this.evaluatingLearning = true;
+          try {
+            const res = await fetch('/api/learning/evaluate', {
+              method: 'POST',
+              credentials: 'same-origin',
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+              this.learningEvalResult = data;
+              const nProp = (data.proposed_candidates || []).length;
+              this.showToast(`✓ learning_digest.json diperbarui (~${data.estimated_tokens || 0} tok, ${nProp} usulan baru)!`);
+            } else {
+              this.showToast(this.extractApiError(data, 'Gagal mengevaluasi pola.'));
+            }
+          } catch {
+            this.showToast('Koneksi gagal saat evaluasi pola.');
+          } finally {
+            this.evaluatingLearning = false;
+          }
         },
 
         setBriefFormat(item, fmt) {

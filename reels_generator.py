@@ -272,34 +272,103 @@ def _probe_audio_duration(audio_path: Path) -> float:
         return 0.0
 
 
+def _build_proportional_cues(script_text: str, duration_sec: float, delay_sec: float = 0.25) -> list[dict[str, Any]]:
+    words = [w for w in re.split(r"\s+", (script_text or "").strip()) if w]
+    if not words or duration_sec <= 0.6:
+        return []
+    chunk_size = 5
+    chunks = [" ".join(words[i : i + chunk_size]) for i in range(0, len(words), chunk_size)]
+    usable = max(1.0, duration_sec - delay_sec - 0.35)
+    weights = [max(1, len(c.split())) for c in chunks]
+    total_w = float(sum(weights))
+    cues: list[dict[str, Any]] = []
+    cur = delay_sec
+    for chunk, w in zip(chunks, weights):
+        seg = usable * (w / total_w)
+        cues.append({"start": round(cur, 3), "end": round(cur + seg, 3), "text": chunk})
+        cur += seg
+    return cues
+
+
+def _group_word_boundaries(boundaries: list[dict[str, Any]], delay_sec: float = 0.25, tempo: float = 1.0) -> list[dict[str, Any]]:
+    if not boundaries:
+        return []
+    cues: list[dict[str, Any]] = []
+    buf: list[dict[str, Any]] = []
+    t_scale = max(0.5, float(tempo or 1.0))
+
+    def _flush() -> None:
+        if not buf:
+            return
+        start_s = delay_sec + (buf[0]["start"] / t_scale)
+        end_s = delay_sec + (buf[-1]["end"] / t_scale)
+        txt = " ".join(x["text"] for x in buf).strip()
+        if txt:
+            cues.append({"start": round(start_s, 3), "end": round(max(start_s + 0.25, end_s), 3), "text": txt})
+        buf.clear()
+
+    for b in boundaries:
+        buf.append(b)
+        if len(buf) >= 5 or b["text"].endswith((".", "?", "!", ",")):
+            _flush()
+    _flush()
+    return cues
+
+
 def _generate_indonesian_voiceover(
     script_text: str,
     target_mp3: Path,
     *,
     is_formal: bool = False,
+    voice_override: str = "",
+    rate_override: str = "",
+    timeout_sec: int = 30,
 ) -> dict[str, Any]:
-    """Generate crisp Indonesian neural voiceover via edge-tts (safe inside sync or async caller)."""
+    """Generate crisp Indonesian neural voiceover via edge-tts + capture word/phrase timestamps (timeout <= 30s)."""
     clean_script = re.sub(r"\s+", " ", (script_text or "").strip())
     if not clean_script:
-        return {"ok": False, "error": "empty_script", "duration_sec": 0.0}
+        return {"ok": False, "error": "empty_script", "duration_sec": 0.0, "boundaries": []}
 
-    voice_name = "id-ID-GadisNeural" if is_formal else "id-ID-ArdiNeural"
-    rate = "+3%" if is_formal else "+6%"
+    voice_name = voice_override or ("id-ID-GadisNeural" if is_formal else "id-ID-ArdiNeural")
+    rate = rate_override or ("+2%" if is_formal else "+5%")
 
-    result_box: dict[str, Any] = {"ok": False, "error": "", "voice": voice_name, "duration_sec": 0.0}
+    result_box: dict[str, Any] = {
+        "ok": False,
+        "error": "",
+        "voice": voice_name,
+        "rate": rate,
+        "duration_sec": 0.0,
+        "boundaries": [],
+    }
 
     def _runner() -> None:
         try:
             import edge_tts
 
-            async def _save() -> None:
-                comm = edge_tts.Communicate(clean_script, voice=voice_name, rate=rate)
-                await comm.save(str(target_mp3))
+            async def _stream_save() -> list[dict[str, Any]]:
+                try:
+                    comm = edge_tts.Communicate(clean_script, voice=voice_name, rate=rate, boundary="WordBoundary")
+                except TypeError:
+                    comm = edge_tts.Communicate(clean_script, voice=voice_name, rate=rate)
+                bounds: list[dict[str, Any]] = []
+                with target_mp3.open("wb") as fh:
+                    async for chunk in comm.stream():
+                        ctype = chunk.get("type")
+                        if ctype == "audio":
+                            fh.write(chunk["data"])
+                        elif ctype in {"WordBoundary", "SentenceBoundary"}:
+                            off_s = float(chunk.get("offset") or 0) / 10_000_000.0
+                            dur_s = float(chunk.get("duration") or 0) / 10_000_000.0
+                            txt = str(chunk.get("text") or "").strip()
+                            if txt:
+                                bounds.append({"start": off_s, "end": off_s + max(0.08, dur_s), "text": txt})
+                return bounds
 
-            asyncio.run(_save())
+            bounds = asyncio.run(_stream_save())
             if target_mp3.exists() and target_mp3.stat().st_size > 1000:
                 result_box["ok"] = True
                 result_box["duration_sec"] = _probe_audio_duration(target_mp3)
+                result_box["boundaries"] = bounds
             else:
                 result_box["error"] = "empty_tts_output"
         except Exception as exc:
@@ -307,7 +376,9 @@ def _generate_indonesian_voiceover(
 
     th = threading.Thread(target=_runner, daemon=True)
     th.start()
-    th.join(timeout=25)
+    th.join(timeout=max(5, min(30, int(timeout_sec))))
+    if th.is_alive() and not result_box["ok"]:
+        result_box["error"] = "edge_tts_timeout"
     return result_box
 
 
@@ -320,20 +391,32 @@ def _compose_reels_mp4(
     audio_mode: str = "voiceover_and_music",
     voiceover_script: str = "",
     is_formal: bool = False,
+    vo_voice_override: str = "",
+    vo_rate_override: str = "",
+    bgm_path: Path | None = None,
+    bgm_track_id: str = "",
     composer: SceneComposer | None = None,
     target_duration: float = REELS_TARGET_DURATION,
+    enable_synced_captions: bool = True,
 ) -> dict[str, Any]:
-    """Encode 1080x1920 H.264 yuv420p MP4 (30fps) from scene frames + AAC audio (VO / music / silent-safe)."""
+    """Encode 1080x1920 H.264 yuv420p MP4 (30fps) from scene frames + AAC audio (VO + sidechain-ducked target BGM)."""
     if composer is None:
         raise ValueError("composer (SceneComposer) wajib diberikan.")
     eff_audio = audio_mode if audio_mode in VALID_AUDIO_MODES else "voiceover_and_music"
 
     vo_mp3 = target_mp4.parent / "voiceover.mp3"
-    music_wav = target_mp4.parent / "ambient_music.wav"
-    vo_info: dict[str, Any] = {"ok": False, "duration_sec": 0.0, "voice": ""}
+    music_wav = bgm_path if (bgm_path and bgm_path.exists()) else (target_mp4.parent / "ambient_music.wav")
+    vo_info: dict[str, Any] = {"ok": False, "duration_sec": 0.0, "voice": "", "boundaries": []}
     audio_note = ""
     if eff_audio in {"voiceover_and_music", "voiceover_only"}:
-        vo_info = _generate_indonesian_voiceover(voiceover_script, vo_mp3, is_formal=is_formal)
+        vo_info = _generate_indonesian_voiceover(
+            voiceover_script,
+            vo_mp3,
+            is_formal=is_formal,
+            voice_override=vo_voice_override,
+            rate_override=vo_rate_override,
+            timeout_sec=30,
+        )
         if not vo_info["ok"]:
             audio_note = f"Voiceover fallback ({vo_info.get('error') or 'offline'})"
             eff_audio = "music_only" if eff_audio == "voiceover_and_music" else "silent"
@@ -341,19 +424,28 @@ def _compose_reels_mp4(
     target = float(target_duration)
     if vo_info.get("ok"):
         target = max(target, vo_info["duration_sec"] + 1.0)
-    target = max(8.0, min(12.0, target))
+    target = max(8.0, min(15.0, target))
 
     plan = composer.build_plan(target)
     total_frames = sum(s["frames"] for s in plan)
     actual_duration = round(total_frames / float(fps), 2)
 
-    if eff_audio in {"voiceover_and_music", "music_only"}:
+    if eff_audio in {"voiceover_and_music", "music_only"} and not music_wav.exists():
         _synthesize_ambient_music_wav(music_wav, duration_sec=actual_duration + 0.5)
 
     tempo = 1.0
     if vo_info.get("ok"):
         tempo = max(1.0, min(1.3, vo_info["duration_sec"] / max(1.0, actual_duration - 0.6)))
     vo_chain = f"aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo," + (f"atempo={tempo:.3f}," if tempo > 1.005 else "")
+
+    # Wire synced kinetic captions into SceneComposer inside IG safe zone
+    cues: list[dict[str, Any]] = []
+    if enable_synced_captions and (voiceover_script or "").strip():
+        if vo_info.get("ok") and vo_info.get("boundaries"):
+            cues = _group_word_boundaries(vo_info["boundaries"], delay_sec=0.25, tempo=tempo)
+        if not cues:
+            cues = _build_proportional_cues(voiceover_script, actual_duration, delay_sec=0.25)
+        composer.vo_cues = cues
 
     ffmpeg_bin = shutil.which("ffmpeg")
     if not ffmpeg_bin:
@@ -365,34 +457,45 @@ def _compose_reels_mp4(
         return {
             "encoded_mp4": False, "fallback_frames_dir": str(seq_dir), "duration_sec": actual_duration, "fps": fps,
             "width": REELS_WIDTH, "height": REELS_HEIGHT, "audio_mode": eff_audio, "has_audio": False,
-            "audio_note": audio_note, "plan": plan,
+            "audio_note": audio_note, "bgm_track": bgm_track_id, "sidechain_ducked": False,
+            "vo_cues_count": len(cues), "plan": plan,
         }
 
     cmd: list[str] = [
         ffmpeg_bin, "-y", "-hide_banner", "-loglevel", "error", "-nostats",
         "-f", "rawvideo", "-vcodec", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{REELS_WIDTH}x{REELS_HEIGHT}", "-r", str(fps), "-i", "-",
     ]
-    has_audio, silent_track = False, False
+    has_audio, silent_track, sidechain_ducked = False, False, False
     aac = ["-c:a", "aac", "-b:a", "128k", "-ar", str(AUDIO_SAMPLE_RATE), "-ac", "2", "-t", str(actual_duration)]
+    fade_out_st = max(0.2, round(actual_duration - 0.75, 2))
     if eff_audio == "voiceover_and_music" and vo_info.get("ok") and vo_mp3.exists() and music_wav.exists():
+        # Pad V/O sidechain to exact actual_duration so BGM swells back smoothly after V/O finishes & A/V sync == 0.00s
         cmd += [
-            "-i", str(vo_mp3), "-i", str(music_wav), "-filter_complex",
-            f"[1:a]{vo_chain}adelay=250|250,volume=1.18[vo];"
-            f"[2:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,volume=0.20[bg];"
-            "[vo][bg]amix=inputs=2:duration=longest:dropout_transition=2,alimiter=limit=0.95[aout]",
+            "-i", str(vo_mp3),
+            "-stream_loop", "-1", "-i", str(music_wav),
+            "-filter_complex",
+            f"[1:a]{vo_chain}adelay=250|250,apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.18,asplit=2[vo_main][vo_sc];"
+            f"[2:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,"
+            f"atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,"
+            f"afade=t=in:st=0:d=0.25,afade=t=out:st={fade_out_st:.2f}:d=0.70,volume=0.36[bg_raw];"
+            "[bg_raw][vo_sc]sidechaincompress=threshold=0.025:ratio=6:attack=25:release=260:makeup=1[bg_ducked];"
+            "[vo_main][bg_ducked]amix=inputs=2:duration=longest:dropout_transition=2,alimiter=limit=0.95[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
-        has_audio = True
+        has_audio, sidechain_ducked = True, True
     elif eff_audio == "voiceover_only" and vo_info.get("ok") and vo_mp3.exists():
         cmd += [
-            "-i", str(vo_mp3), "-filter_complex", f"[1:a]{vo_chain}adelay=250|250,volume=1.15[aout]",
+            "-i", str(vo_mp3), "-filter_complex",
+            f"[1:a]{vo_chain}adelay=250|250,apad=whole_dur={actual_duration:.2f},atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,volume=1.15[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
         has_audio = True
     elif eff_audio == "music_only" and music_wav.exists():
         cmd += [
-            "-i", str(music_wav), "-filter_complex",
-            f"[1:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,volume=0.52[aout]",
+            "-stream_loop", "-1", "-i", str(music_wav), "-filter_complex",
+            f"[1:a]aformat=sample_rates={AUDIO_SAMPLE_RATE}:channel_layouts=stereo,"
+            f"atrim=0:{actual_duration:.2f},asetpts=PTS-STARTPTS,"
+            f"afade=t=in:st=0:d=0.25,afade=t=out:st={fade_out_st:.2f}:d=0.70,volume=0.52[aout]",
             "-map", "0:v:0", "-map", "[aout]", *aac,
         ]
         has_audio = True
@@ -430,8 +533,10 @@ def _compose_reels_mp4(
         "encoded_mp4": True, "path": str(target_mp4), "size_bytes": target_mp4.stat().st_size,
         "duration_sec": actual_duration, "fps": fps, "width": REELS_WIDTH, "height": REELS_HEIGHT,
         "codec": "h264/yuv420p" + ("+aac" if has_audio else ""), "audio_mode": eff_audio, "has_audio": has_audio,
-        "silent_audio_track": silent_track, "voiceover_voice": vo_info.get("voice") if vo_info.get("ok") else "",
-        "voiceover_tempo": round(tempo, 3), "audio_note": audio_note, "plan": plan,
+        "silent_audio_track": silent_track, "sidechain_ducked": sidechain_ducked,
+        "bgm_track": bgm_track_id, "bgm_file": music_wav.name if music_wav.exists() else "",
+        "voiceover_voice": vo_info.get("voice") if vo_info.get("ok") else "",
+        "voiceover_tempo": round(tempo, 3), "vo_cues_count": len(cues), "audio_note": audio_note, "plan": plan,
     }
 
 
@@ -448,8 +553,16 @@ def generate_reels_package_for_lead(
     capture_config: CaptureConfig | None = None,
     target_duration: float | None = None,
     motion_intensity: str | None = None,
+    vo_script: str = "",
+    vo_style: str = "auto",
+    bgm_track: str = "auto",
+    pain_code: str = "",
+    reel_hook_id: str = "",
+    attract_cta: bool = False,
 ) -> dict[str, Any]:
     """Render complete anonymized 9:16 Reels package (`reels.mp4`, `cover_reels.png`, `caption.txt`, `beat_script`, `qa_report.json`)."""
+    from creative_agent import reels_intelligence as ri
+
     lead = db.get_lead(lead_id)
     if not lead:
         raise ValueError(f"Lead ID {lead_id} tidak ditemukan.")
@@ -490,7 +603,8 @@ def generate_reels_package_for_lead(
     capture = cap_pack["capture"]
     facts = cap_pack["facts"]
 
-    cap_voice_override = "formal_editorial" if eff_voice in {"V2", "V4"} else None
+    vo_profile = ri.resolve_vo_profile(industry, vo_style=vo_style, brand_name=display_name)
+    cap_voice_override = "formal_editorial" if (eff_voice in {"V2", "V4"} or vo_profile["is_formal"]) else None
     recycled_cap = draft_recycled_caption(
         lead={**lead, "is_anonymized": 1, "anonymized_name": display_name},
         art_direction=art_dir, facts=facts, caption_voice_override=cap_voice_override,
@@ -516,7 +630,10 @@ def generate_reels_package_for_lead(
         else:
             profile = dict(MOTION_PROFILES[req_intensity])
             profile["name"] = req_intensity
+
     story = _story_texts(seq=eff_seq, hook=hook_short, display_name=display_name, industry=industry, ux_clean=ux_clean, capture=capture)
+    if attract_cta:
+        story["closing"] = "DM kata KONSEP"
 
     plate_set = _render_reels_plates(
         out_dir=reels_dir, brand_name=display_name, industry=industry, city=city, domain=domain, sequence_key=eff_seq,
@@ -525,13 +642,28 @@ def generate_reels_package_for_lead(
     )
     plates = plate_set["paths"]
 
-    is_formal_voice = recycled_cap["caption_voice"] == "formal_editorial"
-    vo_core = hook_short.rstrip(".!? ")
-    vo_script = (
-        f"{vo_core}. Eksplorasi tampilan mobile untuk {display_name}, dirancang rapi dan mudah dibaca di layar ponsel."
-        if is_formal_voice
-        else f"{vo_core}. Ini konsep tampilan mobile untuk {display_name}, rapi dan gampang dibaca di layar HP."
-    )
+    is_formal_voice = bool(recycled_cap["caption_voice"] == "formal_editorial" or vo_profile["is_formal"])
+    if (vo_script or "").strip():
+        final_vo_script = re.sub(r"\s+", " ", vo_script.strip())
+    else:
+        vo_core = hook_short.rstrip(".!? ")
+        if attract_cta:
+            final_vo_script = (
+                f"{vo_core}. Pada konsep halaman mobile {display_name}, layanan utama, jadwal, dan tombol kontak disusun jernih agar pengunjung cepat mengambil keputusan. Ingin melihat konsep versi bisnis Anda? Silakan DM kata KONSEP."
+                if is_formal_voice
+                else f"{vo_core}. Di konsep tampilan mobile {display_name} ini, menu utama, lokasi, sampai tombol kontak langsung terbaca rapi tanpa ribet. Mau lihat konsep versi bisnis kamu? Langsung DM kata KONSEP."
+            )
+        else:
+            final_vo_script = (
+                f"{vo_core}. Eksplorasi tampilan mobile untuk {display_name}, dirancang rapi dan mudah dibaca di layar ponsel."
+                if is_formal_voice
+                else f"{vo_core}. Ini konsep tampilan mobile untuk {display_name}, rapi dan gampang dibaca di layar HP."
+            )
+    if is_formal_voice:
+        final_vo_script = ri.sanitize_formal_vo_text(final_vo_script)
+
+    bgm_info = ri.select_bgm_track(industry, bgm_track=bgm_track, brand_name=display_name)
+    eff_target_dur = float(target_duration or (13.0 if attract_cta else REELS_TARGET_DURATION))
 
     composer = SceneComposer(
         sequence_key=eff_seq, plates=plates, reveal=plate_set["reveal"], capture=capture, profile=profile, fps=REELS_FPS,
@@ -540,8 +672,11 @@ def generate_reels_package_for_lead(
     mp4_path = reels_dir / "reels.mp4"
     video_meta = _compose_reels_mp4(
         plates=plates, mobile_tall_png=cap_pack["mobile_tall_png"], target_mp4=mp4_path, fps=REELS_FPS,
-        audio_mode=audio_mode, voiceover_script=vo_script, is_formal=is_formal_voice, composer=composer,
-        target_duration=float(target_duration or REELS_TARGET_DURATION),
+        audio_mode=audio_mode, voiceover_script=final_vo_script, is_formal=is_formal_voice,
+        vo_voice_override=vo_profile["voice"], vo_rate_override=vo_profile["rate"],
+        bgm_path=bgm_info["path"], bgm_track_id=bgm_info["id"],
+        composer=composer, target_duration=eff_target_dur,
+        enable_synced_captions=bool(attract_cta or (vo_script or "").strip()),
     )
 
     plan = video_meta.pop("plan")
@@ -561,7 +696,7 @@ def generate_reels_package_for_lead(
 
     on_screen_texts = [b["on_screen_text"] for b in beat_script] + [sub_hook]
     expected_voice = select_caption_voice(industry, display_name, override=recycled_cap["caption_voice"])
-    voice_ok = not (expected_voice == "formal_editorial" and CASUAL_SLANG_PATTERN.search(caption_text + " " + " ".join(on_screen_texts) + " " + vo_script))
+    voice_ok = not (expected_voice == "formal_editorial" and CASUAL_SLANG_PATTERN.search(caption_text + " " + " ".join(on_screen_texts) + " " + final_vo_script))
     cta_ok = all(b not in (caption_text + " " + " ".join(on_screen_texts)).lower() for b in BANNED_SALES_CTAS)
     alan_count = len(re.findall(r"\balan\b", caption_text, flags=re.IGNORECASE))
     guardrail = {
@@ -577,7 +712,14 @@ def generate_reels_package_for_lead(
         mp4_path=mp4_path, cover_path=plates["cover"], video_meta=video_meta, capture=capture, plate_audit=plate_set["audit"],
         caption_text=caption_text, on_screen_texts=on_screen_texts, lead=lead, guardrail=guardrail, leak_checker=_leak,
     )
-    qa_report["engine"] = {"motion_profile": profile["name"], "sequence": eff_seq, "title_scale": plate_set.get("title_scale", 1.0)}
+    qa_report["engine"] = {
+        "motion_profile": profile["name"],
+        "sequence": eff_seq,
+        "title_scale": plate_set.get("title_scale", 1.0),
+        "vo_style": vo_profile["style"],
+        "bgm_track": bgm_info["id"],
+        "sidechain_ducked": bool(video_meta.get("sidechain_ducked")),
+    }
     (reels_dir / "qa_report.json").write_text(json.dumps(qa_report, indent=2, ensure_ascii=False), encoding="utf-8")
 
     spec_obj = {
@@ -585,16 +727,20 @@ def generate_reels_package_for_lead(
         "sequence_type": eff_seq, "art_direction_preset": eff_style or "auto", "carousel_style": carousel_style_key,
         "primary_style": art_dir["primary_style"], "voice_id": recycled_cap["voice"], "caption_voice": recycled_cap["caption_voice"],
         "hook_pattern_id": recycled_cap["patterns_used"][0] if recycled_cap.get("patterns_used") else "",
+        "pain_code": pain_code, "reel_hook_id": reel_hook_id, "attract_cta": bool(attract_cta),
+        "vo_script": final_vo_script, "vo_style": vo_profile["style"], "vo_voice": vo_profile["voice"],
+        "bgm_track": bgm_info["id"], "bgm_label": bgm_info["label"],
         "creative_note": creative_note, "motion_profile": profile, "video": video_meta,
         "capture": _jsonable({k: v for k, v in capture.items() if k not in {"facts"}}),
         "cover": str(plates["cover"]), "beat_script": beat_script, "on_screen_texts": on_screen_texts,
         "safe_zone": plate_set["audit"]["safe_zone"],
-        "audio_mode": audio_mode, "target_duration": float(target_duration or REELS_TARGET_DURATION),
+        "audio_mode": audio_mode, "target_duration": eff_target_dur,
     }
     (reels_dir / "reels_spec.json").write_text(json.dumps(spec_obj, indent=2, ensure_ascii=False), encoding="utf-8")
 
     return {
         "lead": lead, "reels_dir": str(reels_dir), "video_path": str(mp4_path) if mp4_path.exists() else "",
         "cover_path": str(plates["cover"]), "caption_file": str(caption_file), "caption": caption_text,
+        "vo_script": final_vo_script, "bgm_track": bgm_info["id"], "vo_style": vo_profile["style"],
         "beat_script": beat_script, "qa_report": qa_report, "spec": spec_obj, "on_screen_texts": on_screen_texts,
     }

@@ -920,6 +920,153 @@ def run_all_tests() -> None:
                     shutil.rmtree(settings.DEMOS_DIR / bl["slug"], ignore_errors=True)
 
         print("[OK] 13. Draft Brief on /recycle (no premature render) + /api/content/{id}/generate (Carousel 4:5 & Reels 9:16 MP4) verified")
+
+        # ------------------------------------------------------------------
+        # 14. Token Optimizer, /api/learning/evaluate, /recycle Carousel lock,
+        #     Reels Idea Scraper, Adaptive V/O+BGM Render & Posted IG Metrics
+        # ------------------------------------------------------------------
+        from creative_agent import reels_intelligence as ri
+        from creative_agent import token_optimizer as topt
+
+        # 14a. compact_scrape_text: <=700 chars/source, <=4 sources, boilerplate stripped
+        raw_sources = [
+            {
+                "source": "web",
+                "title": f"Keluhan UMKM #{i}",
+                "text": (
+                    "Cookie policy accept all sign in subscribe. "
+                    + f"Banyak pemilik kafe dan klinik mengeluh admin kewalahan balas chat WhatsApp pelanggan yang menanyakan menu PDF dan jadwal booking #{i}. " * 12
+                ),
+            }
+            for i in range(6)
+        ]
+        compacted = topt.compact_scrape_text(raw_sources, max_chars=700, max_sources=4)
+        assert compacted["source_count"] <= 4
+        assert all(s["chars"] <= 700 for s in compacted["sources"])
+        assert all("cookie policy" not in s["text"].lower() for s in compacted["sources"])
+        assert compacted["saved_pct"] > 50.0
+
+        # 14b. compute_edit_delta (0 LLM tokens)
+        delta_res = topt.compute_edit_delta(
+            "Halo Kak 😊 saya mau kirim konsep halaman website untuk usaha kopi ini supaya makin ramai dan makin jelas tampilannya sekarang juga.",
+            "Halo Bapak/Ibu, saya kirim foto konsep halaman depan website ini.",
+        )
+        assert delta_res["changed"] is True
+        assert delta_res["word_delta"] < -3 and delta_res["shortened"] is True
+        assert delta_res["sapaan_changed"] == "Kak->Bapak/Ibu"
+        assert delta_res["emoji_removed"] == 1
+
+        # 14c. /recycle locks draft_brief content_format == 'carousel'
+        rec_lock_lead, _ = db.upsert_lead(
+            {
+                "slug": "test-recycle-carousel-lock",
+                "business_name": "Salon Rahasia Lock",
+                "category": "Salon",
+                "city": "Jakarta",
+                "status": "IGNORED_48H",
+            }
+        )
+        r_lock = reviewer_client.post(f"/api/leads/{rec_lock_lead['id']}/recycle")
+        assert r_lock.status_code == 200 and r_lock.json()["brief"]["content_format"] == "carousel"
+
+        # 14d. Backup reference logs/candidates before testing scrape, render, metrics & evaluate
+        ref_dir = settings.BASE_DIR / "skills" / "instagram-creative-agent" / "references"
+        bak_files = {
+            p: p.read_text(encoding="utf-8") if p.exists() else None
+            for p in (
+                ref_dir / "copy_candidates.md",
+                ref_dir / "reels_candidates.md",
+                ref_dir / "reels_learning_log.md",
+                ref_dir / "learning_digest.json",
+            )
+        }
+        scraped_lead_ids: list[int] = []
+        try:
+            # Verify 3 procedural BGM tracks exist & category routing works
+            bgm_tracks = ri.ensure_default_bgm_tracks()
+            assert set(bgm_tracks.keys()) == {"calm_editorial", "warm_hospitality", "energetic_craft"}
+            assert ri.select_bgm_track("Klinik Gigi")["id"] == "calm_editorial"
+            assert ri.select_bgm_track("Coffee Roastery")["id"] == "warm_hospitality"
+            assert ri.select_bgm_track("Bengkel Custom")["id"] == "energetic_craft"
+            assert ri.resolve_vo_profile("Studio Pilates")["is_formal"] is True
+            assert ri.resolve_vo_profile("Coffee Roastery")["is_formal"] is False
+
+            # Scrape Reels Ideas endpoint (admin & reviewer allowed)
+            r_scrape = reviewer_client.post("/api/content/reels-ideas/scrape", json={"limit": 1})
+            assert r_scrape.status_code == 200, r_scrape.text
+            d_scrape = r_scrape.json()
+            assert d_scrape["ok"] is True and d_scrape["created_count"] == 1
+            idea_brief = d_scrape["briefs"][0]
+            idea_lid = int(idea_brief["lead_id"])
+            scraped_lead_ids.append(idea_lid)
+            assert idea_brief["content_format"] == "reels"
+            assert idea_brief["review_status"] == "draft_brief"
+            assert idea_brief["pain_code"].startswith("PAIN-")
+            vo_words = len(idea_brief["vo_script"].split())
+            assert 30 <= vo_words <= 60, f"Unexpected VO word count: {vo_words}"
+
+            # Edit V/O script + generate 12-15s Reels with adaptive V/O & target BGM
+            edited_vo = (
+                "Berapa pelanggan batal datang cuma karena kelamaan menunggu balasan WA soal menu dan jam buka? "
+                "Lihat halaman mobile ini: menu utama, lokasi Maps, dan tombol pesan langsung terbaca cepat di layar HP. "
+                "Mau lihat konsep versi usaha kamu? DM kata KONSEP."
+            )
+            r_gen_idea = admin_client.post(
+                f"/api/content/{idea_lid}/generate",
+                json={
+                    "content_format": "reels",
+                    "sequence_type": "before_after_ux",
+                    "audio_mode": "voiceover_and_music",
+                    "vo_script": edited_vo,
+                    "vo_style": "auto",
+                    "bgm_track": "auto",
+                    "target_duration": 13.0,
+                },
+            )
+            assert r_gen_idea.status_code == 200, r_gen_idea.text
+            d_gen_idea = r_gen_idea.json()
+            assert d_gen_idea["review_status"] == "pending_review"
+            assert d_gen_idea["versions"][0]["qa_report"]["status"] == "PASS", d_gen_idea["versions"][0]["qa_report"]
+            assert d_gen_idea["versions"][0]["reels_spec"]["bgm_track"] in {"calm_editorial", "warm_hospitality", "energetic_craft"}
+            # Confirm V/O edit was logged to reels_learning_log.md
+            assert "reels_log:" in (ref_dir / "reels_learning_log.md").read_text(encoding="utf-8")
+
+            # Approve -> Mark Posted -> Save IG Metrics
+            assert reviewer_client.post(f"/api/content/{idea_lid}/approve").status_code == 200
+            assert reviewer_client.post(
+                f"/api/content/{idea_lid}/posted",
+                json={"posted_url": "https://instagram.com/reel/test123"},
+            ).status_code == 200
+            r_met = reviewer_client.post(
+                f"/api/content/{idea_lid}/metrics",
+                json={"views": 2450, "saves": 64, "shares": 21, "dm_in": 5},
+            )
+            assert r_met.status_code == 200, r_met.text
+            assert r_met.json()["metrics"]["views"] == 2450
+            assert r_met.json()["metrics"]["dm_in"] == 5
+
+            # Evaluate Learning Patterns endpoint (admin & reviewer allowed, digest <= ~1,200 tokens, <= 3 proposals)
+            r_eval = reviewer_client.post("/api/learning/evaluate")
+            assert r_eval.status_code == 200, r_eval.text
+            d_eval = r_eval.json()
+            assert d_eval["ok"] is True
+            assert d_eval["estimated_tokens"] <= 1250
+            assert len(d_eval["proposed_candidates"]) <= 3
+            assert (ref_dir / "learning_digest.json").exists()
+            sl = topt.get_relevant_pattern_slice("reels")
+            assert "patterns" in sl and "top_human_edits" in sl
+        finally:
+            for p, content in bak_files.items():
+                if content is None:
+                    p.unlink(missing_ok=True)
+                else:
+                    p.write_text(content, encoding="utf-8")
+            for sid in scraped_lead_ids + [rec_lock_lead["id"]]:
+                row = db.get_lead(sid)
+                if row:
+                    _cleanup_lead(row)
+
+        print("[OK] 14. Token Optimizer, /api/learning/evaluate, /recycle Carousel lock, Reels Idea Scraper, Adaptive V/O+BGM Render & Posted IG Metrics verified")
     finally:
         _cleanup_lead(lead)
         with db.get_conn() as conn:

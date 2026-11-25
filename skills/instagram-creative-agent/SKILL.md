@@ -67,4 +67,14 @@ Never jump straight to rendering PNGs during an interactive session. Follow this
 * `references/library_candidates.md` — **Read/append during §15 gap cycles.** Holds unapproved typographic candidates (`status: candidate | tested | retired`, `review_by`, `approved_by_user: false`); never auto-merge into core library without explicit user approval.
 * `references/copy_intelligence_library.md` — **Mandatory pre-draft read for all copy.** 5-layer copy system (Client Profile, Voice `V1`–`V6`, Persuasion Levers `L1`–`L7`, Structure, Channel), hard-fail validator (§10.1), variation control (§11), and learning protocol (§12), wired to `creative_agent/copy_engine.py`.
 * `references/copy_candidates.md` — **Read/append during §12 copy learning cycles.** Holds unapproved copy pattern candidates (`status: candidate | testing | retired`, `approved_by_user: false`) used under the 20% exploration budget on regular-priority leads.
-* `references/copy_learning_log.md` — **Append-only copy learning log (§12.2).** Records `original_draft`, human-edited `final_text`, `edit_summary`, pattern IDs, and automatic lead outcomes (`interested` / `ignored_48h`); strictly anonymized for recycled captions.
+* `references/copy_learning_log.md` — **Append-only copy learning log (§12.2).** Records `original_draft`, human-edited `final_text`, `edit_summary`, deterministic `edit_delta`, pattern IDs, and automatic lead outcomes (`interested` / `ignored_48h`); strictly anonymized for recycled captions.
+* `references/reels_intelligence_library.md` — **Mandatory pre-draft read for Attract Customer Reels (9:16).** `PAIN-*` taxonomy, `REEL-HOOK-*` patterns, 35–55 word adaptive V/O pacing (formal vs casual), target procedural BGM (`assets/bgm/`), and IG metric learning protocol.
+* `references/reels_candidates.md` & `references/reels_learning_log.md` — Unapproved Reels pattern candidates (`approved_by_user: false`) and append-only Reels V/O edit delta + IG metrics log.
+* `references/learning_digest.json` — **Mandatory slice-only learning summary (`<= ~1,200` tokens).** Generated deterministically by `creative_agent/token_optimizer.py` (`POST /api/learning/evaluate`).
+
+## 5. Mandatory Token-Efficiency Rule (Slice-Only Reading)
+
+* **NEVER** load full raw logs (`copy_learning_log.md`, `reels_learning_log.md`, `learning_log.md`) or uncleaned Agent-Reach scrapes into LLM context.
+* Agents **MUST** read ONLY `references/learning_digest.json` plus the relevant pattern slice returned by Python pre-router (`creative_agent.token_optimizer.get_relevant_pattern_slice`), and pre-clean all raw scrape inputs via `compact_scrape_text` (max `700` chars/source, max `4` sources/batch).
+* Human copy / Reels V/O edits are diffed deterministically in Python (`compute_edit_delta` — **0 LLM tokens**).
+

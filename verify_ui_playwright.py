@@ -49,13 +49,44 @@ def test_ui():
     # Rebuild portfolio index to guarantee site/index.html is synced with DB
     dg.rebuild_portfolio_index()
 
-    # Ensure lead 69 has an active pending_review reels entry for modal testing
+    # Ensure an active review entry + draft_brief exist for UI & modal testing (prefer lead 69 if present)
+    target_review_lead_id = None
+    temp_lead_ids: list[int] = []
     rev69 = db.get_review_by_lead(69)
-    if not rev69:
-        try:
-            cr.create_draft_brief_from_recycle(69, actor="Admin Test")
-        except Exception:
-            pass
+    if rev69 and int(rev69.get("current_version") or 0) > 0:
+        target_review_lead_id = 69
+    else:
+        queue_items = cr.list_review_queue().get("items") or []
+        reels_item = next(
+            (i for i in queue_items if i.get("content_format") == "reels" and i.get("current_version", 0) > 0),
+            None,
+        )
+        any_ver_item = next((i for i in queue_items if i.get("current_version", 0) > 0), None)
+        chosen = reels_item or any_ver_item
+        if chosen:
+            target_review_lead_id = int(chosen["lead_id"])
+
+    # Ensure at least 1 draft_brief exists so the Carousel vs Reels format toggle is rendered & checked at 390px
+    q_now = cr.list_review_queue().get("items") or []
+    if not any(i.get("review_status") == "draft_brief" for i in q_now):
+        brief_res = cr.create_reels_ideas_briefs(actor="UI Verifier", limit=1)
+        if brief_res.get("briefs"):
+            temp_lead_ids.append(int(brief_res["briefs"][0]["lead_id"]))
+
+    # If no rendered reels review item exists yet, render one briefly for modal checks
+    if target_review_lead_id is None:
+        seed_res = cr.create_reels_ideas_briefs(actor="UI Verifier", limit=1)
+        if seed_res.get("briefs"):
+            seed_lid = int(seed_res["briefs"][0]["lead_id"])
+            temp_lead_ids.append(seed_lid)
+            cr.generate_content_from_brief(
+                seed_lid,
+                actor="UI Verifier",
+                content_format="reels",
+                audio_mode="music_only",
+                target_duration=10.0,
+            )
+            target_review_lead_id = seed_lid
 
     # Create admin session
     raw_token = secrets.token_hex(32)
@@ -110,7 +141,8 @@ def test_ui():
 
                 def on_console(msg):
                     if msg.type == "error":
-                        # Ignore benign favicon / static 404s if any
+                        if "favicon.ico" in msg.text:
+                            return
                         page_errors.append(f"Console error: {msg.text}")
 
                 def on_page_error(exc):
@@ -120,9 +152,9 @@ def test_ui():
                 page.on("pageerror", on_page_error)
 
                 # ==========================================================
-                # 1. Test site/index.html (Public Bio Catalog)
+                # 1. Test /portfolio/index.html (Public Bio Catalog)
                 # ==========================================================
-                catalog_url = f"{base_url}/site/index.html"
+                catalog_url = f"{base_url}/portfolio/index.html"
                 page.goto(catalog_url, wait_until="networkidle")
                 page.wait_for_timeout(300)
 
@@ -235,30 +267,30 @@ def test_ui():
                     print(f"  [OK] Tab 4 Brief 0 horizontal overflow ({dash_overflow['scrollW']}px <= {dash_overflow['innerW']}px)")
 
                 # ==========================================================
-                # 4. Test Content Review Modal for Reels item (Lead 69)
+                # 4. Test Content Review Modal for Reels item
                 # ==========================================================
                 # Switch to 'to_review' subtab
-                to_review_btn = page.locator("button.v-tab:has-text('Perlu Review')")
+                to_review_btn = page.locator("button.v-tab:has-text('Perlu direview')")
                 if to_review_btn.count() > 0:
                     to_review_btn.click()
                     page.wait_for_timeout(300)
 
-                # Open review modal via Alpine or card click
-                page.evaluate("""() => {
+                # Open review modal via Alpine
+                page.evaluate(f"""() => {{
                     const root = document.querySelector('#app-root') || document.querySelector('[x-data]');
-                    if (window.Alpine && root && root._x_dataStack) {
-                        root._x_dataStack[0].openReviewDetail(69);
-                    }
-                }""")
+                    if (window.Alpine && root && root._x_dataStack) {{
+                        root._x_dataStack[0].openReviewDetail({target_review_lead_id});
+                    }}
+                }}""")
                 page.wait_for_timeout(600)
 
                 # Check Modal is visible
-                modal = page.locator(".surface-modal")
+                modal = page.locator("[x-show='reviewDetail'] .surface-modal")
                 if modal.count() > 0 and modal.is_visible():
                     print(f"  [OK] Content Review Modal opened successfully")
 
                     # Verify GitHub Status Checks video badges
-                    gh_checks = page.locator(".gh-check").all_inner_texts()
+                    gh_checks = page.locator("[x-show='reviewDetail'] .gh-check").all_inner_texts()
                     print(f"  [OK] GitHub Status Checks visible: {gh_checks}")
 
                     has_safe_zone = any("Safe-Zone" in c for c in gh_checks)
@@ -273,14 +305,14 @@ def test_ui():
                         print(f"  [WARN] {err}")
 
                     # Test Notion Collapsible Toggle: Beat & Motion Breakdown
-                    breakdown_btn = page.locator("button:has-text('Beat & Motion Breakdown')").first
+                    breakdown_btn = page.locator("[x-show='reviewDetail'] button:has-text('Beat & Motion Breakdown')").first
                     if breakdown_btn.count() > 0:
                         breakdown_btn.click()
                         page.wait_for_timeout(250)
                         print(f"  [OK] Expanded Notion Collapsible Toggle: Beat & Motion Breakdown")
 
                     modal_overflow = page.evaluate("""() => {
-                        const modal = document.querySelector('.surface-modal');
+                        const modal = document.querySelector("[x-show='reviewDetail'] .surface-modal");
                         if (!modal) return { hasOverflow: false, scrollW: 0, clientW: 0 };
                         return {
                             hasOverflow: modal.scrollWidth > modal.clientWidth + 1,
@@ -296,7 +328,7 @@ def test_ui():
                         print(f"  [OK] Review modal 0 horizontal overflow ({modal_overflow['scrollW']}px <= {modal_overflow['clientW']}px)")
 
                     # Close modal
-                    close_btn = page.locator(".surface-modal button:has-text('Tutup')").first
+                    close_btn = page.locator("[x-show='reviewDetail'] .surface-modal button:has-text('Tutup')").first
                     if close_btn.count() > 0:
                         close_btn.click()
                         page.wait_for_timeout(200)
@@ -313,6 +345,12 @@ def test_ui():
         browser.close()
 
     server.stop()
+
+    for tlid in temp_lead_ids:
+        try:
+            db.delete_lead(tlid)
+        except Exception:
+            pass
 
     print("\n==================================================")
     if errors:

@@ -50,6 +50,14 @@ from creative_agent.lead_enricher import (
     enrich_new_leads,
 )
 
+from creative_agent.token_optimizer import (
+    compact_scrape_text,
+    compute_edit_delta,
+    build_learning_digest,
+    evaluate_learning_signals,
+    get_relevant_pattern_slice,
+)
+
 __all__ = [
     "STYLE_LIBRARY_12",
     "STORYTELLING_METHODS",
@@ -89,4 +97,9 @@ __all__ = [
     "fetch_ig_observation",
     "enrich_new_lead",
     "enrich_new_leads",
+    "compact_scrape_text",
+    "compute_edit_delta",
+    "build_learning_digest",
+    "evaluate_learning_signals",
+    "get_relevant_pattern_slice",
 ]

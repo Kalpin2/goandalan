@@ -82,4 +82,18 @@ Contracts kept: `generate_reels_package_for_lead(...)` signature (only optional 
 * **Anonymization**: problem text is sanitized (`_sanitize_ux_flaw_for_brief`), all on-screen text + caption are passed through `check_anonymization_leak` inside the QA report.
 
 ## 5. Licensing
-No third-party code was copied. Ideas from Apache-2.0 / MIT docs are re-implemented from scratch (attribution recorded in `reels_motion.py` and README). OpenMontage (AGPL-3.0) deliberately not used. Fonts come from the existing typography library (Google Fonts, OFL). Ambient music is synthesized in-process (royalty-free); voice-over uses `edge-tts` (neural TTS; review Microsoft terms before commercial monetization of narrated content).
+No third-party code was copied. Ideas from Apache-2.0 / MIT docs are re-implemented from scratch (attribution recorded in `reels_motion.py` and README). OpenMontage (AGPL-3.0) deliberately not used. Fonts come from the existing typography library (Google Fonts, OFL). Procedural target BGM tracks (`assets/bgm/*.wav`) are synthesized in-process (100% royalty-free); voice-over uses `edge-tts` (neural TTS; review Microsoft terms before commercial monetization of narrated content).
+
+## 6. Adaptive Reels Engine v2 Upgrade (Overnight Integration)
+* **Content Role Separation:**
+  * `POST /api/leads/{id}/recycle` (Tab 2) is locked to creating `draft_brief` items with `content_format = "carousel"` (4:5 showcase grid focus).
+  * `POST /api/content/reels-ideas/scrape` (Tab 4) creates `draft_brief` items with `content_format = "reels"` focused on **Attract Customer** real Indonesian UMKM pain points (`PAIN-WA`, `PAIN-TRUST`, `PAIN-BOOKING`, `PAIN-ADS`, `PAIN-MOBILE`, `REEL-HOOK-*`) via read-only `agent-reach` (`web/youtube search` + `token_optimizer.compact_scrape_text`, `<= 700` chars/source, `<= 4` sources, `<= 25s` timeout) with an offline Indonesian UMKM pain bank fallback.
+* **Adaptive Indonesian V/O + Word-Synced Kinetic Captions:**
+  * `creative_agent/reels_intelligence.py` routes formal/health/professional categories (`clinic`, `pilates`, `legal`, `b2b`) to polite-calm Bahasa Indonesia with 0 slang (`id-ID-GadisNeural` / calm `id-ID-ArdiNeural`) and casual/creative niches (`cafe`, `bakery`, `barbershop`, `automotive`, `retail`) to warm-natural `id-ID-ArdiNeural`.
+  * `edge-tts` stream captures `WordBoundary`/`SentenceBoundary` timestamps (timeout `<= 30s`, proportional fallback when offline) and `reels_compose.py` overlays crisp kinetic captions strictly inside the IG safe zone (`x: 64–960`, `y: 290–1580`).
+* **Procedural Target-Matched BGM + FFmpeg `sidechaincompress` Ducking:**
+  * 3 loop-safe 15s royalty-free WAV tracks under `assets/bgm/` (`calm_editorial.wav`, `warm_hospitality.wav`, `energetic_craft.wav`) plus auto-discovery for custom `.mp3`/`.wav` tracks.
+  * Mixed with V/O using FFmpeg `sidechaincompress` (BGM smoothly ducks while narrator speaks and rises on pauses), supporting 12–15s Attract Customer pacing (`reels_qa.py` target range `8.0–15.5s`) and CTA screen `DM kata KONSEP`.
+* **Token-Efficient Self-Learning:**
+  * Editable V/O scripts in Tab 4 diffed at 0 LLM tokens (`token_optimizer.compute_edit_delta` → `reels_learning_log.md`), paired with `POST /api/content/{lead_id}/metrics` (`Views`, `Saves`, `Shares`, `DM Masuk`) and `POST /api/learning/evaluate` → `learning_digest.json` (`<= ~1,200` tokens).
+

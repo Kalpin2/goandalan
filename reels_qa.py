@@ -96,7 +96,7 @@ def build_reels_qa(
     on_screen_texts: list[str],
     lead: dict[str, Any],
     guardrail: dict[str, Any],
-    target_range: tuple[float, float] = (8.0, 12.5),
+    target_range: tuple[float, float] = (8.0, 15.5),
     leak_checker: Any = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []

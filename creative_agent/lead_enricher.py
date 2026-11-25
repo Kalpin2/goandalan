@@ -193,7 +193,7 @@ def run_agent_reach(args: list[str], timeout: int = 22) -> dict[str, Any]:
         }
 
     # Defense-in-depth: never allow login/logout/write/config mutations from the enricher
-    if not args or args[0] not in {"read", "instagram", "web", "doctor", "channels"}:
+    if not args or args[0] not in {"read", "instagram", "web", "youtube", "doctor", "channels"}:
         return {
             "ok": False,
             "items": [],
@@ -209,6 +209,14 @@ def run_agent_reach(args: list[str], timeout: int = 22) -> dict[str, Any]:
             "error_message": "Hanya aksi baca Instagram (profile/posts/search) yang diizinkan.",
             "raw": {},
         }
+    if args[0] in {"web", "youtube"} and (len(args) < 2 or args[1] not in {"search", "read", "info"}):
+        return {
+            "ok": False,
+            "items": [],
+            "error_code": "BAD_INPUT",
+            "error_message": "Hanya aksi baca/pencarian (search/read/info) yang diizinkan.",
+            "raw": {},
+        }
 
     try:
         proc = subprocess.run(
@@ -217,7 +225,7 @@ def run_agent_reach(args: list[str], timeout: int = 22) -> dict[str, Any]:
             text=True,
             encoding="utf-8",
             errors="replace",
-            timeout=max(5, int(timeout)),
+            timeout=max(5, min(25, int(timeout))),
             shell=False,
         )
     except subprocess.TimeoutExpired:

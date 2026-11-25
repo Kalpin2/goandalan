@@ -548,9 +548,15 @@ def get_library_options() -> dict[str, Any]:
     ]
     durations = [
         {"id": 8.0, "label": "8 Detik (Fast Paced / Hyper-Concise)", "desc": "Format kilat dengan punchline cepat, cocok untuk hook agresif dan retensi tinggi."},
-        {"id": 10.0, "label": "10 Detik (Standar Rekomendasi IG)", "desc": "Durasi optimal untuk Instagram Reels showcase: jeda baca nyaman di tiap section."},
-        {"id": 12.0, "label": "12 Detik (Deep Narrative / Detail)", "desc": "Pacing lebih leluasa untuk eksplorasi detail antarmuka dan closing pesan mendalam."},
+        {"id": 10.0, "label": "10 Detik (Standar Showcase IG)", "desc": "Durasi optimal untuk Instagram Reels showcase: jeda baca nyaman di tiap section."},
+        {"id": 12.0, "label": "12 Detik (Attract Customer · Ringkas)", "desc": "Pas untuk naskah V/O 35–42 kata dengan scroll mobile + CTA DM kata KONSEP."},
+        {"id": 14.0, "label": "14 Detik (Attract Customer · Rekomendasi V/O)", "desc": "Pacing lega untuk naskah V/O 40–55 kata, BGM ducking halus, dan detail antarmuka."},
+        {"id": 15.0, "label": "15 Detik (Deep Narrative / Maksimal)", "desc": "Ruang penuh untuk edukasi masalah UMKM + demonstrasi scroll HP + CTA."},
     ]
+    from creative_agent import reels_intelligence as ri
+
+    vo_styles = list(ri.VO_STYLE_OPTIONS)
+    bgm_tracks = ri.list_bgm_options()
     return {
         "art_directions": art_directions,
         "carousel_sequences": carousel_sequences,
@@ -560,6 +566,8 @@ def get_library_options() -> dict[str, Any]:
         "audio_modes": audio_modes,
         "motion_intensities": motion_intensities,
         "durations": durations,
+        "vo_styles": vo_styles,
+        "bgm_tracks": bgm_tracks,
     }
 
 
@@ -647,6 +655,8 @@ def create_draft_brief_from_recycle(
                 """
                 UPDATE content_reviews
                 SET review_status = 'draft_brief',
+                    source = 'recycled_lead',
+                    content_format = 'carousel',
                     updated_at = ?
                 WHERE id = ?
                 """,
@@ -672,7 +682,7 @@ def create_draft_brief_from_recycle(
             review_id,
             actor,
             "draft_brief_created",
-            {"anonymized_name": anon_name},
+            {"anonymized_name": anon_name, "content_format": "carousel"},
         )
 
     detail = get_review_detail(lead_id, db_path=db_path)
@@ -681,6 +691,198 @@ def create_draft_brief_from_recycle(
         "review": detail,
         "anonymized_name": anon_name,
     }
+
+
+def create_reels_ideas_briefs(
+    *,
+    actor: str = "Reviewer",
+    topic: str = "",
+    limit: int = 3,
+    runner: Any = None,
+    db_path: Path | None = None,
+) -> dict[str, Any]:
+    """Scrape real Indonesian business pain points (Agent-Reach + fallback) and create `reels` `draft_brief` cards."""
+    from creative_agent import reels_intelligence as ri
+
+    scraped = ri.scrape_reels_ideas(topic=topic, limit=limit, runner=runner, timeout=25)
+    now = db.iso_now()
+    created_briefs: list[dict[str, Any]] = []
+
+    for idx, idea in enumerate(scraped.get("ideas") or [], start=1):
+        import uuid as _uuid
+
+        anon_name = str(idea.get("anon_name") or f"Konsep Reels #{idx}").strip()
+        pain_code = str(idea.get("pain_code") or "PAIN-WA").strip().upper()
+        reel_hook_id = str(idea.get("reel_hook_id") or "REEL-HOOK-1").strip().upper()
+        uniq = _uuid.uuid4().hex[:6]
+        slug_base = f"reels-{db.slugify(pain_code)}-{db.slugify(anon_name)}-{uniq}"
+        synthetic_biz_name = f"{anon_name} [{pain_code}-{uniq}]"
+
+        lead, _ = db.upsert_lead(
+            {
+                "slug": slug_base,
+                "business_name": synthetic_biz_name,
+                "anonymized_name": anon_name,
+                "category": str(idea.get("category") or "Bisnis Lokal"),
+                "design_style": str(idea.get("design_style") or ""),
+                "city": str(idea.get("city") or settings.DEFAULT_CITY),
+                "ux_flaw": str(idea.get("ux_flaw") or ""),
+                "status": "RECYCLED_CONTENT",
+                "source_query": f"reels_idea:{pain_code}:{idea.get('source_note') or 'bank'}",
+            },
+            db_path=db_path,
+        )
+        lead = db.update_lead(
+            lead["id"],
+            {
+                "is_anonymized": 1,
+                "anonymized_name": anon_name,
+                "status": "RECYCLED_CONTENT",
+            },
+            db_path=db_path,
+        )
+        assert lead is not None
+
+        vo_script = str(idea.get("vo_script") or "").strip()
+        seq_type = str(idea.get("sequence_type") or "before_after_ux")
+        if seq_type not in VALID_REELS_SEQUENCES:
+            seq_type = "before_after_ux"
+
+        with db.get_conn(db_path) as conn:
+            conn.execute("BEGIN IMMEDIATE")
+            existing = conn.execute("SELECT id FROM content_reviews WHERE lead_id = ?", (lead["id"],)).fetchone()
+            if existing:
+                review_id = existing["id"]
+                conn.execute(
+                    """
+                    UPDATE content_reviews
+                    SET source = 'reels_idea_scrape',
+                        review_status = 'draft_brief',
+                        content_format = 'reels',
+                        sequence_type = ?,
+                        vo_script = ?,
+                        pain_code = ?,
+                        reel_hook_id = ?,
+                        updated_at = ?
+                    WHERE id = ?
+                    """,
+                    (seq_type, vo_script, pain_code, reel_hook_id, now, review_id),
+                )
+            else:
+                cur = conn.execute(
+                    """
+                    INSERT INTO content_reviews (
+                        lead_id, source, review_status,
+                        content_format, art_direction_preset, sequence_type,
+                        voice_id, hook_pattern_id, audio_mode,
+                        vo_script, vo_style, bgm_track, pain_code, reel_hook_id,
+                        creative_note, current_version, created_at, updated_at
+                    ) VALUES (?, 'reels_idea_scrape', 'draft_brief', 'reels', 'auto', ?, 'auto', 'auto', 'voiceover_and_music', ?, 'auto', 'auto', ?, ?, ?, 0, ?, ?)
+                    """,
+                    (
+                        lead["id"],
+                        seq_type,
+                        vo_script,
+                        pain_code,
+                        reel_hook_id,
+                        str(idea.get("hook_headline") or "")[:240],
+                        now,
+                        now,
+                    ),
+                )
+                review_id = cur.lastrowid
+            _log_activity(
+                conn,
+                review_id,
+                actor,
+                "reels_idea_scraped",
+                {
+                    "pain_code": pain_code,
+                    "reel_hook_id": reel_hook_id,
+                    "source_mode": scraped.get("source_mode"),
+                },
+            )
+
+        created_briefs.append(get_review_detail(lead["id"], db_path=db_path))
+
+    return {
+        "ok": True,
+        "source_mode": scraped.get("source_mode") or "fallback_umkm_bank",
+        "query": scraped.get("query") or "",
+        "compacted_scrape": scraped.get("compacted_scrape") or {},
+        "created_count": len(created_briefs),
+        "briefs": created_briefs,
+    }
+
+
+def save_posted_metrics(
+    lead_id: int,
+    *,
+    actor: str,
+    views: int = 0,
+    saves: int = 0,
+    shares: int = 0,
+    dm_in: int = 0,
+    db_path: Path | None = None,
+) -> dict[str, Any]:
+    """Save real Instagram post performance metrics (`views`, `saves`, `shares`, `dm_in`) on a `posted` item."""
+    from creative_agent import reels_intelligence as ri
+    from creative_agent import token_optimizer as topt
+
+    lead = db.get_lead(lead_id, db_path=db_path)
+    if not lead:
+        raise ReviewNotFoundError(f"Lead ID {lead_id} tidak ditemukan.")
+
+    v_cnt = max(0, int(views or 0))
+    sv_cnt = max(0, int(saves or 0))
+    sh_cnt = max(0, int(shares or 0))
+    dm_cnt = max(0, int(dm_in or 0))
+    now = db.iso_now()
+    metrics_obj = {
+        "views": v_cnt,
+        "saves": sv_cnt,
+        "shares": sh_cnt,
+        "dm_in": dm_cnt,
+        "updated_at": now,
+        "updated_by": actor,
+    }
+
+    with db.get_conn(db_path) as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        rev = conn.execute("SELECT * FROM content_reviews WHERE lead_id = ?", (lead_id,)).fetchone()
+        if not rev:
+            raise ReviewNotFoundError("Item review tidak ditemukan.")
+        if rev["review_status"] != "posted":
+            raise ReviewConflictError(
+                f"Metrik IG hanya dapat disimpan untuk konten berstatus 'posted' (status saat ini: '{rev['review_status']}')."
+            )
+        conn.execute(
+            "UPDATE content_reviews SET metrics_json = ?, updated_at = ? WHERE id = ?",
+            (json.dumps(metrics_obj, ensure_ascii=False), now, rev["id"]),
+        )
+        _log_activity(conn, rev["id"], actor, "metrics_saved", metrics_obj)
+        rev_dict = dict(rev)
+
+    if (rev_dict.get("content_format") or "") == "reels":
+        vo_txt = str(rev_dict.get("vo_script") or "")
+        ri.log_reels_event(
+            lead=lead,
+            original_vo_script=vo_txt,
+            final_vo_script=vo_txt,
+            pain_code=str(rev_dict.get("pain_code") or ""),
+            reel_hook_id=str(rev_dict.get("reel_hook_id") or ""),
+            voice=str(rev_dict.get("voice_id") or ""),
+            vo_style=str(rev_dict.get("vo_style") or "auto"),
+            bgm_track=str(rev_dict.get("bgm_track") or "auto"),
+            views=v_cnt,
+            saves=sv_cnt,
+            shares=sh_cnt,
+            dm_in=dm_cnt,
+            notes=f"posted_metrics_by:{actor}",
+        )
+
+    topt.build_learning_digest(db_path=db_path, write_file=True)
+    return get_review_detail(lead_id, db_path=db_path)
 
 
 def _copy_reels_live_assets_to_snapshot(lead: dict[str, Any], reels_res: dict[str, Any], target_dir: Path) -> dict[str, Any]:
@@ -720,6 +922,9 @@ def generate_content_from_brief(
     audio_mode: str = "voiceover_and_music",
     motion_intensity: str = "auto",
     target_duration: float = 10.0,
+    vo_script: str = "",
+    vo_style: str = "auto",
+    bgm_track: str = "auto",
     creative_note: str = "",
     note: str = "",
     db_path: Path | None = None,
@@ -763,17 +968,26 @@ def generate_content_from_brief(
     eff_motion = (motion_intensity or "auto").strip().lower()
     if eff_motion not in {"auto", "snappy", "balanced", "refined"}:
         eff_motion = "auto"
-    try:
-        eff_dur = float(target_duration or 10.0)
-    except Exception:
-        eff_dur = 10.0
-    eff_dur = max(8.0, min(12.0, eff_dur))
 
     rev = db.get_review_by_lead(lead_id, db_path=db_path)
     if rev and rev["review_status"] in {"approved", "posted"}:
         raise ReviewConflictError(
             f"Konten sudah berstatus '{rev['review_status']}'. Minta revisi terlebih dahulu sebelum generate ulang."
         )
+
+    orig_vo_script = str((rev or {}).get("vo_script") or "").strip()
+    clean_vo_script = (vo_script or "").strip()[:600] or orig_vo_script
+    eff_vo_style = (vo_style or (rev or {}).get("vo_style") or "auto").strip() or "auto"
+    eff_bgm_track = (bgm_track or (rev or {}).get("bgm_track") or "auto").strip() or "auto"
+    pain_code = str((rev or {}).get("pain_code") or "").strip()
+    reel_hook_id = str((rev or {}).get("reel_hook_id") or "").strip()
+    is_attract_reels = bool((rev or {}).get("source") == "reels_idea_scrape" or pain_code)
+
+    try:
+        eff_dur = float(target_duration or (13.0 if is_attract_reels else 10.0))
+    except Exception:
+        eff_dur = 13.0 if is_attract_reels else 10.0
+    eff_dur = max(8.0, min(15.0, eff_dur))
 
     next_v = (int(rev["current_version"]) + 1) if (rev and int(rev["current_version"]) >= 1) else 1
     snap_dir = _snapshot_dir(lead, next_v)
@@ -789,12 +1003,18 @@ def generate_content_from_brief(
         "audio_mode": eff_audio if fmt == "reels" else "silent",
         "motion_intensity": eff_motion if fmt == "reels" else "auto",
         "target_duration": eff_dur if fmt == "reels" else 0.0,
+        "vo_style": eff_vo_style if fmt == "reels" else "auto",
+        "bgm_track": eff_bgm_track if fmt == "reels" else "auto",
+        "vo_script": clean_vo_script if fmt == "reels" else "",
+        "pain_code": pain_code,
+        "reel_hook_id": reel_hook_id,
         "creative_note": clean_note,
     }
 
     try:
         if fmt == "reels":
             import reels_generator as rg
+            from creative_agent import reels_intelligence as ri
 
             reels_res = rg.generate_reels_package_for_lead(
                 lead_id,
@@ -807,9 +1027,31 @@ def generate_content_from_brief(
                 creative_note=clean_note,
                 target_duration=eff_dur,
                 motion_intensity=None if eff_motion == "auto" else eff_motion,
+                vo_script=clean_vo_script,
+                vo_style=eff_vo_style,
+                bgm_track=eff_bgm_track,
+                pain_code=pain_code,
+                reel_hook_id=reel_hook_id,
+                attract_cta=is_attract_reels,
             )
             copied = _copy_reels_live_assets_to_snapshot(lead, reels_res, snap_dir)
             beat_script = copied["beat_script"]
+            final_rendered_vo = str(reels_res.get("vo_script") or clean_vo_script)
+            # Zero-token deterministic edit logging for Reels V/O scripts
+            if orig_vo_script or clean_vo_script:
+                ri.log_reels_event(
+                    lead=lead,
+                    original_vo_script=orig_vo_script or final_rendered_vo,
+                    final_vo_script=final_rendered_vo,
+                    pain_code=pain_code,
+                    reel_hook_id=reel_hook_id,
+                    voice=str((reels_res.get("spec") or {}).get("voice_id") or v_id),
+                    vo_style=str(reels_res.get("vo_style") or eff_vo_style),
+                    bgm_track=str(reels_res.get("bgm_track") or eff_bgm_track),
+                    duration_sec=float(((reels_res.get("spec") or {}).get("video") or {}).get("duration_sec") or eff_dur),
+                    notes=f"generated_by:{actor}",
+                )
+            clean_vo_script = final_rendered_vo
         else:
             import carousel_generator as cg
 
@@ -860,6 +1102,9 @@ def generate_content_from_brief(
                     voice_id = ?,
                     hook_pattern_id = ?,
                     audio_mode = ?,
+                    vo_script = ?,
+                    vo_style = ?,
+                    bgm_track = ?,
                     creative_note = ?,
                     current_version = ?,
                     approved_version = NULL,
@@ -868,7 +1113,11 @@ def generate_content_from_brief(
                     updated_at = ?
                 WHERE id = ?
                 """,
-                (fmt, ad_preset, seq_type, v_id, h_id, eff_audio, clean_note, next_v, now, review_id),
+                (
+                    fmt, ad_preset, seq_type, v_id, h_id, eff_audio,
+                    clean_vo_script, eff_vo_style, eff_bgm_track,
+                    clean_note, next_v, now, review_id,
+                ),
             )
         else:
             cur = conn.execute(
@@ -876,11 +1125,16 @@ def generate_content_from_brief(
                 INSERT INTO content_reviews (
                     lead_id, source, review_status,
                     content_format, art_direction_preset, sequence_type,
-                    voice_id, hook_pattern_id, audio_mode, creative_note,
-                    current_version, created_at, updated_at
-                ) VALUES (?, 'recycled_lead', 'pending_review', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    voice_id, hook_pattern_id, audio_mode,
+                    vo_script, vo_style, bgm_track,
+                    creative_note, current_version, created_at, updated_at
+                ) VALUES (?, 'recycled_lead', 'pending_review', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (lead_id, fmt, ad_preset, seq_type, v_id, h_id, eff_audio, clean_note, next_v, now, now),
+                (
+                    lead_id, fmt, ad_preset, seq_type, v_id, h_id, eff_audio,
+                    clean_vo_script, eff_vo_style, eff_bgm_track,
+                    clean_note, next_v, now, now,
+                ),
             )
             review_id = cur.lastrowid
 
@@ -1683,6 +1937,10 @@ def list_review_queue(
                 leak_obj = json.loads(ver_dict.get("leak_check_json") or "{}")
             except Exception:
                 leak_obj = {"passed": True, "leaks": []}
+            try:
+                metrics_obj = json.loads(rd.get("metrics_json") or "{}")
+            except Exception:
+                metrics_obj = {}
 
             items.append(
                 {
@@ -1702,6 +1960,18 @@ def list_review_queue(
                     "voice_id": rd.get("voice_id") or "auto",
                     "hook_pattern_id": rd.get("hook_pattern_id") or "auto",
                     "audio_mode": rd.get("audio_mode") or "voiceover_and_music",
+                    "vo_script": rd.get("vo_script") or "",
+                    "vo_style": rd.get("vo_style") or "auto",
+                    "bgm_track": rd.get("bgm_track") or "auto",
+                    "pain_code": rd.get("pain_code") or "",
+                    "reel_hook_id": rd.get("reel_hook_id") or "",
+                    "metrics": {
+                        "views": int(metrics_obj.get("views") or 0),
+                        "saves": int(metrics_obj.get("saves") or 0),
+                        "shares": int(metrics_obj.get("shares") or 0),
+                        "dm_in": int(metrics_obj.get("dm_in") or 0),
+                        "updated_at": metrics_obj.get("updated_at") or "",
+                    },
                     "creative_note": rd.get("creative_note") or "",
                     "recommended_defaults": _compute_recommended_defaults(lead_stub),
                     "current_version": int(rd["current_version"]),
@@ -1861,6 +2131,11 @@ def get_review_detail(lead_id: int, db_path: Path | None = None) -> dict[str, An
         for a in activity
     )
 
+    try:
+        metrics_obj = json.loads(rd.get("metrics_json") or "{}")
+    except Exception:
+        metrics_obj = {}
+
     return {
         "review_id": rd["id"],
         "lead_id": rd["lead_id"],
@@ -1878,6 +2153,18 @@ def get_review_detail(lead_id: int, db_path: Path | None = None) -> dict[str, An
         "voice_id": rd.get("voice_id") or "auto",
         "hook_pattern_id": rd.get("hook_pattern_id") or "auto",
         "audio_mode": rd.get("audio_mode") or "voiceover_and_music",
+        "vo_script": rd.get("vo_script") or "",
+        "vo_style": rd.get("vo_style") or "auto",
+        "bgm_track": rd.get("bgm_track") or "auto",
+        "pain_code": rd.get("pain_code") or "",
+        "reel_hook_id": rd.get("reel_hook_id") or "",
+        "metrics": {
+            "views": int(metrics_obj.get("views") or 0),
+            "saves": int(metrics_obj.get("saves") or 0),
+            "shares": int(metrics_obj.get("shares") or 0),
+            "dm_in": int(metrics_obj.get("dm_in") or 0),
+            "updated_at": metrics_obj.get("updated_at") or "",
+        },
         "creative_note": rd.get("creative_note") or "",
         "recommended_defaults": _compute_recommended_defaults(lead_stub),
         "current_version": int(rd["current_version"]),

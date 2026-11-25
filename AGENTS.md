@@ -63,9 +63,31 @@ Setiap kali merancang atau merender carousel IG untuk memamerkan website demo, a
 
 ---
 
-## 5. Hard Guardrails
+## 5. Arsitektur Hemat Token & Self-Learning (`creative_agent/token_optimizer.py`)
+
+* **Aturan Wajib Slice-Only Reading:** Agen **DILARANG** membaca file log mentah penuh (`copy_learning_log.md`, `reels_learning_log.md`, `learning_log.md`) ke dalam konteks LLM. Agen **WAJIB** hanya membaca ringkasan padat **`skills/instagram-creative-agent/references/learning_digest.json`** (maksimal ~1.200 token) ditambah potongan pola relevan hasil pre-router Python (`get_relevant_pattern_slice`).
+* **Pre-Clean Scrape & Zero-Token Edit Diff:** Seluruh output mentah `agent-reach` wajib dibersihkan lewat `compact_scrape_text` (maks `700` karakter/sumber, maks `4` sumber/batch). Setiap editan manusia pada copy atau Script V/O Reels dihitung secara deterministik via `compute_edit_delta` (**0 token LLM**).
+* **Evaluasi Kandidat Terbatas:** Endpoint `POST /api/learning/evaluate` memperbarui `learning_digest.json` secara deterministik dan mengusulkan maksimal **3 kandidat baru** (`status: candidate`, `approved_by_user: false`) ke `copy_candidates.md` / `reels_candidates.md` tanpa pernah auto-promote.
+* **Pemisahan Peran Konten IG:**
+  * **Carousel (`4:5`)** via `POST /api/leads/{id}/recycle` (Tab 2) → khusus pamer hasil desain website.
+  * **Reels (`9:16`)** via `POST /api/content/reels-ideas/scrape` (Tab 4) → khusus *Attract Customer* berbasis masalah nyata UMKM (`PAIN-*`, `REEL-HOOK-*`, V/O adaptif `edge-tts`, BGM procedural target `assets/bgm/` dengan FFmpeg `sidechaincompress` ducking, dan CTA `DM kata KONSEP`).
+
+---
+
+## 6. 4 Pilar Project Goals `@goandalan` (Panduan Utama Agen)
+
+1. **Validasi Pasar (`DP_PAID`) dengan Modal Rp 0:** Scrape → Kurasi & *IG Observation* → Foto Preview tanpa link → `INTERESTED` → Demo Penuh 1-Halaman → `DP_PAID` → Website Produksi → `WON`.
+2. **Aktivasi Etalase Feed `@goandalan` & Ritme Outreach Harian:** Upload 6 portofolio awal (pin 3 gaya kontras) + konsisten kirim 3–5 Cold DM personal/hari.
+3. **Menghidupkan *Self-Learning* Hemat Token dari Sinyal Nyata:** Kumpulkan minimal 20 sampel interaksi lapangan (editan sebelum **Salin**, rasio balasan `INTERESTED`/`IGNORED_48H`, koreksi Reviewer, dan metrik postingan IG `Views`/`Saves`/`Shares`/`DM Masuk`) ke `learning_digest.json`.
+4. **Memutar *Zero-Waste Content Flywheel*:** Carousel (`4:5`) pamer website dari prospek 48 jam + Reels (`9:16`) V/O & BGM adaptif dari masalah nyata bisnis di media sosial.
+
+> **Keputusan Deploy Publik (`site/`):** **Deploy website katalog publik `site/` DITUNDA** hingga pengecekan manual user dan fase validasi outreach awal berjalan. Jangan men-deploy `site/` ke hosting publik atau menjalankan server/tunnel secara permanen tanpa instruksi eksplisit user.
+
+---
+
+## 7. Hard Guardrails
 
 * **DILARANG** auto-post ke Instagram atau auto-send DM.
 * **DILARANG** mengarang metrik performa, rating, atau testimoni klien (termasuk kotak slop `<1 dtk AKSES HP`).
-* **DILARANG** mempromosikan kandidat di `library_candidates.md` ke `typography_intelligence_library.md` (`status: approved`) tanpa persetujuan eksplisit user.
+* **DILARANG** mempromosikan kandidat di `library_candidates.md`, `copy_candidates.md`, atau `reels_candidates.md` ke library inti (`status: approved`) tanpa persetujuan eksplisit user.
 * **DILARANG** membocorkan nama bisnis / nomor WA asli saat `is_anonymized=True` / status `RECYCLED_CONTENT`.

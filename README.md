@@ -110,6 +110,27 @@ ENABLE_POST_SCRAPE_ENRICHMENT=true
 
 ---
 
+## 4 Pilar Project Goals `@goandalan`
+
+1. **Validasi Pasar (`DP_PAID`) dengan Modal Rp 0:** Scrape → Kurasi & *IG Observation* → Foto Preview tanpa link → `INTERESTED` → Demo Penuh 1-Halaman → `DP_PAID` → Website Produksi → `WON`.
+2. **Aktivasi Etalase Feed `@goandalan` & Ritme Outreach Harian:** Upload 6 portofolio awal (pin 3 gaya kontras) + konsisten kirim 3–5 Cold DM personal/hari.
+3. **Menghidupkan *Self-Learning* Hemat Token dari Sinyal Nyata:** Kumpulkan min. 20 sampel interaksi lapangan (editan sebelum **Salin**, rasio balasan, koreksi Reviewer, dan metrik postingan IG `Views`/`Saves`/`Shares`/`DM Masuk`) ke `skills/instagram-creative-agent/references/learning_digest.json` (<= ~1.200 token) lewat `creative_agent/token_optimizer.py` & `POST /api/learning/evaluate`.
+4. **Memutar *Zero-Waste Content Flywheel*:** Carousel (`4:5`) pamer website dari prospek 48 jam (`/recycle` Tab 2) + Reels (`9:16`) *Attract Customer* ber-V/O adaptif & BGM target (`assets/bgm/` dengan FFmpeg `sidechaincompress` ducking) dari masalah nyata UMKM (`POST /api/content/reels-ideas/scrape`).
+
+> **Catatan Deploy Publik:** **Deploy website katalog publik `site/` ditunda** hingga pengecekan manual user dan fase validasi outreach awal berjalan.
+
+---
+
+## Skrip Cadangan Tunnel Kolaborasi (`scripts/start_tunnel.ps1`)
+
+Saat anggota tim baru bergabung dan perlu mengakses Mini App lokal sementara lewat *Cloudflare Quick Tunnel*, jalankan secara manual di PowerShell (skrip ini pasif dan **tidak dijalankan otomatis**):
+
+```powershell
+.\scripts\start_tunnel.ps1
+```
+
+---
+
 ## Menjalankan Server & Pengujian
 
 ```powershell
@@ -117,11 +138,14 @@ ENABLE_POST_SCRAPE_ENRICHMENT=true
 python app.py
 
 # Kompilasi sintaks
-python -m py_compile config.py database.py content_review.py reels_motion.py reels_capture.py reels_plates.py reels_compose.py reels_qa.py reels_generator.py app.py smoke_test.py test_content_review.py
+python -m py_compile config.py database.py content_review.py reels_motion.py reels_capture.py reels_plates.py reels_compose.py reels_qa.py reels_generator.py creative_agent/token_optimizer.py creative_agent/reels_intelligence.py app.py smoke_test.py test_content_review.py verify_ui_playwright.py
 
-# Jalankan test Auth, Sliding Session 7 Hari, RBAC, Security & Review Workflow
+# Jalankan test Auth, Sliding Session 7 Hari, RBAC, Security, Token Optimizer, Adaptive Reels & Review Workflow
 python test_content_review.py
 
 # Jalankan smoke test 2-stage / 3-phase pipeline
 python smoke_test.py
+
+# Verifikasi visual Playwright (Mobile 390x844 & Desktop 1280x800 × Dark & Light)
+python verify_ui_playwright.py
 ```

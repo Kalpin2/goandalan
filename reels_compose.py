@@ -11,12 +11,13 @@ import math
 from pathlib import Path
 from typing import Any, Iterator
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from reels_motion import (
     PHONE,
     REELS_H,
     REELS_W,
+    SAFE_ZONE,
     build_scroll_plan,
     clamp01,
     ease,
@@ -29,6 +30,24 @@ BASE_DURATIONS: dict[str, list[float]] = {
     "before_after_ux": [2.2, 1.8, 2.8, 1.7, 1.4],
     "kinetic_editorial": [2.0, 2.2, 2.4, 2.0, 1.6],
 }
+
+_CAPTION_FONT_CANDIDATES = (
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+    "C:/Windows/Fonts/segoeuib.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",
+)
+
+
+def _load_caption_font(size: int = 36) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    for fpath in _CAPTION_FONT_CANDIDATES:
+        p = Path(fpath)
+        if p.is_file():
+            try:
+                return ImageFont.truetype(str(p), size=size)
+            except Exception:
+                continue
+    return ImageFont.load_default()
 
 
 def _load(path: Path, mode: str = "RGB") -> Image.Image:
@@ -49,6 +68,7 @@ class SceneComposer:
         profile: dict[str, Any],
         fps: int,
         texts: dict[str, str],
+        vo_cues: list[dict[str, Any]] | None = None,
     ) -> None:
         self.seq = sequence_key if sequence_key in BASE_DIR_KEYS else "scroll_reveal_showcase"
         self.plates_paths = plates
@@ -57,6 +77,9 @@ class SceneComposer:
         self.profile = profile
         self.fps = fps
         self.texts = texts
+        self.vo_cues = list(vo_cues or [])
+        self._caption_font = _load_caption_font(36)
+        self._caption_cache: dict[str, Image.Image] = {}
         self._cache: dict[str, Image.Image] = {}
         self._plans: dict[int, list[float]] = {}
 
@@ -292,8 +315,66 @@ class SceneComposer:
             return out
         return Image.blend(a, b, ease("in_out_sine", t))
 
+    def _caption_overlay_for(self, text: str) -> Image.Image:
+        if text in self._caption_cache:
+            return self._caption_cache[text]
+        # Strictly inside IG safe zone: x 64..960, y 290..1580
+        safe_l = SAFE_ZONE["left"] + 16
+        safe_r = SAFE_ZONE["right"] - 16
+        max_w = safe_r - safe_l - 48
+        overlay = Image.new("RGBA", (REELS_W, REELS_H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(overlay)
+
+        words = text.split()
+        lines: list[str] = []
+        cur = ""
+        for w in words:
+            cand = f"{cur} {w}".strip()
+            bbox = d.textbbox((0, 0), cand, font=self._caption_font)
+            if bbox[2] - bbox[0] <= max_w or not cur:
+                cur = cand
+            else:
+                lines.append(cur)
+                cur = w
+                if len(lines) >= 2:
+                    break
+        if cur and len(lines) < 2:
+            lines.append(cur)
+
+        if lines:
+            line_h = 44
+            pad_x, pad_y = 26, 16
+            widths = [d.textbbox((0, 0), ln, font=self._caption_font)[2] for ln in lines]
+            box_w = min(safe_r - safe_l, max(widths) + pad_x * 2)
+            box_h = len(lines) * line_h + pad_y * 2
+            cx = (safe_l + safe_r) // 2
+            x0 = max(safe_l, cx - box_w // 2)
+            x1 = min(safe_r, x0 + box_w)
+            y1 = SAFE_ZONE["bottom"] - 16  # 1564 <= 1580 safe bottom
+            y0 = y1 - box_h
+
+            d.rounded_rectangle((x0, y0, x1, y1), radius=18, fill=(12, 12, 16, 212), outline=(255, 255, 255, 42), width=2)
+            for idx_l, ln in enumerate(lines):
+                lw = d.textbbox((0, 0), ln, font=self._caption_font)[2]
+                tx = x0 + (x1 - x0 - lw) // 2
+                ty = y0 + pad_y + idx_l * line_h
+                d.text((tx, ty), ln, font=self._caption_font, fill=(250, 250, 252, 255))
+
+        self._caption_cache[text] = overlay
+        return overlay
+
+    def _apply_synced_caption(self, frame: Image.Image, t_sec: float) -> Image.Image:
+        if not self.vo_cues:
+            return frame
+        active = next((c for c in self.vo_cues if c["start"] <= t_sec <= c["end"]), None)
+        if not active or not active.get("text"):
+            return frame
+        ov = self._caption_overlay_for(active["text"])
+        return Image.alpha_composite(frame.convert("RGBA"), ov).convert("RGB")
+
     def iter_frames(self, plan: list[dict[str, Any]]) -> Iterator[Image.Image]:
         firsts = [self._frame(sc, 0, idx) for idx, sc in enumerate(plan)]
+        global_i = 0
         for idx, sc in enumerate(plan):
             n = sc["frames"]
             nxt = plan[idx + 1] if idx + 1 < len(plan) else None
@@ -303,6 +384,9 @@ class SceneComposer:
                 if nxt and tn and i >= n - tn:
                     a = (i - (n - tn) + 1) / float(tn + 1)
                     fr = self._transition(nxt["transition"], fr, firsts[idx + 1], a)
+                if self.vo_cues:
+                    fr = self._apply_synced_caption(fr, global_i / float(self.fps))
+                global_i += 1
                 yield fr
 
 
